@@ -18,3 +18,7 @@ Create a keys.nix file with the following contents:
   };
 }
 ```
+
+## Some useful commands
+
+`sudo webfsd -p 80 -r ~/public` (run web server)
