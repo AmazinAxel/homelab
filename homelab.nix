@@ -13,6 +13,7 @@
   # Packages
   environment.systemPackages = with pkgs; [
     git
+    webfs
   ];
 
   # Raspi boot
@@ -23,18 +24,22 @@
       efi.canTouchEfiVariables = true;
       timeout = 0; # Hold down space on boot to access menu
     };
+    kernelModules = [ "bcm2835-v4l2" ];
     tmp.cleanOnBoot = true;
     kernelPackages = pkgs.linuxPackages_latest; #pkgs.linuxKernel.kernels.linux_rpi4; # Latest Linux kernel version
     enableContainers = false;
   };
 
   # Networking
-  networking.wireless.iwd = {
-    enable = true;
-    settings = {
-      IPv6.Enabled = true;
-      Settings.AutoConnect = true;
+  networking = {
+    wireless.iwd = {
+      enable = true;
+      settings = {
+        IPv6.Enabled = true;
+        Settings.AutoConnect = true;
+      };
     };
+    firewall.allowedTCPPorts = [ 80 ];
   };
 
   services = {
