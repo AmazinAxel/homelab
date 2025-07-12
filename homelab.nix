@@ -24,7 +24,7 @@
       timeout = 0; # Hold down space on boot to access menu
     };
     tmp.cleanOnBoot = true;
-    kernelPackages = pkgs.linuxKernel.kernels.linux_rpi4; # Latest Linux kernel version
+    kernelPackages = pkgs.linuxPackages_latest; #pkgs.linuxKernel.kernels.linux_rpi4; # Latest Linux kernel version
     enableContainers = false;
   };
 

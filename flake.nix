@@ -9,8 +9,8 @@
   };
 
   outputs = { home-manager, nixpkgs, ... }: {
-    nixosConfigurations."alechomelab".nixpkgs.lib.nixosSystem = {
-      system = "x86_64-linux";
+    nixosConfigurations."alechomelab" = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux";
       modules = [
         ./homelab.nix
         home-manager.nixosModules.home-manager
