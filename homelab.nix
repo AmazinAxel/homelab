@@ -1,6 +1,7 @@
 { pkgs, lib, ... }: {
   imports = [
     ./hardware-configuration.nix
+    ./keys.nix
   ];
 
   networking.hostName = "alechomelab";
@@ -60,6 +61,11 @@
     journald.extraConfig = "SystemMaxUse=20M";
   };
 
+  programs = {
+    fish.enable = true;
+    command-not-found.enable = false;
+  };
+
   time.timeZone = "America/Los_Angeles";
 
   nix.settings = {
@@ -73,7 +79,6 @@
   # Some cleanup
   documentation.enable = false;
   environment.defaultPackages = lib.mkForce [];
-  programs.command-not-found.enable = false;
 
   system.stateVersion = "24.05";
 }
