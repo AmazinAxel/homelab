@@ -43,7 +43,10 @@
         Settings.AutoConnect = true;
       };
     };
-    firewall.allowedTCPPorts = [ 80 ];
+    firewall = {
+      allowedTCPPorts = [ 80 445 139 ];
+      allowedUDPPorts = [ 137 138 ];
+    };
   };
 
   services = {
@@ -56,27 +59,34 @@
     # SSH IP resolve shorthand by publishing its address on the network
     avahi = {
       enable = true;
+      openFirewall = true; # For NAS
       publish = {
         enable = true;
-        addresses = true;
+        addresses = true; # For http IP
+        userServices = true; # For NAS
       };
     };
+    
     journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
     udisks2.enable = true;
-    #gvfs.enable = true;
+    gvfs.enable = true;
     samba = {
       enable = true;
       settings = {
         "alecnas" = {
           comment = "Alec's home NAS";
-          #path = "/";
+          path = "/run/media/alec/ALEC BACKUP";
           writable = true;
           "guest ok" = false;
           "valid users" = [ "alec" ];
         };
       };
+    };
+    samba-wsdd = {
+      enable = true;
+      openFirewall = true;
     };
   };
 
