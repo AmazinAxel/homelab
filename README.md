@@ -6,19 +6,6 @@ Features:
 - Network storage which auto mounts to the attached USB drive
 - ...
 
-## Github & Onshape integration
-
-Create a keys.nix file with the following contents:
-
-```nix
-{
-  environment.sessionVariables = {
-    GITHUB_TOKEN = "test";
-    ONSHAPE_TOKEN = "test";
-  };
-}
-```
-
 ## Some useful commands
 
 `sudo webfsd -p 80 -r ~/public` (run web server)

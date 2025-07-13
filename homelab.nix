@@ -15,7 +15,14 @@
   environment.systemPackages = with pkgs; [
     git
     webfs
+    jre
   ];
+
+  # Variables
+  environment.sessionVariables = {
+    GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
+    ONSHAPE_TOKEN = builtins.readFile ./onshapeToken.txt;
+  };
 
   # Raspi boot
   boot = {
