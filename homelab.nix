@@ -1,7 +1,8 @@
-{ pkgs, lib, ... }: {
+let keys =
+  import ./keys.nix;
+in { pkgs, lib, ... }: {
   imports = [
     ./hardware-configuration.nix
-    ./keys.nix
   ];
 
   networking.hostName = "alechomelab";
@@ -21,8 +22,8 @@
 
   # Variables
   environment.sessionVariables = {
-    GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
-    ONSHAPE_TOKEN = builtins.readFile ./onshapeToken.txt;
+    GITHUB_TOKEN = keys.githubToken;
+    ONSHAPE_TOKEN = keys.onshapeToken;
   };
 
   # Raspi boot
