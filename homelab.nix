@@ -2,6 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ./secrets.nix
+    ./tasks.nix
   ];
 
   networking.hostName = "alechomelab";
