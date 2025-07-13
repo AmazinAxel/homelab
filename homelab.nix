@@ -62,6 +62,22 @@
       };
     };
     journald.extraConfig = "SystemMaxUse=20M";
+
+    # NAS
+    udisks2.enable = true;
+    #gvfs.enable = true;
+    services.samba = {
+      enable = true;
+      settings = {
+        "alecnas" = {
+          comment = "Alec's home NAS";
+          #path = "/";
+          writable = true;
+          "guest ok" = false;
+          "valid users" = [ "alec" ];
+        };
+      };
+    };
   };
 
   programs = {
