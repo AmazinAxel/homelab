@@ -66,7 +66,7 @@
     # NAS
     udisks2.enable = true;
     #gvfs.enable = true;
-    services.samba = {
+    samba = {
       enable = true;
       settings = {
         "alecnas" = {
