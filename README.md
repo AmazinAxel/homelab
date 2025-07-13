@@ -8,4 +8,4 @@ Features:
 
 ## Some useful commands
 
-`sudo webfsd -p 80 -r ~/public` (run web server)
+`sudo webfsd -p 80 -r ~/public -f index.html` (run web server)

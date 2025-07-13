@@ -16,6 +16,7 @@
     git
     webfs
     jre
+    killall
   ];
 
   # Variables
