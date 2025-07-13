@@ -1,8 +1,7 @@
-let keys =
-  import ./keys.nix;
-in { pkgs, lib, ... }: {
+{ pkgs, lib, ... }: {
   imports = [
     ./hardware-configuration.nix
+    ./keys.nix
   ];
 
   networking.hostName = "alechomelab";
@@ -19,12 +18,6 @@ in { pkgs, lib, ... }: {
     jre
     killall
   ];
-
-  # Variables
-  environment.sessionVariables = {
-    GITHUB_TOKEN = keys.githubToken;
-    ONSHAPE_TOKEN = keys.onshapeToken;
-  };
 
   # Raspi boot
   boot = {
