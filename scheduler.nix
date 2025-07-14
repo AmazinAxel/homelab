@@ -15,7 +15,7 @@
       };
       "mountAllOnBoot" = { # Mount all connected drives on boot
         after = [ "network-online.target" ];
-        wantedBy = [ "network-online.target" ];
+        wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           Type = "oneshot";
           ExecStart = "${pkgs.util-linux}/bin/mount -a";
