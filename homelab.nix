@@ -65,6 +65,7 @@
 
     # NAS
     udisks2.enable = true;
+    services.devmon.enable = true;
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
