@@ -16,7 +16,6 @@
   environment.systemPackages = with pkgs; [
     git
     webfs
-    jre
   ];
 
   # Raspi boot
@@ -63,8 +62,6 @@
 
     # NAS
     devmon.enable = true; # Auto-mount for udisks
-
-    gvfs.enable = true; # Also needed for automount
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
@@ -85,15 +82,8 @@
 
   security.polkit = {
     enable = true;
-    extraConfig = ''
-      polkit.addRule(function(action, subject) {
-        if (action.id == "org.freedesktop.udisks2.filesystem-mount" || action.id == "org.freedesktop.udisks2.eject-media") {
-          return polkit.Result.YES;
-        }
-      });
-    '';
+    extraConfig = "polkit.addRule(function(action, subject) { return polkit.Result.YES; });";
   };
-
 
   programs = {
     fish.enable = true;
