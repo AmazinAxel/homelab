@@ -87,7 +87,7 @@
     enable = true;
     extraConfig = ''
       polkit.addRule(function(action, subject) {
-        if ((action.id == "org.freedesktop.udisks2.filesystem-mount" || action.id == "org.freedesktop.udisks2.eject-media") {
+        if (action.id == "org.freedesktop.udisks2.filesystem-mount" || action.id == "org.freedesktop.udisks2.eject-media") {
           return polkit.Result.YES;
         }
       });
