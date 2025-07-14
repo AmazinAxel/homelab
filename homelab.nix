@@ -18,6 +18,9 @@
     webfs
     jre
     killall
+    udiskie
+    usbutils
+    udisks
   ];
 
   # Raspi boot
@@ -64,7 +67,7 @@
     journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
-    udisks2.enable = true;
+    udisks2.enable = true; # not necessary
     devmon.enable = true; # Automount
     gvfs.enable = true; # Also needed for automount
     samba = {
