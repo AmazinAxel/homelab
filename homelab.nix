@@ -63,9 +63,11 @@
     
     journald.extraConfig = "SystemMaxUse=20M";
 
-    # NAS
+    # NAS & automount
     udisks2.enable = true;
-    devmon.enable = true;
+    udev.extraRules = ''
+      ACTION=="add", SUBSYSTEM=="block", ENV{ID_FS_TYPE}!="", RUN+="${pkgs.udisks}/bin/udisksctl mount -b $env{DEVNAME}"
+    '';
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
