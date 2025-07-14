@@ -21,6 +21,10 @@ Create a `secrets.nix` file and paste & fill these contents
 
 ## Some useful commands
 
+`sudo smbpasswd -a alec` (set user & password for NAS)
+
+`udisksctl mount -b /dev/sda` (force mount)
+
 `sudo webfsd -p 80 -r ~/public -f index.html` (run web server)
 
 `sudo nixos-rebuild switch --flake path:/home/alec/homelab/ --impure` (rebuild with impurity)

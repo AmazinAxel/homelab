@@ -35,17 +35,11 @@
   };
 
   # Networking
-  networking = {
-    wireless.iwd = {
-      enable = true;
-      settings = {
-        IPv6.Enabled = true;
-        Settings.AutoConnect = true;
-      };
-    };
-    firewall = {
-      allowedTCPPorts = [ 80 445 139 ];
-      allowedUDPPorts = [ 137 138 ];
+  networking.wireless.iwd = {
+    enable = true;
+    settings = {
+      IPv6.Enabled = true;
+      Settings.AutoConnect = true;
     };
   };
 
@@ -59,7 +53,7 @@
     # SSH IP resolve shorthand by publishing its address on the network
     avahi = {
       enable = true;
-      openFirewall = true; # For NAS
+      openFirewall = true;
       publish = {
         enable = true;
         addresses = true; # For http IP
@@ -74,14 +68,14 @@
     gvfs.enable = true;
     samba = {
       enable = true;
-      settings = {
-        "alecnas" = {
-          comment = "Alec's home NAS";
-          path = "/run/media/alec/ALEC BACKUP";
-          writable = true;
-          "guest ok" = false;
-          "valid users" = [ "alec" ];
-        };
+      package = pkgs.samba4Full; # Use full package for better autodiscovery support
+      openFirewall = true;
+      shares."USBAccess" = {
+        comment = "Alec's home NAS";
+        path = "/run/media/alec/ALEC BACKUP";
+        writable = true;
+        "guest ok" = false;
+        "valid users" = [ "alec" ];
       };
     };
     samba-wsdd = {
