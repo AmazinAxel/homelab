@@ -9,7 +9,7 @@
 
   users.users.alec = { # Default user
     isNormalUser = true;
-    extraGroups = [ "wheel" "dialout" ];
+    extraGroups = [ "wheel" "dialout" "plugdev" ];
   };
 
   # Packages
