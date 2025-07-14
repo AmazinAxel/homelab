@@ -66,6 +66,7 @@
     # NAS
     udisks2.enable = true;
     devmon.enable = true; # Automount
+    gvfs.enable = true; # Also needed for automount
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
