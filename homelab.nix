@@ -17,10 +17,6 @@
     git
     webfs
     jre
-    killall
-    udiskie
-    usbutils
-    udisks
   ];
 
   # Raspi boot
@@ -67,11 +63,22 @@
     journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
-    udisks2.enable = true; # not necessary
+    #udisks2.enable = true; # not necessary
+    #udev.extraRules = ''
+    #  ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
+    #'';
+    
     udev.extraRules = ''
-      ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
+      ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", \
+      RUN+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
     '';
-    gvfs.enable = true; # Also needed for automount
+
+    #udev.extraRules = ''
+    #  ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", \
+    #  RUN{program}+="${pkgs.udisks}/bin/udisksctl mount -b /dev/%k --no-user-interaction"
+    #'';
+
+    #gvfs.enable = true; # Also needed for automount
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
@@ -90,6 +97,10 @@
     };
   };
 
+  systemd.tmpfiles.rules = [
+    "d /media 0755 root root -"
+  ];
+
   programs = {
     fish.enable = true;
     command-not-found.enable = false;
@@ -103,7 +114,7 @@
     warn-dirty = false;
   };
 
-  fileSystems."/".options = [ "noatime" ]; # Optimal SD card mount options
+  fileSystems."/".options = [ "noatime" ];
   
   # Some cleanup
   documentation.enable = false;
