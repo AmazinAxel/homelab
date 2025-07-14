@@ -68,7 +68,9 @@
 
     # NAS
     udisks2.enable = true; # not necessary
-    devmon.enable = true; # Automount
+    services.udev.extraRules = ''
+      ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
+    '';
     gvfs.enable = true; # Also needed for automount
     samba = {
       enable = true;
