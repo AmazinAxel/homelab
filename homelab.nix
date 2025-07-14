@@ -42,10 +42,7 @@
 
   services = {
     # SSH support
-    openssh = {
-      enable = true;
-      startWhenNeeded = true;
-    };
+    openssh.enable = true;
 
     # SSH IP resolve shorthand by publishing its address on the network
     avahi = {
