@@ -70,7 +70,7 @@
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
       openFirewall = true;
-      shares."USBAccess" = {
+      settings."USBAccess" = {
         comment = "Alec's home NAS";
         path = "/run/media/alec/ALEC BACKUP";
         writable = true;
