@@ -62,15 +62,10 @@
     journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
-    #udisks2 = {
-    #  enable = true;
-    #  mountOnMedia = true;
-    #};
-    
-    udev.extraRules = ''
-      ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", \
-      RUN{program}+="${pkgs.udisks}/bin/udisksctl mount -b /dev/%k --no-user-interaction"
-    '';
+    udisks2 = {
+      enable = true;
+      mountOnMedia = true;
+    };
 
     gvfs.enable = true; # Also needed for automount
     samba = {
@@ -90,10 +85,6 @@
       openFirewall = true;
     };
   };
-
-  systemd.tmpfiles.rules = [
-    "d /media 0755 root root -"
-  ];
 
   programs = {
     fish.enable = true;
