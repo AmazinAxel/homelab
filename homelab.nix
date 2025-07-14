@@ -66,6 +66,7 @@
       enable = true;
       mountOnMedia = true;
     };
+    devmon.enable = true; # Auto-mount for udisks
 
     gvfs.enable = true; # Also needed for automount
     samba = {
