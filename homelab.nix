@@ -9,7 +9,7 @@
 
   users.users.alec = { # Default user
     isNormalUser = true;
-    extraGroups = [ "wheel" "dialout" "plugdev" ];
+    extraGroups = [ "wheel" "dialout" ];
   };
 
   # Packages
@@ -29,8 +29,7 @@
     };
     kernelModules = [ "bcm2835-v4l2" ];
     tmp.cleanOnBoot = true;
-    kernelPackages = pkgs.linuxPackages_latest; #pkgs.linuxKernel.kernels.linux_rpi4; # Latest Linux kernel version
-    enableContainers = false;
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
   # Networking
@@ -63,10 +62,10 @@
     journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
-    #udisks2.enable = true; # not necessary
-    #udev.extraRules = ''
-    #  ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", RUN{program}+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
-    #'';
+    #udisks2 = {
+    #  enable = true;
+    #  mountOnMedia = true;
+    #};
     
     udev.extraRules = ''
       ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", \
@@ -78,7 +77,7 @@
     #  RUN{program}+="${pkgs.udisks}/bin/udisksctl mount -b /dev/%k --no-user-interaction"
     #'';
 
-    #gvfs.enable = true; # Also needed for automount
+    gvfs.enable = true; # Also needed for automount
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
