@@ -65,14 +65,13 @@
 
     # NAS
     udisks2.enable = true;
-    gvfs.enable = true;
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
       openFirewall = true;
-      settings."USBAccess" = {
-        comment = "Alec's home NAS";
-        path = "/run/media/alec/ALEC BACKUP";
+      settings."USB" = {
+        comment = "Primary & temporary backup storage devices";
+        path = "/run/media/alec/";
         writable = true;
         "guest ok" = false;
         "valid users" = [ "alec" ];
