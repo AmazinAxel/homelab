@@ -62,10 +62,6 @@
     journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
-    udisks2 = {
-      enable = true;
-      mountOnMedia = true;
-    };
     devmon.enable = true; # Auto-mount for udisks
 
     gvfs.enable = true; # Also needed for automount
@@ -86,6 +82,18 @@
       openFirewall = true;
     };
   };
+
+  security.polkit = {
+    enable = true;
+    extraConfig = ''
+      polkit.addRule(function(action, subject) {
+        if ((action.id == "org.freedesktop.udisks2.filesystem-mount" || action.id == "org.freedesktop.udisks2.eject-media") {
+          return polkit.Result.YES;
+        }
+      });
+    '';
+  };
+
 
   programs = {
     fish.enable = true;
