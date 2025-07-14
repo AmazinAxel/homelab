@@ -69,13 +69,8 @@
     
     udev.extraRules = ''
       ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", \
-      RUN+="${pkgs.systemd}/bin/systemd-mount --no-block --automount=yes --collect $devnode /media"
+      RUN{program}+="${pkgs.udisks}/bin/udisksctl mount -b /dev/%k --no-user-interaction"
     '';
-
-    #udev.extraRules = ''
-    #  ACTION=="add", SUBSYSTEMS=="usb", SUBSYSTEM=="block", ENV{ID_FS_USAGE}=="filesystem", \
-    #  RUN{program}+="${pkgs.udisks}/bin/udisksctl mount -b /dev/%k --no-user-interaction"
-    #'';
 
     gvfs.enable = true; # Also needed for automount
     samba = {
