@@ -1,8 +1,8 @@
 { pkgs, lib, ... }: {
   imports = [
     ./hardware-configuration.nix
+    ./scheduler.nix
     ./secrets.nix
-    ./tasks.nix
   ];
 
   networking.hostName = "alechomelab";
