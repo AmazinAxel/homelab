@@ -23,7 +23,7 @@
       };
       "startWebserver" = { # Start web server
         wantedBy = [ "default.target" ];
-        serviceConfig.ExecStart = "${pkgs.webfs}/bin/webfsd -p 80 -r /home/alec/public -f index.html";
+        serviceConfig.ExecStart = "${pkgs.webfs}/bin/webfsd -F -p 80 -r /home/alec/public -f index.html";
       };
     };
 
