@@ -1,14 +1,14 @@
-# Alec's Homelab Server
+# Alec's homelab server
 
 Features:
 
 - Avahi local web server which shows files at ~/public/
 - Network storage which auto mounts to the attached USB drive
-- ...
+- Systemd tasks which auto-update Github flake locks and make backups of Onshape models & private Github repos
 
 ## Github & Onshape integration
 
-Create a `secrets.nix` file and paste & fill these contents
+Create a `secrets.nix` file with these contents (fill in your tokens)
 
 ```nix
 {
@@ -19,12 +19,12 @@ Create a `secrets.nix` file and paste & fill these contents
 }
 ```
 
+## Notes
+
+All files under /home/alec/public are shared on the LAN through an HTTP server
+
 ## Some useful commands
 
 `sudo smbpasswd -a alec` (set user & password for NAS)
-
-`udisksctl mount -b /dev/sda` (force mount)
-
-`sudo webfsd -p 80 -r ~/public -f index.html` (run web server)
 
 `sudo nixos-rebuild switch --flake path:/home/alec/homelab/ --impure` (rebuild with impurity)

@@ -14,12 +14,16 @@
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
       };
       "mountAllOnBoot" = { # Mount all connected drives on boot
-        after = [ "network.target" ];
-        wantedBy = [ "network.target" ];
+        #after = [ "network.target" ];
+        wantedBy = [ "default.target" ];
         serviceConfig = {
           Type = "oneshot";
           ExecStart = "${pkgs.util-linux}/bin/mount -a";
         };
+      };
+      "startWebserver" = { # Start web server
+        wantedBy = [ "default.target" ];
+        serviceConfig.ExecStart = "${pkgs.webfs}/bin/webfsd -p 80 -r /home/alec/public -f index.html";
       };
     };
 
