@@ -14,8 +14,8 @@
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
       };
       "mountAllOnBoot" = { # Mount all connected drives on boot
-        after = [ "multi-user.target" ];
-        wantedBy = [ "multi-user.target" ];
+        before = [ "network.target" ];
+        wantedBy = [ "network.target" ];
         serviceConfig = {
           Type = "oneshot";
           ExecStart = "${pkgs.util-linux}/bin/mount -a";
