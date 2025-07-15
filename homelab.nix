@@ -9,13 +9,13 @@
 
   users.users.alec = { # Default user
     isNormalUser = true;
-    extraGroups = [ "wheel" "dialout" ];
+    extraGroups = [ "wheel" ];
   };
 
   # Packages
   environment.systemPackages = with pkgs; [
     git
-    webfs
+    webfs # HTTP server
   ];
 
   # Raspi boot
@@ -26,9 +26,9 @@
       efi.canTouchEfiVariables = true;
       timeout = 0; # Hold down space on boot to access menu
     };
-    kernelModules = [ "bcm2835-v4l2" ];
     tmp.cleanOnBoot = true;
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
+    initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
   };
 
   # Networking
@@ -81,7 +81,7 @@
     };
   };
 
-  security.polkit = {
+  security.polkit = { # Required for automounting (but reduces security)
     enable = true;
     extraConfig = "polkit.addRule(function(action, subject) { return polkit.Result.YES; });";
   };
