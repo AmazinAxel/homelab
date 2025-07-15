@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  systemd.user = {
+  systemd = {
     services = {
       "captureImg".serviceConfig = {
         Type = "oneshot";
@@ -14,7 +14,7 @@
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
       };
       "mountAllOnBoot" = { # Mount all connected drives on boot
-        #after = [ "network.target" ];
+        after = [ "default.target" ];
         wantedBy = [ "default.target" ];
         serviceConfig = {
           Type = "oneshot";
