@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  systemd = {
+  systemd.user = {
     services = {
       "captureImg".serviceConfig = {
         Type = "oneshot";
