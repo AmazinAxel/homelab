@@ -9,7 +9,7 @@
 
   users.users.alec = { # Default user
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "networkmanager" ];
   };
 
   # Packages
@@ -21,9 +21,8 @@
   # Raspi boot
   boot = {
     loader = {
-      generic-extlinux-compatible.enable = true;
       grub.enable = false;
-      efi.canTouchEfiVariables = true;
+      generic-extlinux-compatible.enable = true;
       timeout = 0; # Hold down space on boot to access menu
     };
     tmp.cleanOnBoot = true;
@@ -34,13 +33,8 @@
   # Networking
   networking = {
     firewall.allowedTCPPorts = [ 80 ];
-    wireless.iwd = {
-      enable = true;
-      settings = {
-        IPv6.Enabled = true;
-        Settings.AutoConnect = true;
-      };
-    };
+    networkmanager.enable = true;
+    wireless.interfaces = [ "wlan0" ];
   };
 
   services = {
@@ -104,8 +98,6 @@
   # Some cleanup
   documentation.enable = false;
   environment.defaultPackages = lib.mkForce [];
-
-  system.stateVersion = "24.05";
 }
 
 

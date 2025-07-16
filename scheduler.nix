@@ -17,11 +17,11 @@
         after = [ "default.target" ];
         wantedBy = [ "default.target" ];
         path = with pkgs; [ util-linux gawk udisks ];
-          script = ''
-            for dev in $(lsblk -lnpo NAME,TRAN | awk '$2=="usb"{print $1}'); do
-              udisksctl mount -b "$dev"
-            done
-          '';
+        script = ''
+          for dev in $(lsblk -lnpo NAME,TRAN | awk '$2=="usb"{print $1}'); do
+            udisksctl mount -b "$dev"
+          done
+        '';
         serviceConfig.Type = "oneshot";
       };
       "startWebserver" = { # Start web server
