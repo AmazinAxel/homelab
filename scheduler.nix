@@ -13,22 +13,11 @@
         Type = "oneshot";
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
       };
-      #"mountAllOnBoot" = { # Mount all connected drives on boot
-      #  after = [ "default.target" ];
-      #  wantedBy = [ "default.target" ];
-      #  path = with pkgs; [ util-linux gawk udisks ];
-      #  script = ''
-      #    for dev in $(lsblk -lnpo NAME,TRAN | awk '$2=="usb"{print $1}'); do
-      #      udisksctl mount -b "$dev"
-      #    done
-      #  '';
-      #  serviceConfig.Type = "oneshot";
-      #};
       "devmon" = { # Automatic device mounting daemon
         after = [ "default.target" ];
         wantedBy = [ "default.target" ];
         path = with pkgs; [ udevil procps udisks2 which ];
-        serviceConfig.ExecStart = "${pkgs.udevil}/bin/devmon -a"; # Mounts all on boot too
+        serviceConfig.ExecStart = "${pkgs.udevil}/bin/devmon -a --always-exec"; # Mounts all on boot too
       };
       "startWebserver" = { # Start web server
         wantedBy = [ "default.target" ];
