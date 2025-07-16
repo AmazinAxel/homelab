@@ -9,7 +9,7 @@
 
   users.users.alec = { # Default user
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
+    extraGroups = [ "wheel" ];
   };
 
   # Packages
@@ -60,22 +60,16 @@
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
       openFirewall = true;
       settings."USB" = {
-        comment = "Primary & temporary backup storage devices";
         path = "/media/";
         writable = true;
-        "guest ok" = false;
         "valid users" = [ "alec" ];
+        "admin users" = [ "alec" ]; # Full read & write access
       };
     };
     samba-wsdd = { # Auto-disovery
       enable = true;
       openFirewall = true;
     };
-  };
-
-  security.polkit = { # Required for automounting (but reduces security)
-    enable = true;
-    extraConfig = "polkit.addRule(function(action, subject) { return polkit.Result.YES; });";
   };
 
   programs = {
