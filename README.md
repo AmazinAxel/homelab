@@ -2,9 +2,13 @@
 
 Features:
 
-- Avahi local web server which shows files at ~/public/
-- Network storage which auto mounts to the attached USB drive
-- Systemd tasks which auto-update Github flake locks and make backups of Onshape models & private Github repos
+- Local web server which hosts files at ~/public
+  - accessible network-wide with an Avahi .local resolve shorthand
+- Network storage w/ Samba which auto mounts attached USB drives
+- Systemd tasks which:
+  - auto-update Github flake locks
+  - make backups of Onshape models & private Github repos
+  - downloads Spotify playlists for offline usage
 
 ## Github & Onshape integration
 
@@ -18,10 +22,6 @@ Create a `secrets.nix` file with these contents (fill in your tokens)
   };
 }
 ```
-
-## Notes
-
-All files under /home/alec/public are shared on the LAN through an HTTP server
 
 ## Some useful commands
 

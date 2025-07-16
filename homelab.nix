@@ -12,11 +12,7 @@
     extraGroups = [ "wheel" ];
   };
 
-  # Packages
-  environment.systemPackages = with pkgs; [
-    git
-    webfs # HTTP server
-  ];
+  environment.systemPackages = with pkgs; [ git ];
 
   # Raspi boot
   boot = {
@@ -37,10 +33,9 @@
   };
 
   services = {
-    # SSH support
-    openssh.enable = true;
+    openssh.enable = true; # SSH support
 
-    # SSH IP resolve shorthand by publishing its address on the network
+    # IP resolve shorthand - publish .local address on the network
     avahi = {
       enable = true;
       openFirewall = true;
@@ -50,11 +45,9 @@
         userServices = true; # For NAS
       };
     };
-    
-    journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
-    udisks2.mountOnMedia = true; # Fix mount on boot - always mount in the same directory regardless of user
+    #udisks2.mountOnMedia = true; # Always mount in the media directory
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
@@ -70,6 +63,7 @@
       enable = true;
       openFirewall = true;
     };
+    journald.extraConfig = "SystemMaxUse=20M";
   };
 
   programs = {
@@ -84,8 +78,6 @@
     auto-optimise-store = true;
     warn-dirty = false;
   };
-
-  fileSystems."/".options = [ "noatime" ];
   
   # Some cleanup
   documentation.enable = false;

@@ -1,6 +1,18 @@
 { pkgs, ... }: {
   systemd = {
     services = {
+      "startWebserver" = { # Start web server
+        wantedBy = [ "default.target" ];
+        serviceConfig.ExecStart = "${pkgs.webfs}/bin/webfsd -F -p 80 -r /home/alec/public -f index.html";
+      };
+      "devmon" = { # Automatic device mounting daemon
+        wantedBy = [ "default.target" ];
+        # Mount all in client mode & continue mounting in daemon mode
+        script = ''
+          ${pkgs.udevil}/bin/devmon -a
+          ${pkgs.udevil}/bin/devmon
+        '';
+      };
       "captureImg".serviceConfig = {
         Type = "oneshot";
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/captureImg.fish";
@@ -12,18 +24,6 @@
       "flakeUpdate".serviceConfig = {
         Type = "oneshot";
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
-      };
-      "devmon" = { # Automatic device mounting daemon
-        wantedBy = [ "default.target" ];
-        path = with pkgs; [ udevil procps udisks2 which ]; # Mount all in client mode, then switch to daemon mode
-        script = ''
-          ${pkgs.udevil}/bin/devmon -a
-          ${pkgs.udevil}/bin/devmon
-        '';
-      };
-      "startWebserver" = { # Start web server
-        wantedBy = [ "default.target" ];
-        serviceConfig.ExecStart = "${pkgs.webfs}/bin/webfsd -F -p 80 -r /home/alec/public -f index.html";
       };
     };
 
