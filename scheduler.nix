@@ -16,7 +16,10 @@
       "devmon" = { # Automatic device mounting daemon
         wantedBy = [ "default.target" ];
         path = with pkgs; [ udevil procps udisks2 which ]; # Mount all in client mode, then switch to daemon mode
-        serviceConfig.ExecStart = "${pkgs.udevil}/bin/devmon -a && ${pkgs.udevil}/bin/devmon";
+        script = ''
+          ${pkgs.udevil}/bin/devmon -a
+          ${pkgs.udevil}/bin/devmon
+        '';
       };
       "startWebserver" = { # Start web server
         wantedBy = [ "default.target" ];
