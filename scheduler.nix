@@ -7,6 +7,7 @@
       };
       "devmon" = { # Automatic device mounting daemon
         wantedBy = [ "default.target" ];
+        path = with pkgs; [ udevil procps udisks2 which ];
         # Mount all in client mode & continue mounting in daemon mode
         script = ''
           ${pkgs.udevil}/bin/devmon -a
