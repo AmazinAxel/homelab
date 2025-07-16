@@ -18,7 +18,12 @@
         wantedBy = [ "default.target" ];
         serviceConfig = {
           Type = "oneshot";
-          ExecStart = "${pkgs.util-linux}/bin/mount -a";
+          path = with pkgs; [ util-linux gawk udisks ];
+          script = ''
+            for dev in $(lsblk -lnpo NAME,TRAN | awk '$2=="usb"{print $1}'); do
+              udisksctl mount -b "$dev"
+            done
+          '';
         };
       };
       "startWebserver" = { # Start web server
