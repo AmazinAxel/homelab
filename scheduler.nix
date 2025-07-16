@@ -24,6 +24,17 @@
         '';
         serviceConfig.Type = "oneshot";
       };
+      "devmon" = { # Automatic device mounting daemon
+        after = [ "default.target" ];
+        wantedBy = [ "default.target" ];
+        path = [
+          pkgs.udevil
+          pkgs.procps
+          pkgs.udisks2
+          pkgs.which
+        ];
+        serviceConfig.ExecStart = "${pkgs.udevil}/bin/devmon";
+      };
       "startWebserver" = { # Start web server
         wantedBy = [ "default.target" ];
         serviceConfig.ExecStart = "${pkgs.webfs}/bin/webfsd -F -p 80 -r /home/alec/public -f index.html";

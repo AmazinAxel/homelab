@@ -55,7 +55,6 @@
     journald.extraConfig = "SystemMaxUse=20M";
 
     # NAS
-    devmon.enable = true; # Auto-mount
     udisks2.mountOnMedia = true; # Fix mount on boot - always mount in the same directory regardless of user
     samba = {
       enable = true;
