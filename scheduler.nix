@@ -14,10 +14,9 @@
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
       };
       "devmon" = { # Automatic device mounting daemon
-        after = [ "default.target" ];
         wantedBy = [ "default.target" ];
-        path = with pkgs; [ udevil procps udisks2 which ];
-        serviceConfig.ExecStart = "${pkgs.udevil}/bin/devmon -a --always-exec"; # Mounts all on boot too
+        path = with pkgs; [ udevil procps udisks2 which ]; # Mount all in client mode, then switch to daemon mode
+        serviceConfig.ExecStart = "${pkgs.udevil}/bin/devmon -a && ${pkgs.udevil}/bin/devmon";
       };
       "startWebserver" = { # Start web server
         wantedBy = [ "default.target" ];
