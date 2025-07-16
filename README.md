@@ -27,4 +27,4 @@ All files under /home/alec/public are shared on the LAN through an HTTP server
 
 `sudo smbpasswd -a alec` (set user password for NAS)
 
-`sudo nixos-rebuild switch --flake path:/home/alec/homelab/ --impure` (rebuild with impurity)
+`sudo nixos-rebuild boot --flake path:/home/alec/homelab/ --impure` (rebuild with impurity)

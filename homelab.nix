@@ -34,7 +34,6 @@
   networking = {
     firewall.allowedTCPPorts = [ 80 ];
     networkmanager.enable = true;
-    wireless.interfaces = [ "wlan0" ];
   };
 
   services = {
