@@ -47,7 +47,7 @@
     };
 
     # NAS
-    #udisks2.mountOnMedia = true; # Always mount in the media directory
+    udisks2.mountOnMedia = true; # Always mount in the media directory
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
