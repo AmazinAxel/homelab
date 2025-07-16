@@ -16,15 +16,13 @@
       "mountAllOnBoot" = { # Mount all connected drives on boot
         after = [ "default.target" ];
         wantedBy = [ "default.target" ];
-        serviceConfig = {
-          Type = "oneshot";
-          path = with pkgs; [ util-linux gawk udisks ];
+        path = with pkgs; [ util-linux gawk udisks ];
           script = ''
             for dev in $(lsblk -lnpo NAME,TRAN | awk '$2=="usb"{print $1}'); do
               udisksctl mount -b "$dev"
             done
           '';
-        };
+        serviceConfig.Type = "oneshot";
       };
       "startWebserver" = { # Start web server
         wantedBy = [ "default.target" ];
