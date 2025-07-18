@@ -2,7 +2,6 @@
   imports = [
     ./hardware-configuration.nix
     ./scheduler.nix
-    ./secrets.nix
   ];
 
   networking.hostName = "alechomelab";
@@ -55,7 +54,7 @@
       package = pkgs.samba4Full; # Use full package for better autodiscovery support
       openFirewall = true;
       settings."USB" = {
-        path = "/media/";
+        path = "/media";
         writable = true;
         "valid users" = [ "alec" ];
         "admin users" = [ "alec" ]; # Full read & write access

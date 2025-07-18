@@ -10,7 +10,6 @@ Features:
   - make backups of Onshape models & private Github repos
   - downloads Spotify playlists for offline usage
 
-
 ## Some useful commands
 
 `sudo smbpasswd -a alec` (set the user password for Samba)
