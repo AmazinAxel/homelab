@@ -12,7 +12,7 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ git spotdl ];
+    systemPackages = with pkgs; [ git spotdl jq ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };
 
