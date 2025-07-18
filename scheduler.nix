@@ -18,10 +18,10 @@
         Type = "oneshot";
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/captureImg.fish";
       };
-      "dailyBackup".serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/backup.fish";
-      };
+      "daily".script = ''
+        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/backup.fish
+        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotify-sync.fish
+      '';
       "flakeUpdate".serviceConfig = {
         Type = "oneshot";
         ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
@@ -34,15 +34,15 @@
         partOf = [ "captureImg.service" ];
         timerConfig.OnCalendar = "*-*-* *:00:00";
       };
-      "dailyBackup" = { # Every morning at 1AM PT
+      "daily" = { # Every morning at 3AM PT
         wantedBy = [ "timers.target" ];
         partOf = [ "dailyBackup.service" ];
-        timerConfig.OnCalendar = "*-*-* 01:00:00";
+        timerConfig.OnCalendar = "*-*-* 03:00:00";
       };
-      "flakeUpdate" = { # Every Friday at 2AM PT
+      "flakeUpdate" = { # Every Friday at 4AM PT
         wantedBy = [ "timers.target" ];
         partOf = [ "flakeUpdate.service" ];
-        timerConfig.OnCalendar = "Fri *-*-* 02:00:00";
+        timerConfig.OnCalendar = "Fri *-*-* 04:00:00";
       };
     };
   };

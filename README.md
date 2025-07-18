@@ -10,21 +10,9 @@ Features:
   - make backups of Onshape models & private Github repos
   - downloads Spotify playlists for offline usage
 
-## Github & Onshape integration
-
-Create a `secrets.nix` file with these contents (fill in your tokens)
-
-```nix
-{
-  environment.sessionVariables = {
-    GITHUB_TOKEN = "";
-    ONSHAPE_TOKEN = "";
-  };
-}
-```
 
 ## Some useful commands
 
-`sudo smbpasswd -a alec` (set user password for NAS)
+`sudo smbpasswd -a alec` (set the user password for Samba)
 
-`sudo nixos-rebuild boot --flake path:/home/alec/homelab/ --impure` (rebuild with impurity)
+`sudo nixos-rebuild boot --flake path:/home/alec/homelab/ --impure` (rebuild with key-protecting impurity)

@@ -12,7 +12,10 @@
     extraGroups = [ "wheel" ];
   };
 
-  environment.systemPackages = with pkgs; [ git ];
+  environment = {
+    systemPackages = with pkgs; [ git ];
+    environment.sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
+  };
 
   # Raspi boot
   boot = {

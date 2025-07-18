@@ -1,5 +1,15 @@
 #!/usr/bin/env fish
 
+# Check & get mounted drive
+set subdirs (find . -mindepth 1 -maxdepth 1 -type d)
+if test (count $subdirs) -eq 1
+    set dir $subdirs[1]
+else
+    echo "Improper drive amount detected (expected one)"
+    exit 1
+end
+
+mkdir "$dir/Music"
 set playlists \
     "Synthwave https://open.spotify.com/playlist/1YIe34rcmLjCYpY9wJoM2p" \
     "Focus https://open.spotify.com/playlist/3Qk9br14pjEo2aRItDhb2f" \
@@ -11,5 +21,5 @@ set playlists \
 for playlist in $playlists
     set name (echo $playlist | awk '{print $1}')
     set url (echo $playlist | awk '{print $2}')
-    spotdl download "$url" --output "/home/alec/Music/$name" # TODO put in shared USB music dir
+    sudo spotdl download "$url" --output "$dir/Music/$name"
 end
