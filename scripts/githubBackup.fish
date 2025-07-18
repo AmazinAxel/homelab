@@ -16,11 +16,11 @@ for repo in (curl -s -H "Authorization: token $GITHUB_TOKEN" https://api.github.
         set targetDir "$driveDir/Projects/$repoName"
 
         if test -d "$targetDir/.git"
-            echo "Pulling repo: $repoName"
-            git -C "$targetDir" pull
+            echo "Pulling repo $repoName"
+            git -C "$targetDir" pull https://AmazinAxel:$GITHUB_TOKEN@github.com/$repo.git
         else
-            echo "Cloning repo: $repoName"
-            git clone "https://github.com/$repo.git" "$targetDir"
+            echo "Cloning repo $repoName"
+            git clone https://AmazinAxel:$GITHUB_TOKEN@github.com/$repo.git "$targetDir"
         end
     end
 end
