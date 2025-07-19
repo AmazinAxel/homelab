@@ -1,7 +1,5 @@
 #!/usr/bin/env fish
 
-# Must be ran as root
-
 # Check & get mounted drive
 set drives (find /media -mindepth 1 -maxdepth 1 -type d)
 if test (count $drives) -eq 1
