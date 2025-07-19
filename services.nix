@@ -14,35 +14,25 @@
           ${pkgs.udevil}/bin/devmon
         '';
       };
-      "captureImg".serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/captureImg.fish";
-      };
-      "daily".script = ''
-        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/backup.fish
-        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotify-sync.fish
+      "hourly".script = ''
+        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/captureImg.fish
       '';
-      "flakeUpdate".serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/flakeUpdate.fish";
-      };
+      "daily".script = ''
+        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/githubBackup.fish
+        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotifySync.fish
+      '';
     };
 
     timers = {
-      "captureImg" = { # Every hour, every day
+      "hourly" = { # Every hour, every day
         wantedBy = [ "timers.target" ];
         partOf = [ "captureImg.service" ];
         timerConfig.OnCalendar = "*-*-* *:00:00";
       };
       "daily" = { # Every morning at 3AM PT
         wantedBy = [ "timers.target" ];
-        partOf = [ "dailyBackup.service" ];
+        partOf = [ "daily.service" ];
         timerConfig.OnCalendar = "*-*-* 03:00:00";
-      };
-      "flakeUpdate" = { # Every Friday at 4AM PT
-        wantedBy = [ "timers.target" ];
-        partOf = [ "flakeUpdate.service" ];
-        timerConfig.OnCalendar = "Fri *-*-* 04:00:00";
       };
     };
   };

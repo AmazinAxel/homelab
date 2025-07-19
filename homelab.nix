@@ -1,7 +1,7 @@
 { pkgs, lib, ... }: {
   imports = [
     ./hardware-configuration.nix
-    ./scheduler.nix
+    ./services.nix
   ];
 
   networking.hostName = "alechomelab";
@@ -12,7 +12,7 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ git spotdl jq ];
+    systemPackages = with pkgs; [ git spotdl jq fish ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };
 
@@ -31,7 +31,7 @@
   # Networking
   networking = {
     firewall.allowedTCPPorts = [ 80 ];
-    networkmanager.enable = true;
+    networkmanager.enable = true; # nmtui command
   };
 
   services = {
@@ -43,7 +43,7 @@
       openFirewall = true;
       publish = {
         enable = true;
-        addresses = true; # For http IP
+        addresses = true; # For HTTP IP
         userServices = true; # For NAS
       };
     };
@@ -51,7 +51,7 @@
     # NAS
     samba = {
       enable = true;
-      package = pkgs.samba4Full; # Use full package for better autodiscovery support
+      package = pkgs.samba4Full; # Better autodiscovery support
       openFirewall = true;
       settings."USB" = {
         path = "/media";
@@ -67,10 +67,6 @@
     journald.extraConfig = "SystemMaxUse=20M";
   };
 
-  programs = {
-    fish.enable = true;
-    command-not-found.enable = false;
-  };
 
   time.timeZone = "America/Los_Angeles";
 
@@ -83,6 +79,7 @@
   # Some cleanup
   documentation.enable = false;
   environment.defaultPackages = lib.mkForce [];
+  programs.command-not-found.enable = false;
 }
 
 
