@@ -12,7 +12,7 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ git spotdl jq fish ];
+    systemPackages = with pkgs; [ git spotdl jq fish bun ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };
 
@@ -67,9 +67,7 @@
     journald.extraConfig = "SystemMaxUse=20M";
   };
 
-
   time.timeZone = "America/Los_Angeles";
-
   nix.settings = {
     experimental-features = "nix-command flakes";
     auto-optimise-store = true;

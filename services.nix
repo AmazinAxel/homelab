@@ -1,9 +1,9 @@
 { pkgs, ... }: {
   systemd = {
     services = {
-      "startWebserver" = { # Start web server
+      "startWebserver" = {
         wantedBy = [ "default.target" ];
-        serviceConfig.ExecStart = "${pkgs.webfs}/bin/webfsd -F -p 80 -r /home/alec/public -f index.html";
+        serviceConfig.ExecStart = "${pkgs.bun}/bin/bunx ts-node /home/alec/homelab/webserver/webserver";
       };
       "devmon" = { # Automatic device mounting daemon
         wantedBy = [ "default.target" ];
