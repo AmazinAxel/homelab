@@ -2,10 +2,10 @@ import { createServer, IncomingMessage, ServerResponse } from 'http';
 import Database from 'better-sqlite3';
 import { readdirSync } from 'fs';
 
-const usbDrives = readdirSync('/media', { withFileTypes: true })
+const usbDrives = readdirSync('/media/', { withFileTypes: true })
   .filter(d => d.isDirectory());
 
-if (usbDrives.length == 1)
+if (usbDrives.length !== 1)
   throw new Error('Improper drive amount detected');
 
 const db = new Database('/media/' + usbDrives[0].name + '/airQuality.db');

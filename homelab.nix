@@ -12,7 +12,7 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ git spotdl jq fish bun ];
+    systemPackages = with pkgs; [ git spotdl jq fish nodejs python3 gnumake ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };
 
