@@ -1,11 +1,18 @@
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import Database from 'better-sqlite3';
+import { readdirSync } from 'fs';
 
-const db = new Database('air_quality.db');
+const usbDrives = readdirSync('/media', { withFileTypes: true })
+  .filter(d => d.isDirectory());
+
+if (usbDrives.length == 1)
+  throw new Error('Improper drive amount detected');
+
+const db = new Database('/media/' + usbDrives[0].name + '/airQuality.db');
 
 // Init sqlite database
 db.exec(`
-  CREATE TABLE IF NOT EXISTS air_quality (
+  CREATE TABLE IF NOT EXISTS airquality (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     pm25 REAL NOT NULL,
     pm10 REAL NOT NULL,
@@ -30,7 +37,7 @@ function handlePost(req: IncomingMessage, res: ServerResponse) {
       }
 
       const timestamp = new Date().toISOString();
-      db.prepare('INSERT INTO air_quality (pm25, pm10, timestamp) VALUES (?, ?, ?)')
+      db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)')
         .run(pm25, pm10, timestamp);
 
       send(res, 200, JSON.stringify({ status: 'success', timestamp }), 'application/json');
@@ -47,13 +54,13 @@ type AirQualityRes = {
 };
 
 function handleGet(res: ServerResponse) {
-  const row = db.prepare('SELECT pm25, pm10, timestamp FROM air_quality ORDER BY id DESC LIMIT 1').get() as AirQualityRes;
-  if (!row) return send(res, 200, 'No data yet');
+  const data = db.prepare('SELECT pm25, pm10, timestamp FROM airquality ORDER BY id DESC LIMIT 1').get() as AirQualityRes;
+  if (!data) return send(res, 200, 'No data yet');
 
   const html = `
-    <p><strong>PM2.5:</strong> ${row.pm25}</p>
-    <p><strong>PM10:</strong> ${row.pm10}</p>
-    <p>At ${row.timestamp}</p>
+    <p><strong>PM2.5:</strong> ${data.pm25}</p>
+    <p><strong>PM10:</strong> ${data.pm10}</p>
+    <p>At ${data.timestamp}</p>
   `;
   send(res, 200, html);
 }
