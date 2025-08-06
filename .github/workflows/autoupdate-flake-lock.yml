@@ -3,7 +3,6 @@ name: Update flake.lock
 on:
   schedule:
     - cron: '0 9 * * 5'  # Every Friday at 2AM Pacific Time (9AM UTC)
-  workflow_dispatch:     # Optional: allows manual triggering
 
 jobs:
   update-flake-lock:
@@ -32,4 +31,4 @@ jobs:
         if: ${{ steps.update.outputs.pull-request-number != '' }}
         run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PAT }}

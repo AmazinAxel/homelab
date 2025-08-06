@@ -4,11 +4,11 @@ Features:
 
 - Local web server which hosts files at ~/public
   - accessible network-wide with an Avahi .local resolve shorthand
-- Network storage w/ Samba which auto mounts attached USB drives
+- Network storage w/ Samba which automounts attached USB drives
 - Systemd tasks which:
-  - auto-update Github flake locks
-  - make backups of Onshape models & private Github repos
+  - make backups of private Github repos
   - downloads Spotify playlists for offline usage
+  - Saves an image with an attached RPi (rev1.3) camera
 
 ## Some useful commands
 
