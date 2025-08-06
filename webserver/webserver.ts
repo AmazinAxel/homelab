@@ -16,7 +16,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     pm25 REAL NOT NULL,
     pm10 REAL NOT NULL,
-    timestamp TEXT NOT NULL
+    timestamp INTEGER NOT NULL
   )
 `);
 
@@ -35,7 +35,7 @@ function handlePost(req: IncomingMessage, res: ServerResponse) {
       if (typeof pm25 !== 'number' || typeof pm10 !== 'number')
         return send(res, 400, 'Invalid data');
 
-      const timestamp = new Date();
+      const timestamp = Date.now();
       db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)')
         .run(pm25, pm10, timestamp);
 
@@ -59,7 +59,7 @@ function handleGet(res: ServerResponse) {
   send(res, 200, `
     <p><strong>PM2.5:</strong> ${data.pm25}</p>
     <p><strong>PM10:</strong> ${data.pm10}</p>
-    <p>At ${data.timestamp}</p>
+    <p>At ${new Date(data.timestamp).toLocaleString()}</p>
   `);
 }
 
