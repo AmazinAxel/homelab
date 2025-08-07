@@ -2,6 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ./services.nix
+    ./rpi-cam.nix
   ];
 
   networking.hostName = "alechomelab";
@@ -12,7 +13,19 @@
   };
 
   environment = {
-    systemPackages = with pkgs; [ git spotdl jq fish nodejs python3 gnumake ];
+    systemPackages = with pkgs; [
+      git
+
+      # For scripting
+      spotdl
+      jq
+      fish
+    
+      # Custom webserver deps
+      nodejs
+      python3
+      gnumake
+    ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };
 

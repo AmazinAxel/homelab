@@ -59,7 +59,7 @@ function handleGet(res: ServerResponse) {
   send(res, 200, `
     <p><strong>PM2.5:</strong> ${data.pm25}</p>
     <p><strong>PM10:</strong> ${data.pm10}</p>
-    <p>At ${new Date(data.timestamp).toLocaleString()}</p>
+    <p>At ${new Date(Number(data.timestamp)).toLocaleString()}</p>
   `);
 }
 
