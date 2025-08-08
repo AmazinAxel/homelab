@@ -26,6 +26,8 @@ jobs:
           pr-labels: |
             dependencies
             automated
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PAT }}
 
       - name: Auto-merge PR
         if: ${{ steps.update.outputs.pull-request-number != '' }}
