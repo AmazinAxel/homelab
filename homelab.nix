@@ -25,6 +25,7 @@
       nodejs
       python3
       gnumake
+      typescript
     ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };

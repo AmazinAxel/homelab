@@ -3,7 +3,7 @@
     services = {
       "startWebserver" = {
         wantedBy = [ "default.target" ];
-        serviceConfig.ExecStart = "${pkgs.nodejs}/bin/npx ts-node /home/alec/homelab/webserver/webserver";
+        serviceConfig.ExecStart = "${pkgs.nodejs}/bin/node /home/alec/homelab/webserver/webserver";
       };
       "devmon" = { # Automatic device mounting daemon
         wantedBy = [ "default.target" ];

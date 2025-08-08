@@ -15,3 +15,5 @@ Features:
 `sudo smbpasswd -a alec` (set the user password for Samba)
 
 `sudo nixos-rebuild boot --flake path:/home/alec/homelab/ --impure` (rebuild with key-protecting impurity)
+
+`tsc webserver/webserver` (compile to node-readable javascript)
