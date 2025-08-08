@@ -19,12 +19,13 @@ let
 in {
   nixpkgs.overlays = [
     deviceTree_overlay
-    libcamera_overlay
+    #libcamera_overlay
     rpicam-apps_overlay
   ];
 
   environment.systemPackages = with pkgs; [
     rpicam-apps
+    libcamera
   ];
 
   hardware.deviceTree.filter = "bcm2837-rpi-3*";
