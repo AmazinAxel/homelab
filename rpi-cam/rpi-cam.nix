@@ -5,7 +5,7 @@
 let
   deviceTree_overlay = _final: prev: {
     deviceTree = {
-      applyOverlays = prev.callPackage ./-dtoverlay.nix { };
+      applyOverlays = prev.callPackage ./dtoverlay.nix { };
       compileDTS = prev.deviceTree.compileDTS;
     };
   };
