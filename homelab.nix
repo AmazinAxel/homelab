@@ -2,7 +2,7 @@
   imports = [
     ./hardware-configuration.nix
     ./services.nix
-    ./rpi-cam.nix
+    ./rpi-cam/rpi-cam.nix
   ];
 
   networking.hostName = "alechomelab";
