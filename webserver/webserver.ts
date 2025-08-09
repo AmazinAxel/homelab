@@ -35,9 +35,13 @@ function handlePost(req: IncomingMessage, res: ServerResponse) {
       if (typeof pm25 !== 'number' || typeof pm10 !== 'number')
         return send(res, 400, 'Invalid data');
 
+      const lastEntry = db.prepare('SELECT timestamp FROM airquality ORDER BY id DESC LIMIT 1').get() as { timestamp: number } | undefined;
+
       const timestamp = Date.now();
-      db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)')
-        .run(pm25, pm10, timestamp);
+      if ((lastEntry) && ((timestamp - lastEntry.timestamp) < 540000))
+        return send(res, 429, 'Data rate limited');
+
+      db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)').run(pm25, pm10, timestamp);
 
       send(res, 200, 'Success');
     } catch {
