@@ -12,11 +12,11 @@ const db = new Database('/media/' + usbDrives[0].name + '/airQuality.db');
 
 db.run(`
   CREATE TABLE IF NOT EXISTS airquality (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    pm25 REAL NOT NULL,
-    pm10 REAL NOT NULL,
-    timestamp INTEGER NOT NULL
-  )
+    pm25 INTEGER NOT NULL,
+    pm10 INTEGER NOT NULL,
+    timestamp INTEGER PRIMARY KEY
+  );
+  CREATE INDEX IF NOT EXISTS idx_timestamp ON airquality(timestamp DESC);
 `);
 
 function send(res, status, body) {
@@ -24,26 +24,24 @@ function send(res, status, body) {
   res.end(body);
 }
 
+const insert = db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)');
+const latest = db.prepare('SELECT pm25, pm10, timestamp FROM airquality ORDER BY timestamp DESC LIMIT 1');
+
 function handlePost(req, res) {
   let body = '';
   req.on('data', chunk => body += chunk);
   req.on('end', () => {
     try {
-      const data = JSON.parse(body);
-      const { pm25, pm10 } = data;
+      const { pm25, pm10 } = JSON.parse(body);
       if (typeof pm25 !== 'number' || typeof pm10 !== 'number')
         return send(res, 400, 'Invalid data');
 
-      const lastEntryStmt = db.prepare('SELECT timestamp FROM airquality ORDER BY id DESC LIMIT 1');
-      const lastEntry = lastEntryStmt.get();
-
-      const timestamp = Date.now();
-      if ((lastEntry) && ((timestamp - lastEntry.timestamp) < 540000))
+      const now = Date.now();
+      const last = latest.get();
+      if (last && now - last.timestamp < 540_000)
         return send(res, 429, 'Rate limited');
 
-      const insertStmt = db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)');
-      insertStmt.run(pm25, pm10, timestamp);
-
+      insert.run(pm25, pm10, now);
       send(res, 200, 'Success');
     } catch {
       send(res, 400, 'Invalid data');
@@ -52,14 +50,13 @@ function handlePost(req, res) {
 };
 
 function handleGet(res) {
-  const selectStmt = db.prepare('SELECT pm25, pm10, timestamp FROM airquality ORDER BY id DESC LIMIT 1');
-  const data = selectStmt.get();
+  const data = latest.get();
   if (!data) return send(res, 200, 'No data yet');
 
   send(res, 200, `
     <p>PM2.5: ${data.pm25}</p>
     <p>PM10: ${data.pm10}</p>
-    <p>At ${new Date(Number(data.timestamp)).toLocaleString()}</p>
+    <p>At ${new Date(data.timestamp).toLocaleString()}</p>
   `);
 }
 
