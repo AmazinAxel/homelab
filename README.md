@@ -5,10 +5,7 @@ Features:
 - Local web server which hosts files at ~/public
   - accessible network-wide with an Avahi .local resolve shorthand
 - Network storage w/ Samba which automounts attached USB drives
-- Systemd tasks which:
-  - make backups of private Github repos
-  - downloads Spotify playlists for offline usage
-  - Saves an image with an attached RPi (rev1.3) camera
+- Daily systemd tasks which make backups of private Github repos & downloads Spotify playlists
 
 ## Some useful commands
 

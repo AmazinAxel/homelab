@@ -3,6 +3,8 @@
     services = {
       "startWebserver" = {
         wantedBy = [ "default.target" ];
+        after = [ "devmon.service" ];
+        requires = [ "devmon.service" ];
         serviceConfig.ExecStart = "${pkgs.nodejs}/bin/node /home/alec/homelab/webserver/webserver";
       };
       "devmon" = { # Automatic device mounting daemon

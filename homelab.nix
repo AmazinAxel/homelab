@@ -2,8 +2,6 @@
   imports = [
     ./hardware-configuration.nix
     ./services.nix
-    ./rpi-cam/rpi-cam.nix
-    nixos-hardware.nixosModules.raspberry-pi-4
   ];
 
   networking.hostName = "alechomelab";
