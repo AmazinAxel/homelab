@@ -1,4 +1,4 @@
-import { createServer } from 'http';
+import { serve } from "bun";
 import { Database } from 'bun:sqlite';
 import { readdirSync } from 'fs';
 
@@ -19,49 +19,62 @@ db.run(`
   CREATE INDEX IF NOT EXISTS idx_timestamp ON airquality(timestamp DESC);
 `);
 
-function send(res, status, body) {
-  res.writeHead(status, { 'Content-Type': 'text/html' });
-  res.end(body);
-}
-
 const insert = db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)');
 const latest = db.prepare('SELECT pm25, pm10, timestamp FROM airquality ORDER BY timestamp DESC LIMIT 1');
 
-function handlePost(req, res) {
-  let body = '';
-  req.on('data', chunk => body += chunk);
-  req.on('end', () => {
-    try {
-      const { pm25, pm10 } = JSON.parse(body);
-      if (typeof pm25 !== 'number' || typeof pm10 !== 'number')
-        return send(res, 400, 'Invalid data');
-
-      const now = Date.now();
-      const last = latest.get();
-      if (last && now - last.timestamp < 540_000)
-        return send(res, 429, 'Rate limited');
-
-      insert.run(pm25, pm10, now);
-      send(res, 200, 'Success');
-    } catch {
-      send(res, 400, 'Invalid data');
-    };
+function send(status, message) {
+  return new Response(message, {
+    status,
+    headers: { "Content-Type": "text/plain" }
   });
-};
-
-function handleGet(res) {
-  const data = latest.get();
-  if (!data) return send(res, 200, 'No data yet');
-
-  send(res, 200, `
-    <p>PM2.5: ${data.pm25}</p>
-    <p>PM10: ${data.pm10}</p>
-    <p>At ${new Date(data.timestamp).toLocaleString()}</p>
-  `);
 }
 
-createServer((req, res) => {
-  (req.method === 'POST') ?
-    handlePost(req, res) :
-    handleGet(res);
-}).listen(80);
+async function handlePost(req) {
+  try {
+    const { pm25, pm10 } = await req.json();
+
+    if (typeof pm25 !== "number" || typeof pm10 !== "number")
+      return send(400, "Invalid data");
+
+    const now = Date.now();
+    const last = latest.get();
+
+    if (last && now - last.timestamp < 540_000)
+      return send(429, "Rate limited");
+
+    insert.run(pm25, pm10, now);
+    return send(200, "Success");
+  } catch {
+    return send(400, "Invalid data");
+  };
+};
+
+serve({
+  port: 80,
+  fetch(req) {
+    const url = new URL(req.url);
+    const pathname = url.pathname;
+
+    if (req.method === "POST")
+      return handlePost(req);
+
+    if (pathname == "/favicon.ico") {
+      const file = Bun.file("favicon.ico");
+      return new Response(file, {
+        headers: { "Content-Type": "image/x-icon" }
+      });
+    };
+
+    if (pathname === "/getdata") {
+      const data = latest.get();
+      if (!data) send("No data yet");
+      return new Response(JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
+    return new Response(Bun.file("page.html"), {
+      headers: { "Content-Type": "text/html" }
+    });
+  }
+});
