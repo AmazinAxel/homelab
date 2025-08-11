@@ -1,4 +1,4 @@
-{ pkgs, lib, nixos-hardware, ... }: {
+{ pkgs, lib, ... }: {
   imports = [
     ./hardware-configuration.nix
     ./services.nix
@@ -21,10 +21,7 @@
       fish
     
       # Custom webserver deps
-      nodejs
-      python3
-      gnumake
-      typescript
+      bun
     ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };
@@ -44,13 +41,13 @@
   # Networking
   networking = {
     firewall.allowedTCPPorts = [ 80 ];
-    networkmanager.enable = true; # nmtui command
+    networkmanager.enable = true; # For nmtui
   };
 
   services = {
     openssh.enable = true; # SSH support
 
-    # IP resolve shorthand - publish .local address on the network
+    # IP resolve shorthand for .local address
     avahi = {
       enable = true;
       openFirewall = true;
@@ -61,7 +58,7 @@
       };
     };
 
-    # NAS
+    # USB NAS
     samba = {
       enable = true;
       package = pkgs.samba4Full; # Better autodiscovery support

@@ -1,5 +1,5 @@
-import { createServer, IncomingMessage, ServerResponse } from 'http';
-import Database from 'better-sqlite3';
+import { createServer } from 'http';
+import { Database } from 'bun:sqlite';
 import { readdirSync } from 'fs';
 
 const usbDrives = readdirSync('/media/', { withFileTypes: true })
@@ -10,8 +10,7 @@ if (usbDrives.length !== 1)
 
 const db = new Database('/media/' + usbDrives[0].name + '/airQuality.db');
 
-// Init sqlite database
-db.exec(`
+db.run(`
   CREATE TABLE IF NOT EXISTS airquality (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     pm25 REAL NOT NULL,
@@ -20,12 +19,12 @@ db.exec(`
   )
 `);
 
-function send(res: ServerResponse, status: number, body: string) {
+function send(res, status, body) {
   res.writeHead(status, { 'Content-Type': 'text/html' });
   res.end(body);
 }
 
-function handlePost(req: IncomingMessage, res: ServerResponse) {
+function handlePost(req, res) {
   let body = '';
   req.on('data', chunk => body += chunk);
   req.on('end', () => {
@@ -35,13 +34,15 @@ function handlePost(req: IncomingMessage, res: ServerResponse) {
       if (typeof pm25 !== 'number' || typeof pm10 !== 'number')
         return send(res, 400, 'Invalid data');
 
-      const lastEntry = db.prepare('SELECT timestamp FROM airquality ORDER BY id DESC LIMIT 1').get() as { timestamp: number } | undefined;
+      const lastEntryStmt = db.prepare('SELECT timestamp FROM airquality ORDER BY id DESC LIMIT 1');
+      const lastEntry = lastEntryStmt.get();
 
       const timestamp = Date.now();
       if ((lastEntry) && ((timestamp - lastEntry.timestamp) < 540000))
-        return send(res, 429, 'Data rate limited');
+        return send(res, 429, 'Rate limited');
 
-      db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)').run(pm25, pm10, timestamp);
+      const insertStmt = db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)');
+      insertStmt.run(pm25, pm10, timestamp);
 
       send(res, 200, 'Success');
     } catch {
@@ -50,19 +51,14 @@ function handlePost(req: IncomingMessage, res: ServerResponse) {
   });
 };
 
-type AirQualityData = {
-  pm25: number;
-  pm10: number;
-  timestamp: number;
-};
-
-function handleGet(res: ServerResponse) {
-  const data = db.prepare('SELECT pm25, pm10, timestamp FROM airquality ORDER BY id DESC LIMIT 1').get() as AirQualityData;
+function handleGet(res) {
+  const selectStmt = db.prepare('SELECT pm25, pm10, timestamp FROM airquality ORDER BY id DESC LIMIT 1');
+  const data = selectStmt.get();
   if (!data) return send(res, 200, 'No data yet');
 
   send(res, 200, `
-    <p><strong>PM2.5:</strong> ${data.pm25}</p>
-    <p><strong>PM10:</strong> ${data.pm10}</p>
+    <p>PM2.5: ${data.pm25}</p>
+    <p>PM10: ${data.pm10}</p>
     <p>At ${new Date(Number(data.timestamp)).toLocaleString()}</p>
   `);
 }
