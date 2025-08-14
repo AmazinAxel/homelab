@@ -73,7 +73,7 @@ serve({
       });
     }
 
-    return new Response(Bun.file("./page.html"), {
+    return new Response(Bun.file("/home/alec/homelab/webserver/page.html"), {
       headers: { "Content-Type": "text/html" }
     });
   }
