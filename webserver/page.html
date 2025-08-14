@@ -65,7 +65,7 @@
             refreshButtonElement.innerHTML = "Refreshing...";
 
             const response = await fetch("/getdata");
-            const airnowResponse = await fetch("https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=98226&distance=1&API_KEY=" + process.env.AIRNOW_TOKEN);
+            const airnowResponse = await fetch("https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=98226&distance=1&API_KEY=AIRNOW_TOKEN");
             if (!response.ok && !airnowResponse.ok) throw new Error("Failed to fetch local data");
             const data = await response.json();
             const airnowData = await airnowResponse.json();
