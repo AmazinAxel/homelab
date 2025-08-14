@@ -49,7 +49,8 @@ async function handlePost(req) {
   };
 };
 
-const page = await Bun.file("page.html").text().replaceAll("AIRNOW_TOKEN", process.env.AIRNOW_TOKEN);
+const page = await Bun.file("page.html").text();
+const pageWithToken = page.replaceAll("AIRNOW_TOKEN", process.env.AIRNOW_TOKEN);
 
 serve({
   port: 80,
@@ -75,6 +76,6 @@ serve({
       });
     }
 
-    return new Response(page, { headers: { "Content-Type": "text/html" }});
+    return new Response(pageWithToken, { headers: { "Content-Type": "text/html" }});
   }
 });
