@@ -49,7 +49,7 @@ async function handlePost(req) {
   };
 };
 
-const page = await Bun.file("page.html").text();
+const page = await Bun.file("/home/alec/homelab/webserver/page.html").text();
 const pageWithToken = page.replaceAll("AIRNOW_TOKEN", process.env.AIRNOW_TOKEN);
 
 serve({
