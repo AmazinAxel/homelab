@@ -14,14 +14,12 @@
   environment = {
     systemPackages = with pkgs; [
       git
+      bun
 
       # For scripting
       spotdl
       jq
       fish
-    
-      # Custom webserver deps
-      bun
     ];
     sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
   };
