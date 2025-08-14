@@ -70,7 +70,7 @@
             const data = await response.json();
             const airnowData = await airnowResponse.json();
 
-            const date = new Date(data.timestamp).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            const date = new Date(Number(data.timestamp)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
             const airnowAQI = Math.max(...airnowData.map(entry => entry.AQI));
 
