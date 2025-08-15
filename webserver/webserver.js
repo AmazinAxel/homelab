@@ -20,7 +20,11 @@ db.run(`
 `);
 
 const insert = db.prepare('INSERT INTO airquality (pm25, pm10, timestamp) VALUES (?, ?, ?)');
-const latest = db.prepare('SELECT pm25, pm10, timestamp FROM airquality ORDER BY timestamp DESC LIMIT 1');
+const getData = db.prepare(`
+  SELECT pm25, pm10, timestamp FROM airquality
+  WHERE timestamp >= ?
+  ORDER BY timestamp ASC
+`);
 
 function send(status, message) {
   return new Response(message, {
@@ -61,20 +65,18 @@ serve({
     if (req.method === "POST")
       return handlePost(req);
 
-    if (pathname == "/favicon.ico") {
+    else if (pathname == "/favicon.ico") {
       const file = Bun.file("favicon.ico");
       return new Response(file, {
         headers: { "Content-Type": "image/x-icon" }
       });
-    };
+    } else if (pathname === "/getdata") {
+      const data = getData.all(Date.now() - 86400000); // Get past 24 hours
 
-    if (pathname === "/getdata") {
-      const data = latest.get();
-      if (!data) send("No data yet");
       return new Response(JSON.stringify(data), {
         headers: { "Content-Type": "application/json" }
       });
-    }
+    };
 
     return new Response(pageWithToken, { headers: { "Content-Type": "text/html" }});
   }

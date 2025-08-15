@@ -11,6 +11,6 @@ Features:
 
 ## How to use
 
-Set `AIRNOW_TOKEN=` in the `/webserver/.env` for Airnow data to work
+Set `AIRNOW_TOKEN=` in `/.env` (or `webserver/.env`) for Airnow data to work
 Set the Samba user password: `sudo smbpasswd -a alec`
 Rebuild with key-protecting impurity: `sudo nixos-rebuild boot --flake path:/home/alec/homelab/ --impure`
