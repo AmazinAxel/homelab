@@ -3,6 +3,7 @@ name: Update flake.lock
 on:
   schedule:
     - cron: '0 9 * * 5'  # Every Friday at 2AM Pacific Time (9AM UTC)
+  workflow_dispatch:
 
 jobs:
   update-flake-lock:
@@ -12,24 +13,21 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Nix
         uses: DeterminateSystems/determinate-nix-action@v3
 
-      - name: Update flake.lock
+      - name: Update flake lock
         id: update
         uses: DeterminateSystems/update-flake-lock@v23
         with:
-          pr-title: "Automated flake.lock update"
-          pr-labels: |
-            dependencies
-            automated
+          pr-title: "chore: update flake lock"
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PAT }}
 
-      - name: Auto-merge PR
+      - name: Merge PR
         if: ${{ steps.update.outputs.pull-request-number != '' }}
         run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
         env:
