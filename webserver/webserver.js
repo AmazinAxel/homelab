@@ -41,7 +41,7 @@ async function handlePost(req) {
       return send(400, "Invalid data");
 
     const now = Date.now();
-    const last = latest.get();
+    const last = getData.get();
 
     if (last && now - last.timestamp < 540_000)
       return send(429, "Rate limited");
