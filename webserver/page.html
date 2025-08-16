@@ -48,7 +48,8 @@
                 <span id="pm10Report"></span>
             </p>
         </div>
-        <h3>AQI in the past 24 hours:</h3>
+        <h3>AQI history:</h3>
+        <input type="checkbox" id="show7days" value="Show past 7 days">
         <div id="chart"></div>
         <p id="lastUpdatedText">Last updated at <span id="lastUpdated"></span></p>
         <hr>
@@ -71,12 +72,18 @@
         const airnowSensorAQIElement = document.getElementById('airnowSensorAQI');
         const airnowQualityElement = document.getElementById('airnowQuality');
         const refreshButtonElement = document.getElementsByClassName('button')[0];
-        const chartElement = document.getElementById("chart");
+        const chartElement = document.getElementById('chart');
+        const get7Days = document.getElementById('show7days');
 
         async function refreshData() {
             refreshButtonElement.innerHTML = "Refreshing...";
 
-            const response = await fetch("/getdata");
+            let response;
+            if (get7Days.checked) {
+                response = await fetch("/getdataFrom7Days");
+            } else {
+                response = await fetch("/getdata");
+            }
             const airnowResponse = await fetch("https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=98226&distance=1&API_KEY=AIRNOW_TOKEN");
 
             if (!response.ok && !airnowResponse.ok) throw new Error("Failed to fetch local data");
@@ -113,21 +120,17 @@
                 width: chartElement.offsetWidth,
                 height: 300,
                 scales: { x: { time: true }, y: { auto: true }},
-                axes: [
-                    {
-                        label: "Time",
-                        values: (u, ticks) => ticks.map(t =>
-                            new Date(t * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                        )
-                    }
-                ],
-                series: [{},
-                    {
-                        label: "AQI",
-                        stroke: getFormattedAQIElement(AQI, true),
-                        width: 3,
-                    }
-                ],
+                axes: [{
+                    label: "Time",
+                    values: (u, ticks) => ticks.map(t =>
+                        new Date(t * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+                    )
+                }],
+                series: [{}, {
+                    label: "AQI",
+                    stroke: getFormattedAQIElement(AQI, true),
+                    width: 3,
+                }],
                 cursor: {
                     x: false,
                     y: false,
