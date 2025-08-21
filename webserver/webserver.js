@@ -73,7 +73,7 @@ serve({
     } else if (pathname.includes("/getdata")) {
       const data = (pathname == "/getdata")
         ? getData.all(Date.now() - 86400000) // Get past 24 hours
-        : getData.all(Date.now() - 4233600000); // Get past 7 days
+        : getData.all(Date.now() - 604800000); // Get past 7 days
       return new Response(JSON.stringify(data), {
         headers: { "Content-Type": "application/json" }
       });
