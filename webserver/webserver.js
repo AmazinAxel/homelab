@@ -66,8 +66,7 @@ serve({
       return handlePost(req);
 
     else if (pathname == "/favicon.ico") {
-      const file = Bun.file("favicon.ico");
-      return new Response(file, {
+      return new Response(Bun.file("favicon.ico"), {
         headers: { "Content-Type": "image/x-icon" }
       });
     } else if (pathname.includes("/getdata")) {
