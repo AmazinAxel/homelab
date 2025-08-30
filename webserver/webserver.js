@@ -1,4 +1,4 @@
-import { serve, spawnSync } from "bun";
+import { serve } from "bun";
 import { Database } from 'bun:sqlite';
 import { readdirSync } from 'fs';
 
@@ -56,33 +56,28 @@ async function handlePost(req) {
 const page = await Bun.file("/home/alec/homelab/webserver/page.html").text();
 const pageWithToken = page.replaceAll("AIRNOW_TOKEN", process.env.AIRNOW_TOKEN);
 
-try {
-  serve({
-    port: 80,
-    fetch(req) {
-      const url = new URL(req.url);
-      const pathname = url.pathname;
+serve({
+  port: 80,
+  fetch(req) {
+    const url = new URL(req.url);
+    const pathname = url.pathname;
 
-      if (req.method === "POST")
-        return handlePost(req);
+    if (req.method === "POST")
+      return handlePost(req);
 
-      else if (pathname == "/favicon.ico") {
-        return new Response(Bun.file("/home/alec/homelab/webserver/favicon.ico"), {
-          headers: { "Content-Type": "image/x-icon" }
-        });
-      } else if (pathname.includes("/getdata")) {
-        const data = (pathname == "/getdata")
-          ? getData.all(Date.now() - 86400000) // Get past 24 hours
-          : getData.all(Date.now() - 604800000); // Get past 7 days
-        return new Response(JSON.stringify(data), {
-          headers: { "Content-Type": "application/json" }
-        });
-      };
+    else if (pathname == "/favicon.ico") {
+      return new Response(Bun.file("/home/alec/homelab/webserver/favicon.ico"), {
+        headers: { "Content-Type": "image/x-icon" }
+      });
+    } else if (pathname.includes("/getdata")) {
+      const data = (pathname == "/getdata")
+        ? getData.all(Date.now() - 86400000) // Get past 24 hours
+        : getData.all(Date.now() - 604800000); // Get past 7 days
+      return new Response(JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" }
+      });
+    };
 
-      return new Response(pageWithToken, { headers: { "Content-Type": "text/html" }});
-    }
-  });
-} catch(e) {
-  console.log('A webserver service is already running - killing old one');
-  spawnSync(["pkill", "bun"]);
-};
+    return new Response(pageWithToken, { headers: { "Content-Type": "text/html" }});
+  }
+});

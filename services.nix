@@ -10,6 +10,8 @@
           User = "alec";
           Restart = "always";
           RestartSec = 5;
+          KillMode= "process";
+          ExecStop= "/run/current-system/sw/bin/pkill bun";
           AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
           CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
           NoNewPrivileges = false;
