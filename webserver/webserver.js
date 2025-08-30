@@ -84,6 +84,6 @@ try {
   });
 } catch(e) {
   console.log('A webserver service is already running - killing old one');
-  spawnSync("pkill", ["bun"]);
+  spawnSync(["pkill", "bun"]);
   process.exit(1);
 };
