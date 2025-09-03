@@ -43,11 +43,12 @@
                 <span id="pm25"></span>
                 <span id="pm25Report"></span>
             </p>
-            <p><span style="opacity: 0.9">PM2.5:</span>
+            <p><span style="opacity: 0.9">PM10:</span>
                 <span id="pm10"></span>
                 <span id="pm10Report"></span>
             </p>
         </div>
+        <hr>
         <h3>AQI history:</h3>
         <label class="container">
             <input type="checkbox" id="show7days">
@@ -90,14 +91,31 @@
             }
             const airnowResponse = await fetch("https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=98226&distance=1&API_KEY=AIRNOW_TOKEN");
 
-            if (!response.ok && !airnowResponse.ok) throw new Error("Failed to fetch local data");
-
+            if (!response.ok && !airnowResponse.ok) {
+                throw new Error("Failed to fetch local data");
+                refreshButtonElement.innerHTML = "Failed - Try again";
+                aqiElement.innerHTML = '?';
+                pm25Element.innerHTML = '?';
+                pm10Element.innerHTML = '?';
+                lastUpdatedElement.innerHTML = '?';
+                airnowSensorAQIElement.innerHTML = '?';
+            }
             const data = await response.json();
             const airnowData = await airnowResponse.json();
             const airnowAQI = Math.max(...airnowData.map(entry => entry.AQI));
 
             const latestData = data.at(-1)
-            const date = new Date(Number(latestData.timestamp)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            const date = new Date(Number(latestData.timestamp)).toLocaleString('en-US', {
+				timeZone: 'US/Pacific',
+				weekday: 'long',
+				year: 'numeric',
+				month: 'long',
+				day: 'numeric',
+
+				hour: 'numeric',
+				minute: 'numeric',
+				hour12: true
+			});
 
             const pm25AQI = calculateAQI(latestData.pm25, pm25Breakpoints);
             const pm10AQI = calculateAQI(latestData.pm10, pm10Breakpoints);
