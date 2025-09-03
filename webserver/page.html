@@ -105,17 +105,7 @@
             const airnowAQI = Math.max(...airnowData.map(entry => entry.AQI));
 
             const latestData = data.at(-1)
-            const date = new Date(Number(latestData.timestamp)).toLocaleString('en-US', {
-				timeZone: 'US/Pacific',
-				weekday: 'long',
-				year: 'numeric',
-				month: 'long',
-				day: 'numeric',
-
-				hour: 'numeric',
-				minute: 'numeric',
-				hour12: true
-			});
+            const date = new Date(Number(latestData.timestamp)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 
             const pm25AQI = calculateAQI(latestData.pm25, pm25Breakpoints);
             const pm10AQI = calculateAQI(latestData.pm10, pm10Breakpoints);
