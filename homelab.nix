@@ -4,7 +4,44 @@
     ./services.nix
   ];
 
-  networking.hostName = "alechomelab";
+  nixpkgs.overlays = [
+    (final: super: {
+      makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
+    })
+  ];
+  #nixpkgs.hostPlatform = "aarch64-linux";
+
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+  };
+
+  hardware = {
+    enableRedistributableFirmware = lib.mkForce false;
+    firmware = [ pkgs.raspberrypiWirelessFirmware ]; # May not be necessary?
+    i2c.enable = true;
+
+    deviceTree = {
+      enable = true;
+      kernelPackage = pkgs.linuxKernel.packages.linux_rpi3.kernel;
+      filter = "*2837*";
+
+      overlays = [
+        {
+          name = "enable-i2c";
+          dtsFile = ./dts/i2c.dts;
+        }
+        {
+          name = "pwm-2chan";
+          dtsFile = ./dts/pwm.dts;
+        }
+        {
+          name = "spi1-2cs";
+          dtsFile = ./dts/spi.dts;
+        }
+      ];
+    };
+  };
 
   users.users.alec = { # Default user
     isNormalUser = true;
@@ -24,18 +61,24 @@
       timeout = 0; # Hold down space on boot to access menu
     };
     tmp.cleanOnBoot = true;
-    kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
+    kernelPackages = pkgs.linuxPackages_rpi02w;
     initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
+    #swraid.enable = lib.mkForce false; # https://github.com/NixOS/nixpkgs/issues/254807
   };
 
   # Networking
   networking = {
+    hostName = "alechomelab";
     firewall.allowedTCPPorts = [ 80 ];
     networkmanager.enable = true; # For nmtui
+    #interfaces."wlan0".useDHCP = true;
+    #wireless.enable = true;
+    #wireless.interfaces = [ "wlan0" ];
   };
 
   services = {
     openssh.enable = true; # SSH support
+    #timesyncd.enable = true; # NTP time sync
 
     # IP resolve shorthand for .local address
     avahi = {
