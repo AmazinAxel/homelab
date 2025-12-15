@@ -2,7 +2,7 @@ name: Update flake.lock
 
 on:
   schedule:
-    - cron: '0 9 * * 5'  # Every Friday at 2AM Pacific Time (9AM UTC)
+    - cron: '0 9 * * 5' # Every Friday at 2AM PT
   workflow_dispatch:
 
 jobs:
@@ -25,10 +25,10 @@ jobs:
         with:
           pr-title: "chore: update flake lock"
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PAT }}
+          GH_TOKEN: ${{ github.token }}
 
       - name: Merge PR
         if: ${{ steps.update.outputs.pull-request-number != '' }}
         run: gh pr merge --auto "${{ steps.update.outputs.pull-request-number }}" --rebase
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMERGE_PAT }}
+          GH_TOKEN: ${{ github.token }}
