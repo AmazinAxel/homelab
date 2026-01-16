@@ -9,7 +9,7 @@
       makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
     })
   ];
-  #nixpkgs.hostPlatform = "aarch64-linux";
+  nixpkgs.hostPlatform = "aarch64-linux";
 
   zramSwap = {
     enable = true;
@@ -50,7 +50,7 @@
 
   environment = {
     systemPackages = with pkgs; [ git bun spotdl jq fish ];
-    sessionVariables.GITHUB_TOKEN = builtins.readFile ./githubToken.txt;
+    sessionVariables.GITHUB_TOKEN = builtins.readFile /home/alec/GithubToken;
   };
 
   # Raspi boot
@@ -115,6 +115,7 @@
     experimental-features = "nix-command flakes";
     auto-optimise-store = true;
     warn-dirty = false;
+    trusted-users = [ "alec" ];
   };
   
   # Some cleanup

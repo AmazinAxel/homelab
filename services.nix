@@ -11,7 +11,7 @@
           Restart = "always";
           RestartSec = 5;
           KillMode = "process";
-          ExecStop = "${pkgs.pkill}/bin/pkill bun";
+          ExecStop = "${pkgs.toybox}/bin/pkill bun";
           AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
           CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
           NoNewPrivileges = false;
