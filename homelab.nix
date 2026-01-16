@@ -46,6 +46,7 @@
   users.users.alec = { # Default user
     isNormalUser = true;
     extraGroups = [ "wheel" ];
+    initialPassword = "nixos";
   };
 
   environment = {
