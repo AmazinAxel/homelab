@@ -1,22 +1,19 @@
 #!/usr/bin/env fish
 
-# Check & get mounted drive
-set drives (find /media -mindepth 1 -maxdepth 1 -type d)
-if test (count $drives) -eq 1
-    set driveDir $drives[1]
-else
+# Check whether drive is mounted
+if not mountpoint -q /media
     echo "Improper drive amount detected"
     exit 1
 end
 
-mkdir -p "$driveDir/Projects"
+mkdir "/media/Projects"
 set token ($GITHUB_TOKEN | string trim -r -c '\n')
 
 # Download & sync all repositories
 for repo in (curl -s -H "Authorization: token $token" https://api.github.com/user/repos?per_page=100 | jq -r '.[].full_name')
     if string match -q 'AmazinAxel/*' $repo
         set repoName (string split '/' $repo)[2]
-        set targetDir "$driveDir/Projects/$repoName"
+        set targetDir "/media/Projects/$repoName"
 
         if test -d "$targetDir/.git"
             echo "Pulling repo $repoName"

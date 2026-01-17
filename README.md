@@ -1,6 +1,6 @@
 # Alec's homelab server
 
-Runs on a Raspberry Pi Zero 2W :
+Runs on a Raspberry Pi Zero 2W:
 
 - Local web server which hosts files at ~/public
   - Accessible network-wide with an Avahi .local resolve shorthand
@@ -26,7 +26,7 @@ The image will only partition about 4GB of the card, so use udisks to repartitio
 
 Default login is user `alec` password `nixos` (use `passwd alec` to change)
 
-Use this to update: `nixos-rebuild switch --flake .#alechomelab --target-host alec@<ip here> --use-remote-sudo`
+Use this to update: `nixos-rebuild switch --flake .#alechomelab --target-host alec@alechomelab.local --sudo --impure --ask-sudo-password`
 
 ## How to use
 

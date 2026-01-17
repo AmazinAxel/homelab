@@ -1,14 +1,14 @@
 import { serve } from "bun";
 import { Database } from 'bun:sqlite';
-import { readdirSync } from 'fs';
+import { exec } from "child_process";
 
-const usbDrives = readdirSync('/media/', { withFileTypes: true })
-  .filter(d => d.isDirectory());
+new Promise((resolve, reject) =>
+  exec("mountpoint -q /media", err =>
+    err ? reject(new Error("Drive not found")) : resolve()
+  )
+);
 
-if (usbDrives.length !== 1)
-  throw new Error('Improper drive amount detected');
-
-const db = new Database('/media/' + usbDrives[0].name + '/airQuality.db');
+const db = new Database('/media/airQuality.db');
 
 db.run(`
   CREATE TABLE IF NOT EXISTS airquality (

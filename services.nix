@@ -3,8 +3,6 @@
     services = {
       "startWebserver" = {
         wantedBy = [ "default.target" ];
-        after = [ "devmon.service" ];
-        requires = [ "devmon.service" ];
         serviceConfig = {
           ExecStart = "${pkgs.bun}/bin/bun /home/alec/homelab/webserver/webserver";
           User = "alec";
@@ -16,15 +14,6 @@
           CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
           NoNewPrivileges = false;
         };
-      };
-      "devmon" = { # Automatic device mounting daemon
-        wantedBy = [ "default.target" ];
-        path = with pkgs; [ udevil procps udisks2 which ];
-        # Mount all in client mode & continue mounting in daemon mode
-        script = ''
-          ${pkgs.udevil}/bin/devmon -a
-          ${pkgs.udevil}/bin/devmon
-        '';
       };
       "daily".script = ''
         ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/githubBackup.fish

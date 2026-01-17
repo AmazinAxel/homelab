@@ -1,23 +1,13 @@
 { pkgs, lib, ... }: {
-  imports = [
-    ./hardware-configuration.nix
-    ./services.nix
-  ];
+  imports = [ ./services.nix ];
 
-  nixpkgs.overlays = [
+  /*nixpkgs.overlays = [
     (final: super: {
       makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
     })
   ];
-  nixpkgs.hostPlatform = "aarch64-linux";
-
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-  };
 
   hardware = {
-    enableRedistributableFirmware = lib.mkForce false;
     firmware = [ pkgs.raspberrypiWirelessFirmware ]; # May not be necessary?
     i2c.enable = true;
 
@@ -41,7 +31,7 @@
         }
       ];
     };
-  };
+  };*/
 
   users.users.alec = { # Default user
     isNormalUser = true;
@@ -51,7 +41,10 @@
 
   environment = {
     systemPackages = with pkgs; [ git bun spotdl jq fish ];
-    sessionVariables.GITHUB_TOKEN = builtins.readFile /home/alec/GithubToken;
+    
+    # GitHub token
+    etc."GithubToken".source = "/home/alec/GithubToken";
+    sessionVariables.GITHUB_TOKEN = "/etc/GithubToken";
   };
 
   # Raspi boot
@@ -64,7 +57,6 @@
     tmp.cleanOnBoot = true;
     kernelPackages = pkgs.linuxPackages_rpi02w;
     initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
-    #swraid.enable = lib.mkForce false; # https://github.com/NixOS/nixpkgs/issues/254807
   };
 
   # Networking
@@ -72,14 +64,10 @@
     hostName = "alechomelab";
     firewall.allowedTCPPorts = [ 80 ];
     networkmanager.enable = true; # For nmtui
-    #interfaces."wlan0".useDHCP = true;
-    #wireless.enable = true;
-    #wireless.interfaces = [ "wlan0" ];
   };
 
   services = {
     openssh.enable = true; # SSH support
-    #timesyncd.enable = true; # NTP time sync
 
     # IP resolve shorthand for .local address
     avahi = {
@@ -95,7 +83,7 @@
     # USB NAS
     samba = {
       enable = true;
-      package = pkgs.samba4Full; # Better autodiscovery support
+      package = pkgs.samba4Full; # Autodiscovery support
       openFirewall = true;
       settings."USB" = {
         path = "/media";
@@ -119,6 +107,22 @@
     trusted-users = [ "alec" ];
   };
   
+  fileSystems = {
+    "/" = { # Device SD card
+      device = "/dev/disk/by-label/NIXOS_SD";
+      fsType = "ext4";
+      options = [ "noatime" ];
+    };
+    "/media" = { # Attached USB drive
+      device = "/dev/disk/by-label/AlecHomelabDrive";
+      fsType = "ext4";
+      options = [ "nofail" ];
+    };
+  };
+
+  system.stateVersion = "25.11";
+  nixpkgs.hostPlatform = "aarch64-linux";
+
   # Some cleanup
   documentation.enable = false;
   environment.defaultPackages = lib.mkForce [];

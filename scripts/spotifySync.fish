@@ -1,15 +1,12 @@
 #!/usr/bin/env fish
 
-# Check & get mounted drive
-set drives (find /media -mindepth 1 -maxdepth 1 -type d)
-if test (count $drives) -eq 1
-    set driveDir $drives[1]
-else
+# Check whether drive is mounted
+if not mountpoint -q /media
     echo "Improper drive amount detected"
     exit 1
 end
 
-mkdir -p "$driveDir/Music"
+mkdir "/media/Music"
 set playlists \
     "Synthwave https://open.spotify.com/playlist/1YIe34rcmLjCYpY9wJoM2p" \
     "Focus https://open.spotify.com/playlist/3Qk9br14pjEo2aRItDhb2f" \
@@ -21,5 +18,5 @@ set playlists \
 for playlist in $playlists
     set name (echo $playlist | awk '{print $1}')
     set url (echo $playlist | awk '{print $2}')
-    spotdl download "$url" --output "$driveDir/Music/$name"
+    spotdl download "$url" --output "/media/Music/$name"
 end
