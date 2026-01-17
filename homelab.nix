@@ -1,37 +1,10 @@
 { pkgs, lib, ... }: {
   imports = [ ./services.nix ];
 
-  /*nixpkgs.overlays = [
-    (final: super: {
-      makeModulesClosure = x: super.makeModulesClosure (x // { allowMissing = true; });
-    })
-  ];
-
   hardware = {
-    firmware = [ pkgs.raspberrypiWirelessFirmware ]; # May not be necessary?
+    firmware = [ pkgs.raspberrypiWirelessFirmware ];
     i2c.enable = true;
-
-    deviceTree = {
-      enable = true;
-      kernelPackage = pkgs.linuxKernel.packages.linux_rpi3.kernel;
-      filter = "*2837*";
-
-      overlays = [
-        {
-          name = "enable-i2c";
-          dtsFile = ./dts/i2c.dts;
-        }
-        {
-          name = "pwm-2chan";
-          dtsFile = ./dts/pwm.dts;
-        }
-        {
-          name = "spi1-2cs";
-          dtsFile = ./dts/spi.dts;
-        }
-      ];
-    };
-  };*/
+  };
 
   users.users.alec = { # Default user
     isNormalUser = true;
