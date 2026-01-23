@@ -1,5 +1,5 @@
 { pkgs, lib, inputs, ... }: {
-  imports = [ ./services.nix ];
+  imports = [ ./services.nix ./hardwareSupport.nix ];
 
   hardware = {
     firmware = [ pkgs.raspberrypiWirelessFirmware ];
@@ -9,11 +9,16 @@
 
   users.users.alec = { # Default user
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "gpio" ];
     initialPassword = "nixos";
   };
 
-  environment.systemPackages = with pkgs; [ git bun spotdl jq fish ];
+  environment.systemPackages = with pkgs; [ git bun spotdl jq fish
+    python3
+    python314Packages.spidev
+    python314Packages.pillow
+    python314Packages.rpi-gpio
+  ];
 
   # Raspi boot
   boot = {
