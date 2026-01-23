@@ -21,7 +21,7 @@ unzstd -d alechomelabsd-compressed-sd-image.img.zst -o alechomelabsd-sd-image.im
 sudo dd if=./alechomelabsd-sd-image.img of=/dev/sdX bs=1M status=progress
 ```
 
-The image will only partition about 4GB of the card, so use udisks to repartition to use the whole card. I recommend using an 8GB or 16GB card - larger cards can slow the system down to no benefit.
+The image will only partition about 4GB of the card, so use udisks to resize the main partition to use the whole card. I recommend using an 8GB or 16GB card - larger cards can slow the system down and isn't used for file storage.
 
 Default login is user `alec` password `nixos` (use `passwd alec` to change)
 
@@ -31,31 +31,36 @@ Set `AIRNOW_TOKEN=` in `webserver/.env` for Airnow.gov data to work
 Paste your Github auth token to `/home/alec/GithubToken`
 Set the Samba user password: `sudo smbpasswd -a alec`
 Use remote deployments to update: `nixos-rebuild switch --flake .#alechomelab --sudo --ask-sudo-password --target-host alec@alechomelab.local`
+Update the client key and secret to use your own from the [Spotify developer dashboard.](https://developer.spotify.com/dashboard) in `/home/alec/.config/spotdl/config.json`. If you get a rate limit error, enable the `no_cache` option.
 
 ## RPi config
 
 Replace the `config.txt` file in the Pi's FIRMWARE partition with:
 
 ```txt
+# For proper boot
+kernel=u-boot-rpi3.bin
+arm_64bit=1
+enable_uart=1
+
+# Disable display output
 gpu_mem=16
 disable_fw_kms_setup=1
 disable_overscan=1
 hdmi_force_hotplug=0
 hdmi_blanking=2
 
+# Turn on spi and i2c
 dtparam=audio=off
 dtoverlay=disable-bt
 dtoverlay=sdtweak,poll_once
 dtparam=spi=on
 dtparam=i2c_arm=on
 
+# Faster boot
 boot_delay=0
 disable_splash=1
 avoid_warnings=1
-
-kernel=u-boot-rpi3.bin
-arm_64bit=1
-enable_uart=1
 ```
 
 ## 3D printable base case

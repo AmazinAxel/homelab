@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://amazinaxel.com/css/typography.css"/>
     <link rel="stylesheet" href="https://amazinaxel.com/css/layout.css"/>
     <link rel="stylesheet" href="https://amazinaxel.com/css/other.css"/>
-    <title>Homelab Air Quality</title>
+    <title>Homelab AQI Monitor</title>
 
     <style>
         #content { text-align: center; }
@@ -87,12 +87,10 @@
         async function refreshData() {
             refreshButtonElement.innerHTML = "Refreshing...";
 
-            let response;
-            if (get7Days.checked) {
-                response = await fetch("/getdataFrom7Days");
-            } else {
-                response = await fetch("/getdata");
-            }
+            const response = (get7Days.checked)
+                ? await fetch("/getdataFrom7Days")
+                : await fetch("/getdata");
+            
             const airnowResponse = await fetch("https://www.airnowapi.org/aq/observation/zipCode/current/?format=application/json&zipCode=98226&distance=1&API_KEY=AIRNOW_TOKEN");
 
             if (!response.ok && !airnowResponse.ok) {
