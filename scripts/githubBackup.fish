@@ -6,8 +6,8 @@ if not mountpoint -q /media
     exit 1
 end
 
-mkdir "/media/Projects"
-set token ($GITHUB_TOKEN | string trim -r -c '\n')
+mkdir -p /media/Projects
+set token (cat /home/alec/GithubToken | string trim -r -c '\n')
 
 # Download & sync all repositories
 for repo in (curl -s -H "Authorization: token $token" https://api.github.com/user/repos?per_page=100 | jq -r '.[].full_name')

@@ -2,11 +2,10 @@
 
 Runs on a Raspberry Pi Zero 2W:
 
-- Local web server which hosts files at ~/public
-  - Accessible network-wide with an Avahi .local resolve shorthand
-  - Accepts AQI readings & saves them in a database on an attached drive
-  - Shows readings & Airnow info on the site
-- Network storage w/ Samba which automounts attached USB drives
+- Accessible network-wide with an Avahi .local resolve shorthand
+- Local webserver that accepts & stores AQI readings (on attached drive) and graphs it
+- Network storage w/ Samba share which automounts attached USB drives
+  - Integrates with my [desktop flake](https://github.com/amazinaxel/flake) for weekly reminders to sync data from this share
 - Daily systemd tasks which make backups of private Github repos & downloads Spotify playlists
 
 ## Build on your own system
@@ -26,19 +25,37 @@ The image will only partition about 4GB of the card, so use udisks to repartitio
 
 Default login is user `alec` password `nixos` (use `passwd alec` to change)
 
-Use this to update: `nixos-rebuild switch --flake .#alechomelab --target-host alec@alechomelab.local --sudo --impure --ask-sudo-password`
-
 ## How to use
 
 Set `AIRNOW_TOKEN=` in `webserver/.env` for Airnow.gov data to work
+Paste your Github auth token to `/home/alec/GithubToken`
 Set the Samba user password: `sudo smbpasswd -a alec`
-Rebuild with key-protecting impurity: `sudo nixos-rebuild boot --flake path:/home/alec/homelab/ --impure`
+Use remote deployments to update: `nixos-rebuild switch --flake .#alechomelab --sudo --ask-sudo-password --target-host alec@alechomelab.local`
 
 ## RPi config
 
-```cs
-start_x = 0;
-gpu_mem = 16;
+Replace the `config.txt` file in the Pi's FIRMWARE partition with:
+
+```txt
+gpu_mem=16
+disable_fw_kms_setup=1
+disable_overscan=1
+hdmi_force_hotplug=0
+hdmi_blanking=2
+
+dtparam=audio=off
+dtoverlay=disable-bt
+dtoverlay=sdtweak,poll_once
+dtparam=spi=on
+dtparam=i2c_arm=on
+
+boot_delay=0
+disable_splash=1
+avoid_warnings=1
+
+kernel=u-boot-rpi3.bin
+arm_64bit=1
+enable_uart=1
 ```
 
 ## 3D printable base case

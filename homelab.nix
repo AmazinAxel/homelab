@@ -1,9 +1,10 @@
-{ pkgs, lib, ... }: {
+{ pkgs, lib, inputs, ... }: {
   imports = [ ./services.nix ];
 
   hardware = {
     firmware = [ pkgs.raspberrypiWirelessFirmware ];
     i2c.enable = true;
+    enableRedistributableFirmware = lib.mkForce false; # Causes build fail for .iso otherwise
   };
 
   users.users.alec = { # Default user
@@ -12,13 +13,7 @@
     initialPassword = "nixos";
   };
 
-  environment = {
-    systemPackages = with pkgs; [ git bun spotdl jq fish ];
-    
-    # GitHub token
-    etc."GithubToken".source = "/home/alec/GithubToken";
-    sessionVariables.GITHUB_TOKEN = "/etc/GithubToken";
-  };
+  environment.systemPackages = with pkgs; [ git bun spotdl jq fish ];
 
   # Raspi boot
   boot = {
@@ -30,6 +25,7 @@
     tmp.cleanOnBoot = true;
     kernelPackages = pkgs.linuxPackages_rpi02w;
     initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
+    kernelModules = [ "i2c-dev" "spi-bcm2835" ];
   };
 
   # Networking
@@ -95,6 +91,17 @@
 
   system.stateVersion = "25.11";
   nixpkgs.hostPlatform = "aarch64-linux";
+
+  # Pi Binary cache
+  #nixConfig = {
+  #  extra-substituters = [
+  #    "https://nixos-raspberrypi.cachix.org"
+  #  ];
+  #  extra-trusted-public-keys = [
+  #    "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
+  #  ];
+  #};
+
 
   # Some cleanup
   documentation.enable = false;
