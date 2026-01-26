@@ -1,0 +1,17 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835";
+
+    fragment@0 {
+        target = <&gpio>;
+        __overlay__ {
+            waveshare_button_pins: waveshare_button_pins {
+                brcm,pins = <6 19 5 26 13 21 20 16>;
+                brcm,function = <0>;
+                brcm,pull = <2>;
+            };
+        };
+    };
+};

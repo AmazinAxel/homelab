@@ -1,18 +1,16 @@
-{ pkgs, lib, inputs, ... }: {
+{ pkgs, lib, ... }: {
   imports = [ ./services.nix ./hardwareSupport.nix ];
 
   hardware = {
     firmware = [ pkgs.raspberrypiWirelessFirmware ];
     i2c.enable = true;
-    enableRedistributableFirmware = lib.mkForce false; # Causes build fail for .iso otherwise
+    enableRedistributableFirmware = false; # Causes build fail for .iso otherwise
   };
 
-  users = {
-    users.alec = { # Default user
-      isNormalUser = true;
-      extraGroups = [ "wheel" "gpio" "i2c" "dialout" "spi" ];
-      initialPassword = "nixos";
-    };
+  users.users.alec = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "dialout" ];
+    initialPassword = "nixos";
   };
 
   environment.systemPackages = with pkgs; [ git bun spotdl jq fish lgpio gcc ];
@@ -26,8 +24,7 @@
     };
     tmp.cleanOnBoot = true;
     kernelPackages = pkgs.linuxPackages_rpi02w;
-    #initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
-    kernelModules = [ "i2c_dev" "spi_bcm2835" "gpiochip" "spidev" ];
+    kernelModules = [ "gpiochip" "spidev" ];
   };
 
   # Networking
@@ -93,17 +90,6 @@
 
   system.stateVersion = "25.11";
   nixpkgs.hostPlatform = "aarch64-linux";
-
-  # Pi Binary cache
-  #nixConfig = {
-  #  extra-substituters = [
-  #    "https://nixos-raspberrypi.cachix.org"
-  #  ];
-  #  extra-trusted-public-keys = [
-  #    "nixos-raspberrypi.cachix.org-1:4iMO9LXa8BqhU+Rpg6LQKiGa2lsNh/j2oiYLNOQ5sPI="
-  #  ];
-  #};
-
 
   # Some cleanup
   documentation.enable = false;

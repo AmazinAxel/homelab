@@ -65,8 +65,6 @@ disable_splash=1
 avoid_warnings=1
 ```
 
-ls -l /sys/bus/spi/devices
-ls -l /dev/spidev*
 ## 3D printable base case
 
 I've made a simple model for the base of the Pi. I'm using [a kit similar to this](https://www.amazon.com/iUniker-Raspberry-Starter-Acrylic-Clear/dp/B075FLGWJL?crid=19R9M6Y2VPS1K&dib=eyJ2IjoiMSJ9.kndk7_nkqoPZ4vTxvDa9Zq7SdrswSm-4vgCWqNAxf9DGjHj071QN20LucGBJIEps.Q4Mlvhg1rg75f0sgXzmndpj8mxCsJ_E9HNwI-RCoc94&dib_tag=se&keywords=raspberry%2Bpi%2Bzero%2B2w%2Bkit&qid=1768593419&sprefix=raspberry%2Bpi%2Bzero%2B2w%2Bkit%2Caps%2C232&sr=8-21&xpid=omfYg_20kGhyg&th=1) which has a acrylic case w/ screws.

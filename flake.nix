@@ -1,12 +1,8 @@
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    nixos-raspberrypi.url = "github:nvmd/nixos-raspberrypi/main";
-  };
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
-  outputs = { nixpkgs, ... }@inputs: {
+  outputs = { nixpkgs, ... }: {
     nixosConfigurations."alechomelab" = nixpkgs.lib.nixosSystem {
-      #specialArgs = { inherit inputs; };
       system = "aarch64-linux";
       modules = [ ./homelab.nix ];
     };
