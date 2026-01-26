@@ -1,4 +1,3 @@
-
 #include "DEV_Config.h"
 #include <gpiod.h>
 #include <fcntl.h>
@@ -11,10 +10,9 @@
 #define GPIO_CHIP "/dev/gpiochip0"
 
 static struct gpiod_chip *chip;
-static struct gpiod_line *line_cs;
+
 static struct gpiod_line *line_rst;
 static struct gpiod_line *line_dc;
-static struct gpiod_line *line_bl;
 
 static struct gpiod_line *line_key_up;
 static struct gpiod_line *line_key_down;
@@ -27,43 +25,78 @@ static struct gpiod_line *line_key3;
 
 static int spi_fd = -1;
 
-static pthread_t bl_thread;
-static volatile int bl_value = 100;
-
-static void *bl_pwm_thread(void *arg)
-{
-    while (1) {
-        int duty = bl_value;
-        gpiod_line_set_value(line_bl, 1);
-        usleep(duty * 50);
-        gpiod_line_set_value(line_bl, 0);
-        usleep((100 - duty) * 50);
-    }
-    return NULL;
-}
-
 // GPIO
 
 void DEV_Digital_Write(UWORD Pin, UBYTE Value)
 {
+    if (Pin == LCD_CS) {
+        return;
+    }
+
+    if (!chip) {
+        printf("DEV_Digital_Write: chip not initialized\n");
+        return;
+    }
+
     struct gpiod_line *line = gpiod_chip_get_line(chip, Pin);
-    gpiod_line_set_value(line, Value);
+    if (!line) {
+        printf("DEV_Digital_Write: failed to get line %u\n", Pin);
+        return;
+    }
+
+    if (gpiod_line_set_value(line, Value) < 0) {
+        printf("DEV_Digital_Write: failed to set value on line %u\n", Pin);
+    }
 }
 
 UBYTE DEV_Digital_Read(UWORD Pin)
 {
+    if (!chip) {
+        printf("DEV_Digital_Read: chip not initialized\n");
+        return 0;
+    }
+
     struct gpiod_line *line = gpiod_chip_get_line(chip, Pin);
-    return gpiod_line_get_value(line);
+    if (!line) {
+        printf("DEV_Digital_Read: failed to get line %u\n", Pin);
+        return 0;
+    }
+
+    int v = gpiod_line_get_value(line);
+    if (v < 0) {
+        printf("DEV_Digital_Read: failed to read value from line %u\n", Pin);
+        return 0;
+    }
+
+    return (UBYTE)v;
 }
 
 void DEV_GPIO_Mode(UWORD Pin, UWORD Mode)
 {
+    /* Same idea: don't try to request LCD_CS as a GPIO line */
+    if (Pin == LCD_CS) {
+        return;
+    }
+
+    if (!chip) {
+        printf("DEV_GPIO_Mode: chip not initialized\n");
+        return;
+    }
+
     struct gpiod_line *line = gpiod_chip_get_line(chip, Pin);
+    if (!line) {
+        printf("DEV_GPIO_Mode: failed to get line %u\n", Pin);
+        return;
+    }
 
     if (Mode == 0) {
-        gpiod_line_request_input(line, "waveshare");
+        if (gpiod_line_request_input(line, "waveshare") < 0) {
+            printf("DEV_GPIO_Mode: failed to request input on line %u\n", Pin);
+        }
     } else {
-        gpiod_line_request_output(line, "waveshare", 0);
+        if (gpiod_line_request_output(line, "waveshare", 0) < 0) {
+            printf("DEV_GPIO_Mode: failed to request output on line %u\n", Pin);
+        }
     }
 }
 
@@ -72,14 +105,21 @@ void DEV_Delay_ms(UDOUBLE xms)
     usleep(xms * 1000);
 }
 
-
 void DEV_SPI_WriteByte(uint8_t Value)
 {
+    if (spi_fd < 0) {
+        printf("DEV_SPI_WriteByte: SPI not initialized\n");
+        return;
+    }
     write(spi_fd, &Value, 1);
 }
 
 void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len)
 {
+    if (spi_fd < 0) {
+        printf("DEV_SPI_Write_nByte: SPI not initialized\n");
+        return;
+    }
     write(spi_fd, pData, Len);
 }
 
@@ -87,8 +127,6 @@ void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len)
 
 static void DEV_GPIO_Init(void)
 {
-    /* Display control pins */
-    DEV_GPIO_Mode(LCD_CS, 1);
     DEV_GPIO_Mode(LCD_RST, 1);
     DEV_GPIO_Mode(LCD_DC, 1);
     DEV_GPIO_Mode(LCD_BL, 1);
@@ -104,8 +142,7 @@ static void DEV_GPIO_Init(void)
     DEV_GPIO_Mode(KEY3_PIN, 0);
 
     /* Default states */
-    DEV_Digital_Write(LCD_CS, 1);
-    DEV_Digital_Write(LCD_BL, 1);
+    DEV_Digital_Write(LCD_BL, 1);  // backlight on
 }
 
 UBYTE DEV_ModuleInit(void)
@@ -113,7 +150,7 @@ UBYTE DEV_ModuleInit(void)
     /* Open GPIO chip */
     chip = gpiod_chip_open(GPIO_CHIP);
     if (!chip) {
-        printf("Failed to open gpiochip0\n");
+        printf("Failed to open %s\n", GPIO_CHIP);
         return 1;
     }
 
@@ -121,26 +158,30 @@ UBYTE DEV_ModuleInit(void)
     spi_fd = open("/dev/spidev0.0", O_WRONLY);
     if (spi_fd < 0) {
         printf("Failed to open /dev/spidev0.0\n");
+        gpiod_chip_close(chip);
+        chip = NULL;
         return 1;
     }
 
     DEV_GPIO_Init();
-
-    /* Start backlight */
-    pthread_create(&bl_thread, NULL, bl_pwm_thread, NULL);
 
     return 0;
 }
 
 void DEV_SetBacklight(UWORD Value)
 {
-    if (Value > 100) Value = 100;
-    bl_value = Value;
+    (void)Value;
 }
 
 void DEV_ModuleExit(void)
 {
-    close(spi_fd);
-    gpiod_chip_close(chip);
+    if (spi_fd >= 0) {
+        close(spi_fd);
+        spi_fd = -1;
+    }
+    if (chip) {
+        gpiod_chip_close(chip);
+        chip = NULL;
+    }
     exit(0);
 }

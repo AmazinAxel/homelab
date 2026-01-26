@@ -10,7 +10,7 @@ OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
 
 TARGET = homelabDisplay
 
-LIB = -llgpio -lm
+LIB = -lgpiod -lm
 
 
 CC = gcc

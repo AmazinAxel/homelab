@@ -14,7 +14,6 @@
 
 #include "Debug.h"
 
-#include <lgpio.h>
 #define LFLAGS 0
 #define NUM_MAXBUF  4
 
