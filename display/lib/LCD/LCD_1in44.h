@@ -13,7 +13,7 @@
 ******************************************************************************/
 #ifndef __LCD_1IN44_H
 #define __LCD_1IN44_H	
-	
+
 #include "DEV_Config.h"
 #include <stdint.h>
 
