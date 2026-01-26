@@ -7,18 +7,15 @@
     enableRedistributableFirmware = lib.mkForce false; # Causes build fail for .iso otherwise
   };
 
-  users.users.alec = { # Default user
-    isNormalUser = true;
-    extraGroups = [ "wheel" "gpio" ];
-    initialPassword = "nixos";
+  users = {
+    users.alec = { # Default user
+      isNormalUser = true;
+      extraGroups = [ "wheel" "gpio" "i2c" "dialout" "spi" ];
+      initialPassword = "nixos";
+    };
   };
 
-  environment.systemPackages = with pkgs; [ git bun spotdl jq fish
-    python3
-    python314Packages.spidev
-    python314Packages.pillow
-    python314Packages.rpi-gpio
-  ];
+  environment.systemPackages = with pkgs; [ git bun spotdl jq fish lgpio gcc ];
 
   # Raspi boot
   boot = {
@@ -29,8 +26,8 @@
     };
     tmp.cleanOnBoot = true;
     kernelPackages = pkgs.linuxPackages_rpi02w;
-    initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
-    kernelModules = [ "i2c-dev" "spi-bcm2835" ];
+    #initrd.availableKernelModules = [ "xhci_pci" "usbhid" "usb_storage" ];
+    kernelModules = [ "i2c_dev" "spi_bcm2835" "gpiochip" "spidev" ];
   };
 
   # Networking
