@@ -44,17 +44,14 @@ kernel=u-boot-rpi3.bin
 arm_64bit=1
 enable_uart=1
 
-# Disable display output
+# Disable hdmi output
 gpu_mem=16
 disable_fw_kms_setup=1
 disable_overscan=1
 hdmi_force_hotplug=0
 hdmi_blanking=2
 
-# Turn on spi and i2c
-dtparam=audio=off
-dtoverlay=disable-bt
-dtoverlay=sdtweak,poll_once
+# Turn on spi & i2c and gpio buttons
 dtparam=spi=on
 dtparam=i2c_arm=on
 gpio=6,19,5,26,13,21,20,16=pu

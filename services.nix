@@ -1,20 +1,21 @@
 { pkgs, ... }: {
   systemd = {
     services = {
-      #"startWebserver" = {
-      #  wantedBy = [ "default.target" ];
-      #  serviceConfig = {
-      #    ExecStart = "${pkgs.bun}/bin/bun /home/alec/homelab/webserver/webserver";
-      #    User = "alec";
-      #    Restart = "always";
-      #    RestartSec = 5;
-      #    KillMode = "process";
-      #    ExecStop = "${pkgs.toybox}/bin/pkill bun";
-      #    AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
-      #    CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
-      #    NoNewPrivileges = false;
-      #  };
-      #};
+      startWebserver = {
+        wantedBy = [ "default.target" ];
+        serviceConfig = {
+          ExecStart = [ "${pkgs.bun}/bin/bun" "/home/alec/homelab/webserver/webserver" ];
+          User = "alec";
+          Restart = "always";
+          RestartSec = 5;
+          KillMode = "process";
+
+          AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+          CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+          NoNewPrivileges = false;
+          PrivateUsers = false;
+        };
+      };
       "daily".script = ''
         ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/githubBackup.fish
         ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotifySync.fish
