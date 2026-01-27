@@ -44,17 +44,17 @@ kernel=u-boot-rpi3.bin
 arm_64bit=1
 enable_uart=1
 
+# Turn on spi & i2c and gpio buttons
+dtparam=spi=on
+dtparam=i2c_arm=on
+gpio=6,19,5,26,13,21,20,16=pu
+
 # Disable hdmi output
 gpu_mem=16
 disable_fw_kms_setup=1
 disable_overscan=1
 hdmi_force_hotplug=0
 hdmi_blanking=2
-
-# Turn on spi & i2c and gpio buttons
-dtparam=spi=on
-dtparam=i2c_arm=on
-gpio=6,19,5,26,13,21,20,16=pu
 
 # Faster boot
 boot_delay=0
@@ -64,4 +64,12 @@ avoid_warnings=1
 
 ## 3D printable base case
 
-I've made a simple model for the base of the Pi. I'm using [a kit similar to this](https://www.amazon.com/iUniker-Raspberry-Starter-Acrylic-Clear/dp/B075FLGWJL?crid=19R9M6Y2VPS1K&dib=eyJ2IjoiMSJ9.kndk7_nkqoPZ4vTxvDa9Zq7SdrswSm-4vgCWqNAxf9DGjHj071QN20LucGBJIEps.Q4Mlvhg1rg75f0sgXzmndpj8mxCsJ_E9HNwI-RCoc94&dib_tag=se&keywords=raspberry%2Bpi%2Bzero%2B2w%2Bkit&qid=1768593419&sprefix=raspberry%2Bpi%2Bzero%2B2w%2Bkit%2Caps%2C232&sr=8-21&xpid=omfYg_20kGhyg&th=1) which has a acrylic case w/ screws.
+I've made a simple model for the base of the Pi. I'm using [this acrylic kit](https://www.amazon.com/dp/B075FLGWJL) which I acquired from Daydream Seattle.
+
+# Building the display program
+
+Use the nix devshell to install gcc & the libraries for the program: `cd display && nix develop`
+Then run `deploytohomelab` to build the program and send it directly over SFTP to the device.
+You can run the `./homelabDisplay` binary in `/home/alec/homelab/display/` or reboot the Pi. 
+
+Note that you will need GPIO header pins and this [1.44in Waveshare HAT](https://www.waveshare.com/1.44inch-lcd-hat.htm) to use the display program.

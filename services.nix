@@ -9,7 +9,6 @@
           Restart = "always";
           RestartSec = 5;
           KillMode = "process";
-
           AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
           CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
           NoNewPrivileges = false;

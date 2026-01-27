@@ -1,7 +1,6 @@
 #include "DEV_Config.h"
 #include "LCD_1in44.h"
 #include "GUI_Paint.h"
-#include "GUI_BMP.h"
 #include "test.h"
 #include <stdio.h>		//printf()
 #include <stdlib.h>		//exit()
@@ -73,11 +72,7 @@ void LCD_1in44_test(void)
     // /*3.Refresh the picture in RAM to LCD*/
     LCD_1in44_Display(BlackImage);
     DEV_Delay_ms(2000);
-    
-    // /* show bmp */
-	printf("show bmp\r\n");
-	GUI_ReadBmp("./pic/time.bmp");
-    
+        
     LCD_1in44_Display(BlackImage);
     DEV_Delay_ms(2000);
     

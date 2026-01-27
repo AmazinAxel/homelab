@@ -2,7 +2,7 @@ DIR_Config   = ./lib/Config
 DIR_EPD      = ./lib/LCD
 DIR_FONTS    = ./lib/Fonts
 DIR_GUI      = ./lib/GUI
-DIR_PROGRAM = ./program
+DIR_PROGRAM  = ./program
 DIR_BIN      = ./bin
 
 OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_Config}/*.c ${DIR_GUI}/*.c ${DIR_PROGRAM}/*.c ${DIR_FONTS}/*.c)
@@ -11,10 +11,8 @@ OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
 TARGET = homelabDisplay
 
 LIB = -lgpiod -lm
-
-
 CC = gcc
-MSG = -g -O0 -Wall
+MSG = -g -O2 -Wall
 CFLAGS += $(MSG)
 
 ${TARGET}:${OBJ_O}
@@ -35,6 +33,5 @@ ${DIR_BIN}/%.o:$(DIR_GUI)/%.c
 ${DIR_BIN}/%.o:$(DIR_Config)/%.c
 	$(CC) $(CFLAGS) -c  $< -o $@ $(LIB)
 	
-clean :
-	rm $(DIR_BIN)/*.* 
-	rm $(TARGET) 
+clean:
+	rm $(DIR_BIN)/*.* $(TARGET)

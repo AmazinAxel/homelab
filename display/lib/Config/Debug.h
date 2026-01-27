@@ -14,12 +14,6 @@
 
 #include <stdio.h>
 
-#define USE_DEBUG 1
-#if USE_DEBUG
-	#define DEBUG(__info,...) printf("Debug : " __info,##__VA_ARGS__)
-#else
-	#define DEBUG(__info,...)  
+#define DEBUG(__info,...) printf("Debug : " __info,##__VA_ARGS__)
+
 #endif
-
-#endif//__DEBUG_H
-
