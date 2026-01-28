@@ -1,18 +1,6 @@
-/*****************************************************************************
-* | File      	:   DEV_Config.h
-* | Author      :   Waveshare team
-* | Function    :   Hardware underlying interface
-* | Info        :
-*----------------
-* |	This version:   V2.0
-* | Date        :   2019-07-08
-* | Info        :   Basic version
-*
-******************************************************************************/
+
 #ifndef _DEV_CONFIG_H_
 #define _DEV_CONFIG_H_
-
-#include "Debug.h"
 
 #define LFLAGS 0
 #define NUM_MAXBUF  4

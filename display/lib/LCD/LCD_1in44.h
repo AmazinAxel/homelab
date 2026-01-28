@@ -1,16 +1,4 @@
-/*****************************************************************************
-* | File      	:   LCD_1in44.h
-* | Author      :   Waveshare team
-* | Function    :   Hardware underlying interface
-* | Info        :
-*                Used to shield the underlying layers of each master 
-*                and enhance portability
-*----------------
-* |	This version:   V1.1
-* | Date        :   2023-06-05
-* | Info        :   Basic version
-*
-******************************************************************************/
+
 #ifndef __LCD_1IN44_H
 #define __LCD_1IN44_H	
 

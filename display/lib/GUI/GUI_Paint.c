@@ -95,10 +95,10 @@ parameter:
 void Paint_SetRotate(UWORD Rotate)
 {
     if(Rotate == ROTATE_0 || Rotate == ROTATE_90 || Rotate == ROTATE_180 || Rotate == ROTATE_270) {
-        DEBUG("Set image Rotate %d\r\n", Rotate);
+        printf("Set image Rotate %d\r\n", Rotate);
         Paint.Rotate = Rotate;
     } else {
-        DEBUG("rotate = 0, 90, 180, 270\r\n");
+        printf("rotate = 0, 90, 180, 270\r\n");
     }
 }
 
@@ -111,10 +111,10 @@ void Paint_SetMirroring(UBYTE mirror)
 {
     if(mirror == MIRROR_NONE || mirror == MIRROR_HORIZONTAL || 
         mirror == MIRROR_VERTICAL || mirror == MIRROR_ORIGIN) {
-        DEBUG("mirror image x:%s, y:%s\r\n",(mirror & 0x01)? "mirror":"none", ((mirror >> 1) & 0x01)? "mirror":"none");
+        printf("mirror image x:%s, y:%s\r\n",(mirror & 0x01)? "mirror":"none", ((mirror >> 1) & 0x01)? "mirror":"none");
         Paint.Mirror = mirror;
     } else {
-        DEBUG("mirror should be MIRROR_NONE, MIRROR_HORIZONTAL, \
+        printf("mirror should be MIRROR_NONE, MIRROR_HORIZONTAL, \
         MIRROR_VERTICAL or MIRROR_ORIGIN\r\n");
     }    
 }
@@ -129,7 +129,7 @@ parameter:
 void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
 {
     if(Xpoint > Paint.Width || Ypoint > Paint.Height){
-        DEBUG("Exceeding display boundaries\r\n");
+        printf("Exceeding display boundaries\r\n");
         return;
     }      
     UWORD X, Y;
@@ -173,7 +173,7 @@ void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
     }
 
     if(X > Paint.WidthMemory || Y > Paint.HeightMemory){
-        DEBUG("Exceeding display boundaries\r\n");
+        printf("Exceeding display boundaries\r\n");
         return;
     }
     
@@ -239,7 +239,7 @@ void Paint_DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,
                      DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_Style)
 {
     if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
-        DEBUG("Paint_DrawPoint Input exceeds the normal display range\r\n");
+        printf("Paint_DrawPoint Input exceeds the normal display range\r\n");
         printf("Xpoint = %d , Paint.Width = %d  \r\n ",Xpoint,Paint.Width);
         printf("Ypoint = %d , Paint.Height = %d  \r\n ",Ypoint,Paint.Height);
         return;
@@ -281,7 +281,7 @@ void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
 {
     if (Xstart > Paint.Width || Ystart > Paint.Height ||
         Xend > Paint.Width || Yend > Paint.Height) {
-        DEBUG("Paint_DrawLine Input exceeds the normal display range\r\n");
+        printf("Paint_DrawLine Input exceeds the normal display range\r\n");
         return;
     }
 
@@ -302,7 +302,6 @@ void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
         Dotted_Len++;
         //Painted dotted line, 2 point is really virtual
         if (Line_Style == LINE_STYLE_DOTTED && Dotted_Len % 3 == 0) {
-            //DEBUG("LINE_DOTTED\r\n");
             if(Color)
 				Paint_DrawPoint(Xpoint, Ypoint, BLACK, Line_width, DOT_STYLE_DFT);
             else
@@ -342,7 +341,7 @@ void Paint_DrawRectangle(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
 {
     if (Xstart > Paint.Width || Ystart > Paint.Height ||
         Xend > Paint.Width || Yend > Paint.Height) {
-        DEBUG("Input exceeds the normal display range\r\n");
+        printf("Input exceeds the normal display range\r\n");
         return;
     }
 
@@ -374,7 +373,7 @@ void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius,
                       UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill)
 {
     if (X_Center > Paint.Width || Y_Center >= Paint.Height) {
-        DEBUG("Paint_DrawCircle Input exceeds the normal display range\r\n");
+        printf("Paint_DrawCircle Input exceeds the normal display range\r\n");
         return;
     }
 
@@ -445,7 +444,7 @@ void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     UWORD Page, Column;
 
     if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
-        DEBUG("Paint_DrawChar Input exceeds the normal display range\r\n");
+        printf("Paint_DrawChar Input exceeds the normal display range\r\n");
         return;
     }
 
@@ -495,7 +494,7 @@ void Paint_DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString,
     UWORD Ypoint = Ystart;
 
     if (Xstart > Paint.Width || Ystart > Paint.Height) {
-        DEBUG("Paint_DrawString_EN Input exceeds the normal display range\r\n");
+        printf("Paint_DrawString_EN Input exceeds the normal display range\r\n");
         return;
     }
 
@@ -638,7 +637,7 @@ void Paint_DrawNum(UWORD Xpoint, UWORD Ypoint, int32_t Nummber,
     uint8_t *pStr = Str_Array;
 
     if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
-        DEBUG("Paint_DisNum Input exceeds the normal display range\r\n");
+        printf("Paint_DisNum Input exceeds the normal display range\r\n");
         return;
     }
 
@@ -711,35 +710,35 @@ void Paint_DrawBitMap(const unsigned char* image_buffer)
 
 
 
-void GUI_Partial_Refresh(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend)
-{
+void GUI_Partial_Refresh(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend) {
     UWORD X0, Y0, X1, Y1;
     switch(Paint.Rotate) {
-    case 0:
-        X0 = Xstart;
-        Y0 = Ystart;
-        X1 = Xend;
-        Y1 = Yend;
-        break;
-    case 90:
-        X0 = Ystart;
-        Y0 = Paint.WidthMemory  - Xend ;
-        X1 = Yend;
-        Y1 = Paint.WidthMemory  - Xstart ;
-        break;
-    case 180:
-        X0 = Paint.WidthMemory  - Xend ;
-        Y0 = Paint.HeightMemory - Yend ;
-        X1 = Paint.WidthMemory  - Xstart ;
-        Y1 = Paint.HeightMemory - Ystart ;
-        break;
-    case 270:
-        X0 = Paint.WidthMemory  - Xend ;
-        Y0 = Xstart;
-        X1 = Paint.HeightMemory - Ystart ;
-        Y1 = Paint.HeightMemory - Yend ;
-        break;
-    }
+        case 90:
+            X0 = Ystart;
+            Y0 = Paint.WidthMemory  - Xend ;
+            X1 = Yend;
+            Y1 = Paint.WidthMemory  - Xstart ;
+            break;
+        case 180:
+            X0 = Paint.WidthMemory  - Xend ;
+            Y0 = Paint.HeightMemory - Yend ;
+            X1 = Paint.WidthMemory  - Xstart ;
+            Y1 = Paint.HeightMemory - Ystart ;
+            break;
+        case 270:
+            X0 = Paint.WidthMemory  - Xend ;
+            Y0 = Xstart;
+            X1 = Paint.HeightMemory - Ystart ;
+            Y1 = Paint.HeightMemory - Yend ;
+            break;
+        
+        default:
+            X0 = Xstart;
+            Y0 = Ystart;
+            X1 = Xend;
+            Y1 = Yend;
+            break;
+    };
     LCD_1in44_DisplayWindows(X0, Y0, X1, Y1, Paint.Image);
 }
 

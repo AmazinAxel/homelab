@@ -1,7 +1,7 @@
-#include "test.h"
-int main()
-{
-    LCD_1in44_test();
-    KEY_1in44_test();
+#include "program.h"
+
+int main() {
+    menu();
+    InitButtonHandler();
     return 0;
 }

@@ -1,22 +1,8 @@
-/*****************************************************************************
-* | File      	:   GUI_Paint.h
-* | Author      :   Waveshare team
-* | Function    :	Achieve drawing: draw points, lines, boxes, circles and
-*                   their size, solid dotted line, solid rectangle hollow
-*                   rectangle, solid circle hollow circle.
-* | Info        :
-*   Achieve display characters: Display a single character, string, number
-*   Achieve time display: adaptive size display time minutes and seconds
-*----------------
-* |	This version:   V1.0
-* | Date        :   2019-07-11
-* | Info        :
-*
-******************************************************************************/
+
 #ifndef __GUI_PAINT_H
 #define __GUI_PAINT_H
 
-#include "Debug.h"
+#include "../../program/program.h"
 #include "LCD_1in44.h"
 #include "../Fonts/fonts.h"
 
@@ -66,27 +52,30 @@ typedef struct {
 } PAINT;
 extern PAINT Paint;
 
-/**
- * image color
-**/
-#define WHITE          0xFFFF
-#define BLACK          0x0000
-#define BLUE           0x001F
-#define BRED           0XF81F
-#define GRED 		   0XFFE0
-#define GBLUE		   0X07FF
-#define RED            0xF800
-#define MAGENTA        0xF81F
-#define GREEN          0x07E0
-#define CYAN           0x7FFF
-#define YELLOW         0xFFE0
-#define BROWN 		   0XBC40
-#define BRRED 		   0XFC07
-#define GRAY  		   0X8430
 
-#define IMAGE_BACKGROUND    WHITE
-#define FONT_FOREGROUND     BLACK
-#define FONT_BACKGROUND     WHITE
+#define BLACK 0x31A6 // #2E3440
+#define BLACK2 0x424A // #3B4252
+#define BLACK3 0x4A6B // #434C5E
+#define BLACK4 0x52AB // #4C566A
+
+#define WHITE 0xF79E // #ECEFF4
+#define WHITE2 0xEF5D // #E5E9F0
+#define WHITE3 0xDEFB // #D8DEE9
+
+#define BLUE 0x4E71 // #5E81AC
+#define BLUE2 0x6CF3 // #81A1C1
+#define BLUE3 0x75FA // #88C0D0
+#define BLUE4 0x76F3 // #8FBCBB
+
+#define RED 0xBAEB // #BF616A
+#define ORANGE 0xE4EA // #D08770
+#define YELLOW 0xF6F1 // #EBCB8B
+#define GREEN 0xA6F1 // #A3BE8C
+#define PURPLE 0xB4B5 // #B48EAD
+
+#define IMAGE_BACKGROUND WHITE
+#define FONT_FOREGROUND BLACK
+#define FONT_BACKGROUND WHITE
 
 /**
  * The size of the point

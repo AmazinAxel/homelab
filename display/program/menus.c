@@ -1,13 +1,12 @@
 #include "DEV_Config.h"
 #include "LCD_1in44.h"
 #include "GUI_Paint.h"
-#include "test.h"
 #include <stdio.h>		//printf()
 #include <stdlib.h>		//exit()
 #include <signal.h>     //signal()
 extern LCD_DIS sLCD_DIS;
 
-void LCD_1in44_test(void)
+void menu(void)
 {
     // Exception handling:ctrl + c
     signal(SIGINT, Handler_1in44_LCD);
@@ -58,13 +57,13 @@ void LCD_1in44_test(void)
 	Paint_DrawCircle( Cx5, Cy5, Cr, GREEN, DOT_PIXEL_DFT, DRAW_FILL_EMPTY);
 
     printf("GUI Draw Realistic circles\r\n");
-	Paint_DrawCircle(15, 110, 10, BRRED, DOT_PIXEL_DFT, DRAW_FILL_FULL);
-	Paint_DrawCircle(sLCD_DIS.LCD_Dis_Column - 15, 110, 10, BRRED, DOT_PIXEL_DFT, DRAW_FILL_FULL);
+	Paint_DrawCircle(15, 110, 10, RED, DOT_PIXEL_DFT, DRAW_FILL_FULL);
+	Paint_DrawCircle(sLCD_DIS.LCD_Dis_Column - 15, 110, 10, RED, DOT_PIXEL_DFT, DRAW_FILL_FULL);
 
     printf("GUI Display String \r\n");
 	Paint_DrawString_EN(35,20,"WaveShare",&Font12,WHITE,BLUE);
 	Paint_DrawString_EN(32,33,"Electronic",&Font12,WHITE,BLUE);
-	Paint_DrawString_EN(28,45,"1.44inch TFTLCD",&Font8,RED,GRED);
+	Paint_DrawString_EN(28,45,"1.44inch TFTLCD",&Font8,RED,RED);
 
 	printf("GUI Display Nummber \r\n");
 	Paint_DrawNum(28,55,1234567890,&Font12,WHITE,BLUE);
