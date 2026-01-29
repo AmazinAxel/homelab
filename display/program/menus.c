@@ -45,9 +45,9 @@ void menu(MenuType menu) {
             break;
      };
 
-    LCD_1in44_Display();
-    DEV_Delay_ms(2000);
+    //LCD_1in44_Display();
+    //DEV_Delay_ms(2000);
 
-    free(screen);
+    //free(screen);
     //DEV_ModuleExit();
 }
