@@ -3,7 +3,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,17 +10,17 @@
 
 static struct gpiod_chip *chip;
 
-static struct gpiod_line *line_rst;
-static struct gpiod_line *line_dc;
+//static struct gpiod_line *line_rst;
+//static struct gpiod_line *line_dc;
 
-static struct gpiod_line *line_key_up;
-static struct gpiod_line *line_key_down;
-static struct gpiod_line *line_key_left;
-static struct gpiod_line *line_key_right;
-static struct gpiod_line *line_key_press;
-static struct gpiod_line *line_key1;
-static struct gpiod_line *line_key2;
-static struct gpiod_line *line_key3;
+//static struct gpiod_line *line_key_up;
+//static struct gpiod_line *line_key_down;
+//static struct gpiod_line *line_key_left;
+//static struct gpiod_line *line_key_right;
+//static struct gpiod_line *line_key_press;
+//static struct gpiod_line *line_key1;
+//static struct gpiod_line *line_key2;
+//static struct gpiod_line *line_key3;
 
 static int spi_fd = -1;
 

@@ -2,6 +2,6 @@
 
 int main() {
     menu();
-    InitButtonHandler();
+    //ButtonHandler();
     return 0;
 }

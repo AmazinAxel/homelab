@@ -3,8 +3,7 @@
 
 #include "DEV_Config.h"   // for UWORD
 
-void ButtonHandler(UWORD *Image);
-void InitButtonHandler(void);
+void ButtonHandler();
 void menu(void);
 
 #endif

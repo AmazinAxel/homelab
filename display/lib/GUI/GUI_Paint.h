@@ -73,9 +73,8 @@ extern PAINT Paint;
 #define GREEN 0xA6F1 // #A3BE8C
 #define PURPLE 0xB4B5 // #B48EAD
 
-#define IMAGE_BACKGROUND WHITE
-#define FONT_FOREGROUND BLACK
-#define FONT_BACKGROUND WHITE
+#define BACKGROUND_COLOR BLACK4
+#define FONT_COLOR WHITE3
 
 /**
  * The size of the point
@@ -149,7 +148,6 @@ void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius, UWORD Color,
 //Display string
 void Paint_DrawChar(UWORD Xstart, UWORD Ystart, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 void Paint_DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
-void Paint_DrawString_CN(UWORD Xstart, UWORD Ystart, const char * pString, cFONT* font, UWORD Color_Foreground, UWORD Color_Background);
 void Paint_DrawNum(UWORD Xpoint, UWORD Ypoint, int32_t Nummber, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 void Paint_DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 

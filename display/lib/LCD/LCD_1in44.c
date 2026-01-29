@@ -1,21 +1,6 @@
-/*****************************************************************************
-* | File      	:   LCD_1in44.c
-* | Author      :   Waveshare team
-* | Function    :   Hardware underlying interface
-* | Info        :
-*                Used to shield the underlying layers of each master
-*                and enhance portability
-*----------------
-* |	This version:   V1.1
-* | Date        :   2023-06-05
-* | Info        :   Basic version
-*
-******************************************************************************/
 #include "LCD_1in44.h"
 #include "DEV_Config.h"
 
-#include <stdlib.h>		//itoa()
-#include <stdio.h>
 
 LCD_DIS sLCD_DIS;
 
@@ -263,8 +248,8 @@ void LCD_1in44_Init(LCD_SCAN_DIR Scan_dir)
     //Turn on the LCD display
     LCD_SendCommand(0x29);
 
-    DEV_Delay_ms(2000);
-    turnOffLCD();
+    //DEV_Delay_ms(2000);
+    //turnOffLCD();
 }
 
 void turnOffLCD() {

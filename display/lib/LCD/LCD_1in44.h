@@ -5,7 +5,6 @@
 #include "DEV_Config.h"
 #include <stdint.h>
 
-#include <stdlib.h>		//itoa()
 #include <stdio.h>
 
 
@@ -23,10 +22,6 @@
 #define LCD_X_MAXPIXEL  132  //LCD width maximum memory 
 #define LCD_Y_MAXPIXEL  162 //LCD height maximum memory
 
-/********************************************************************************
-function:	
-			scanning method
-********************************************************************************/
 typedef enum{
 	L2R_U2D  = 0,	//The display interface is displayed , left to right, up to down 
 	L2R_D2U  ,
@@ -49,11 +44,6 @@ typedef struct{
 }LCD_DIS;
 
 
-
-/********************************************************************************
-function:	
-			Macro definition variable name
-********************************************************************************/
 void turnOffLCD();
 void LCD_1in44_Init(LCD_SCAN_DIR Scan_dir);
 void LCD_1in44_Clear(UWORD Color);
