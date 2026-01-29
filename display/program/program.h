@@ -4,6 +4,6 @@
 #include "DEV_Config.h"   // for UWORD
 
 void ButtonHandler();
-void menu(void);
+void menu(const char *menuName);
 
 #endif

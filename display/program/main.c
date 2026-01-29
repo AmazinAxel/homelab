@@ -1,7 +1,7 @@
 #include "program.h"
 
 int main() {
-    menu();
+    menu("overview");
     //ButtonHandler();
     return 0;
 }
