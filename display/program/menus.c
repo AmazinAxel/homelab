@@ -8,20 +8,14 @@ extern LCD_DIS sLCD_DIS;
 
 void menu(void)
 {
-    // Exception handling:ctrl + c
+    // control + C handler
     signal(SIGINT, Handler_1in44_LCD);
     
-    /* Module Init */
-	if(DEV_ModuleInit() != 0){
-        DEV_ModuleExit();
-        exit(0);
-    }
-	LCD_SCAN_DIR LCD_ScanDir = SCAN_DIR_DFT;//SCAN_DIR_DFT = D2U_L2R
-    /* LCD Init */
-	printf("1.44inch LCD demo...\r\n");
-	LCD_1in44_Init(LCD_ScanDir);
+	LCD_SCAN_DIR LCD_ScanDir = SCAN_DIR_DFT;
+
+    LCD_1in44_Init(LCD_ScanDir);
 	LCD_1in44_Clear(WHITE);
-    
+
     UWORD *BlackImage;
     UDOUBLE Imagesize = LCD_HEIGHT*LCD_WIDTH*2;
     printf("Imagesize = %d\r\n", Imagesize);

@@ -263,6 +263,19 @@ void LCD_1in44_Init(LCD_SCAN_DIR Scan_dir)
     //Turn on the LCD display
     LCD_SendCommand(0x29);
 
+    DEV_Delay_ms(2000);
+    turnOffLCD();
+}
+
+void turnOffLCD() {
+    LCD_SendCommand(0x28); // Display turn off refresh
+    DEV_Delay_ms(10);
+
+    LCD_SendCommand(0x10); // Deep sleep
+    DEV_Delay_ms(120);
+
+    // Turn off backlight
+    LCD_BL_0;
 }
 
 /********************************************************************************
@@ -350,8 +363,6 @@ void LCD_1in44_DisplayPoint(UWORD X, UWORD Y, UWORD Color)
 
 void  Handler_1in44_LCD(int signo)
 {
-    //System Exit
-    printf("\r\nHandler:Program stop\r\n");     
     DEV_ModuleExit();
     exit(0);
 }

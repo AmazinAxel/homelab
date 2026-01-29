@@ -54,6 +54,7 @@ typedef struct{
 function:	
 			Macro definition variable name
 ********************************************************************************/
+void turnOffLCD();
 void LCD_1in44_Init(LCD_SCAN_DIR Scan_dir);
 void LCD_1in44_Clear(UWORD Color);
 void LCD_1in44_Display(UWORD *Image);

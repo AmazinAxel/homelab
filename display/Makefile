@@ -11,7 +11,7 @@ OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
 TARGET = homelabDisplay
 
 LIB = -lgpiod -lm
-CC = gcc
+CC = gcc # Replace this with aarch64-unknown-linux-gnu-gcc if cross compiling
 MSG = -g -O2 -Wall
 CFLAGS += $(MSG)
 

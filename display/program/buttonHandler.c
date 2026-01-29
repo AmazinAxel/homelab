@@ -26,7 +26,6 @@ void InitButtonHandler(void) {
 
 void ButtonHandler(UWORD *Image)
 {
-    //Draw_Init(Image);
     for(;;) {
         if(GET_KEY_UP == 0) {
 
