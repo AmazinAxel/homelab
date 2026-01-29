@@ -2,9 +2,23 @@
   systemd = {
     services = {
       startWebserver = {
-        wantedBy = [ "default.target" ];
+        wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           ExecStart = [ "${pkgs.bun}/bin/bun" "/home/alec/homelab/webserver/webserver" ];
+          User = "alec";
+          Restart = "always";
+          RestartSec = 5;
+          KillMode = "process";
+          AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+          CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
+          NoNewPrivileges = false;
+          PrivateUsers = false;
+        };
+      };
+      startDisplay = {
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          ExecStart = [ "/home/alec/homelab/display/homelabDisplay" ];
           User = "alec";
           Restart = "always";
           RestartSec = 5;

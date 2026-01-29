@@ -1,37 +1,11 @@
 
-#ifndef __GUI_PAINT_H
-#define __GUI_PAINT_H
+#ifndef BACKGROUND_COLOR
 
 #include "../../program/program.h"
 #include "LCD_1in44.h"
 #include "../Fonts/fonts.h"
 
-/**
- * Display orientation
-**/
-#define IMAGE_ROTATE_0            0
-#define IMAGE_ROTATE_90           1
-#define IMAGE_ROTATE_180          2
-#define IMAGE_ROTATE_270          3
 
-/**
- * Display rotate
-**/
-#define ROTATE_0            0
-#define ROTATE_90           90
-#define ROTATE_180          180
-#define ROTATE_270          270
-
-/**
- * Display Flip
-**/
-typedef enum {
-    MIRROR_NONE  = 0x00,
-    MIRROR_HORIZONTAL = 0x01,
-    MIRROR_VERTICAL = 0x02,
-    MIRROR_ORIGIN = 0x03,
-} MIRROR_IMAGE;
-#define MIRROR_IMAGE_DFT MIRROR_NONE
 /**
  * Image attributes
 **/
@@ -43,8 +17,6 @@ typedef struct {
     UWORD WidthMemory;
     UWORD HeightMemory;
     UWORD Color;
-    UWORD Rotate;
-    UWORD Mirror;
     UWORD WidthByte;
     UWORD HeightByte;
     UWORD Depth;
@@ -130,10 +102,8 @@ typedef struct {
 extern PAINT_TIME sPaint_time;
 
 //init and Clear
-void Paint_NewImage(UWORD *image, UWORD Width, UWORD Height, UWORD Rotate, UWORD Color, UWORD Depth);
+void Paint_NewImage(UWORD *image, UWORD Width, UWORD Height, UWORD Color, UWORD Depth);
 void Paint_SelectImage(UWORD *image);
-void Paint_SetRotate(UWORD Rotate);
-void Paint_SetMirroring(UBYTE mirror);
 void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
 
 void Paint_Clear(UWORD Color);

@@ -101,7 +101,7 @@
                 pm10Element.innerHTML = '?';
                 lastUpdatedElement.innerHTML = '?';
                 airnowSensorAQIElement.innerHTML = '?';
-            }
+            };
             const data = await response.json();
             const airnowData = await airnowResponse.json();
             const airnowAQI = Math.max(...airnowData.map(entry => entry.AQI));

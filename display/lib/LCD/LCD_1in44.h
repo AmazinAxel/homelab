@@ -1,6 +1,5 @@
 
-#ifndef __LCD_1IN44_H
-#define __LCD_1IN44_H	
+#ifndef LCD_HEIGHT
 
 #include "DEV_Config.h"
 #include <stdint.h>
@@ -51,4 +50,5 @@ void LCD_1in44_Display(UWORD *Image);
 void LCD_1in44_DisplayWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD *Image);
 void LCD_1in44_DisplayPoint(UWORD X, UWORD Y, UWORD Color);
 void Handler_1in44_LCD(int signo);
+
 #endif

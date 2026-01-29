@@ -5,19 +5,12 @@
 #define LFLAGS 0
 #define NUM_MAXBUF  4
 
-#include <unistd.h>
+#include <unistd.h> // usleep() close()
 
-#include <errno.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdlib.h>		//exit()
-#include <signal.h>     //signal()
+#include <stdint.h> // spi
+#include <stdlib.h> //exit()
 
-
-/**
- * data
-**/
 #define UBYTE   uint8_t
 #define UWORD   uint16_t
 #define UDOUBLE uint32_t
@@ -28,8 +21,7 @@
 #define LCD_BL   24
 
 
-
-//LCD
+// LCD
 #define LCD_CS_0		DEV_Digital_Write(LCD_CS,0)
 #define LCD_CS_1		DEV_Digital_Write(LCD_CS,1)
 
@@ -60,8 +52,6 @@
 #define GET_KEY2         		DEV_Digital_Read(KEY2_PIN)
 #define GET_KEY3         		DEV_Digital_Read(KEY3_PIN)
 
-#define LCD_SetBacklight(Value) DEV_SetBacklight(Value)
-
 /*------------------------------------------------------------------------------------------------------*/
 UBYTE DEV_ModuleInit(void);
 void DEV_ModuleExit(void);
@@ -71,7 +61,6 @@ void DEV_Digital_Write(UWORD Pin, UBYTE Value);
 UBYTE DEV_Digital_Read(UWORD Pin);
 void DEV_Delay_ms(UDOUBLE xms);
 
-void DEV_SPI_WriteByte(UBYTE Value);
+void DEV_SPI_WriteByte(uint8_t Value);
 void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len);
-void DEV_SetBacklight(UWORD Value);
 #endif

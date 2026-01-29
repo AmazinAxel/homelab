@@ -51,8 +51,7 @@ parameter:
     Height  :   The height of the picture
     Color   :   Whether the picture is inverted
 ******************************************************************************/
-void Paint_NewImage(UWORD *image, UWORD Width, UWORD Height, UWORD Rotate, UWORD Color, UWORD Depth)
-{
+void Paint_NewImage(UWORD *image, UWORD Width, UWORD Height, UWORD Color, UWORD Depth) {
     Paint.Image = NULL;
     Paint.Image = image;
 
@@ -62,20 +61,10 @@ void Paint_NewImage(UWORD *image, UWORD Width, UWORD Height, UWORD Rotate, UWORD
     Paint.WidthByte = Width;
     Paint.HeightByte = Height;    
     Paint.Depth = Depth;    
-//    printf("WidthByte = %d, HeightByte = %d\r\n", Paint.WidthByte, Paint.HeightByte);
-//    printf(" EPD_WIDTH / 8 = %d\r\n",  122 / 8);
-   
-    Paint.Rotate = Rotate;
-    Paint.Mirror = MIRROR_NONE;
     
-    if(Rotate == ROTATE_0 || Rotate == ROTATE_180) {
-        Paint.Width = Width;
-        Paint.Height = Height;
-    } else {
-        Paint.Width = Height;
-        Paint.Height = Width;
-    }
-}
+    Paint.Width = Width;
+    Paint.Height = Height;
+};
 
 /******************************************************************************
 function: Select Image
@@ -87,98 +76,24 @@ void Paint_SelectImage(UWORD *image)
     Paint.Image = image;
 }
 
-/******************************************************************************
-function: Select Image Rotate
-parameter:
-    Rotate : 0,90,180,270
-******************************************************************************/
-void Paint_SetRotate(UWORD Rotate)
-{
-    if(Rotate == ROTATE_0 || Rotate == ROTATE_90 || Rotate == ROTATE_180 || Rotate == ROTATE_270) {
-        printf("Set image Rotate %d\r\n", Rotate);
-        Paint.Rotate = Rotate;
-    } else {
-        printf("rotate = 0, 90, 180, 270\r\n");
-    }
-}
-
-/******************************************************************************
-function:	Select Image mirror
-parameter:
-    mirror   :Not mirror,Horizontal mirror,Vertical mirror,Origin mirror
-******************************************************************************/
-void Paint_SetMirroring(UBYTE mirror)
-{
-    if(mirror == MIRROR_NONE || mirror == MIRROR_HORIZONTAL || 
-        mirror == MIRROR_VERTICAL || mirror == MIRROR_ORIGIN) {
-        printf("mirror image x:%s, y:%s\r\n",(mirror & 0x01)? "mirror":"none", ((mirror >> 1) & 0x01)? "mirror":"none");
-        Paint.Mirror = mirror;
-    } else {
-        printf("mirror should be MIRROR_NONE, MIRROR_HORIZONTAL, \
-        MIRROR_VERTICAL or MIRROR_ORIGIN\r\n");
-    }    
-}
-
-/******************************************************************************
-function: Draw Pixels
-parameter:
-    Xpoint : At point X
-    Ypoint : At point Y
-    Color  : Painted colors
-******************************************************************************/
-void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
-{
-    if(Xpoint > Paint.Width || Ypoint > Paint.Height){
+void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color) {
+    if (Xpoint > Paint.Width || Ypoint > Paint.Height){
         printf("Exceeding display boundaries\r\n");
         return;
-    }      
+    };
+
     UWORD X, Y;
 
-    switch(Paint.Rotate) {
-    case 0:
-        X = Xpoint;
-        Y = Ypoint;  
-        break;
-    case 90:
-        X = Paint.WidthMemory - Ypoint - 1;
-        Y = Xpoint;
-        break;
-    case 180:
-        X = Paint.WidthMemory - Xpoint - 1;
-        Y = Paint.HeightMemory - Ypoint - 1;
-        break;
-    case 270:
-        X = Ypoint;
-        Y = Paint.HeightMemory - Xpoint - 1;
-        break;
-    default:
-        return;
-    }
-    
-    switch(Paint.Mirror) {
-    case MIRROR_NONE:
-        break;
-    case MIRROR_HORIZONTAL:
-        X = Paint.WidthMemory - X - 1;
-        break;
-    case MIRROR_VERTICAL:
-        Y = Paint.HeightMemory - Y - 1;
-        break;
-    case MIRROR_ORIGIN:
-        X = Paint.WidthMemory - X - 1;
-        Y = Paint.HeightMemory - Y - 1;
-        break;
-    default:
-        return;
-    }
+    X = Xpoint;
+    Y = Ypoint;
 
     if(X > Paint.WidthMemory || Y > Paint.HeightMemory){
-        printf("Exceeding display boundaries\r\n");
+        printf("SetPixel: Exceeding display boundaries\r\n");
         return;
-    }
+    };
     
     
-    if(Paint.Depth == 1){
+    if (Paint.Depth == 1){
         UDOUBLE Addr = X / 8 + Y * Paint.WidthByte;
         UBYTE Rdata = Paint.Image[Addr];
         if(Color == BLACK)
@@ -189,23 +104,17 @@ void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color)
         Color = ((Color<<8)&0xff00)|(Color>>8);
         UDOUBLE Addr = X  + Y * Paint.WidthByte;
         Paint.Image[Addr] = Color;
-    }
-}
+    };
+};
 
-/******************************************************************************
-function: Clear the color of the picture
-parameter:
-    Color : Painted colors
-******************************************************************************/
-void Paint_Clear(UWORD Color)
-{
+void Paint_Clear(UWORD Color) {
     for (UWORD Y = 0; Y < Paint.HeightByte; Y++) {
-        for (UWORD X = 0; X < Paint.WidthByte; X++ ) {//8 pixel =  1 byte
+        for (UWORD X = 0; X < Paint.WidthByte; X++ ) {
             UDOUBLE Addr = X + Y*Paint.WidthByte;
             Paint.Image[Addr] = Color;
-        }
-    }
-}
+        };
+    };
+};
 
 /******************************************************************************
 function: Clear the color of a window
@@ -615,34 +524,10 @@ void Paint_DrawBitMap(const unsigned char* image_buffer)
 
 
 void GUI_Partial_Refresh(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend) {
-    UWORD X0, Y0, X1, Y1;
-    switch(Paint.Rotate) {
-        case 90:
-            X0 = Ystart;
-            Y0 = Paint.WidthMemory  - Xend ;
-            X1 = Yend;
-            Y1 = Paint.WidthMemory  - Xstart ;
-            break;
-        case 180:
-            X0 = Paint.WidthMemory  - Xend ;
-            Y0 = Paint.HeightMemory - Yend ;
-            X1 = Paint.WidthMemory  - Xstart ;
-            Y1 = Paint.HeightMemory - Ystart ;
-            break;
-        case 270:
-            X0 = Paint.WidthMemory  - Xend ;
-            Y0 = Xstart;
-            X1 = Paint.HeightMemory - Ystart ;
-            Y1 = Paint.HeightMemory - Yend ;
-            break;
-        
-        default:
-            X0 = Xstart;
-            Y0 = Ystart;
-            X1 = Xend;
-            Y1 = Yend;
-            break;
-    };
+    UWORD X0 = Xstart;
+    UWORD Y0 = Ystart;
+    UWORD X1 = Xend;
+    UWORD Y1 = Yend;
     LCD_1in44_DisplayWindows(X0, Y0, X1, Y1, Paint.Image);
 }
 
