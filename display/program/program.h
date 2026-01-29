@@ -9,6 +9,7 @@ typedef enum {
     SHUTDOWN
 } MenuType;
 
+void initLCD();
 void buttonHandler();
 void menu(MenuType menu);
 
