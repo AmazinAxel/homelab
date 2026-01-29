@@ -6,5 +6,5 @@
 
 void logsMenu() {
 
-    Paint_DrawString_EN(3, 3, "Logs", &Font24, BLACK4, BLUE3);
+    Paint_DrawString_EN(3, 2, "Logs", &Font24, BACKGROUND_COLOR, BLUE3);
 };

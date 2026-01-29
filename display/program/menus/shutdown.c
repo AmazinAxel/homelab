@@ -7,6 +7,6 @@
 #include "../GUI/GUI_Paint.h"
 
 void shutdownMenu() {
-    Paint_DrawString_EN(9, 25, "Hold to", &Font20, BLACK4, BLUE3);
-    Paint_DrawString_EN(11, 60, "Shutdown", &Font20, BLACK4, BLUE3);
+    Paint_DrawString_EN(11, 40, "Hold to", &Font20, BACKGROUND_COLOR, BLUE3);
+    Paint_DrawString_EN(9, 75, "Shutdown", &Font20, BACKGROUND_COLOR, BLUE3);
 };
