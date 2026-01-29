@@ -6,10 +6,7 @@
 #include "../LCD/LCD_1in44.h"
 #include "../GUI/GUI_Paint.h"
 
-void shutdownMenu(UWORD *BlackImage) {
-    Paint_NewImage(BlackImage, LCD_WIDTH, LCD_HEIGHT, BACKGROUND_COLOR, 16);
-    Paint_ClearWindow(0, 0, 128, 128, BACKGROUND_COLOR);
-
+void shutdownMenu() {
     Paint_DrawString_EN(7, 20, "Hold to", &Font16, BLACK4, BLUE3);
     Paint_DrawString_EN(11, 60, "Shutdown", &Font16, BLACK4, BLUE3);
 };

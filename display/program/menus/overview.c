@@ -1,10 +1,7 @@
 #include "../LCD/LCD_1in44.h"
 #include "../GUI/GUI_Paint.h"
 
-void overviewMenu(UWORD *BlackImage) {
-    Paint_NewImage(BlackImage, LCD_WIDTH, LCD_HEIGHT, BACKGROUND_COLOR, 16);
-    Paint_ClearWindow(0, 0, 128, 128, BACKGROUND_COLOR);
-
+void overviewMenu() {
     Paint_DrawLine(8, 8, 128 - 7, 8, BLACK4, DOT_PIXEL_8X8, LINE_STYLE_SOLID);
     Paint_DrawLine(8, 17 + 4, 128 - 7, 17 + 4, BLACK4, DOT_PIXEL_8X8, LINE_STYLE_SOLID);
     Paint_DrawString_EN(6, 3, "homelab", &Font24, BLACK4, BLUE3);

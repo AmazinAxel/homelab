@@ -40,6 +40,7 @@
 #include <stdlib.h>
 #include <string.h> //memset()
 #include <math.h>
+#include "../../program/menus/menus.h" // screen global var
 
 PAINT Paint;
 
@@ -51,9 +52,8 @@ parameter:
     Height  :   The height of the picture
     Color   :   Whether the picture is inverted
 ******************************************************************************/
-void Paint_NewImage(UWORD *image, UWORD Width, UWORD Height, UWORD Color, UWORD Depth) {
-    Paint.Image = NULL;
-    Paint.Image = image;
+void Paint_NewImage(UWORD Width, UWORD Height, UWORD Color, UWORD Depth) {
+    Paint.Image = screen;
 
     Paint.WidthMemory = Width;
     Paint.HeightMemory = Height;

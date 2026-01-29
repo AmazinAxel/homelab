@@ -4,8 +4,10 @@
 #include "logs.c"
 #include "shutdown.c"
 
-void logsMenu(UWORD *BlackImage);
-void overviewMenu(UWORD *BlackImage);
-void shutdownMenu(UWORD *BlackImage);
+extern UWORD *screen;
+
+void logsMenu();
+void overviewMenu();
+void shutdownMenu();
 
 #endif

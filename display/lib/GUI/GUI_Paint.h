@@ -2,7 +2,7 @@
 #ifndef BACKGROUND_COLOR
 
 #include "../../program/program.h"
-#include "LCD_1in44.h"
+#include "../LCD/LCD_1in44.h"
 #include "../Fonts/fonts.h"
 
 
@@ -102,7 +102,7 @@ typedef struct {
 extern PAINT_TIME sPaint_time;
 
 //init and Clear
-void Paint_NewImage(UWORD *image, UWORD Width, UWORD Height, UWORD Color, UWORD Depth);
+void Paint_NewImage(UWORD Width, UWORD Height, UWORD Color, UWORD Depth);
 void Paint_SelectImage(UWORD *image);
 void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color);
 

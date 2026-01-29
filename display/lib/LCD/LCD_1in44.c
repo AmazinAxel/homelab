@@ -1,5 +1,6 @@
 #include "LCD_1in44.h"
 #include "DEV_Config.h"
+#include "../../program/menus/menus.h" // global screen var
 
 
 LCD_DIS sLCD_DIS;
@@ -330,13 +331,13 @@ void LCD_1in44_Clear(UWORD Color)
 function :	Sends the image buffer in RAM to displays
 parameter:
 ******************************************************************************/
-void LCD_1in44_Display(UWORD *Image)
+void LCD_1in44_Display()
 {
     UWORD j;
     LCD_1in44_SetWindows(0, 0, LCD_WIDTH, LCD_HEIGHT);
     LCD_DC_1;
     for (j = 0; j < LCD_HEIGHT; j++) {
-        DEV_SPI_Write_nByte((uint8_t *)&Image[j*LCD_WIDTH], LCD_WIDTH*2);
+        DEV_SPI_Write_nByte((uint8_t *)&screen[j*LCD_WIDTH], LCD_WIDTH*2);
     }
 }
 

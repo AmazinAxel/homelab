@@ -5,40 +5,49 @@
 #include <stdlib.h>
 #include <signal.h>
 
-void menu(MenuType menu) {
+UWORD *screen = NULL;
+
+void initLCD() {
     signal(SIGINT, Handler_1in44_LCD);
 
     if (DEV_ModuleInit() != 0) {
         DEV_ModuleExit();
-        exit(0);
+        exit(1);
     };
 
     LCD_SCAN_DIR LCD_ScanDir = SCAN_DIR_DFT;
     LCD_1in44_Init(LCD_ScanDir);
     LCD_1in44_Clear(WHITE);
 
-    UDOUBLE Imagesize = LCD_HEIGHT * LCD_WIDTH * 2;
-    UWORD *BlackImage = malloc(Imagesize);
-    if (!BlackImage) {
-        printf("Can't allocate black memory\r\n");
-        exit(0);
+    UDOUBLE imageSize = LCD_HEIGHT * LCD_WIDTH * 2;
+    screen = malloc(imageSize);
+
+    if (!screen) {
+        printf("Can't allocate black memory\n");
+        exit(1);
     };
+
+    Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, WHITE, 16);
+}
+
+void menu(MenuType menu) {
+    Paint_ClearWindow(0, 0, 128, 128, BACKGROUND_COLOR);
 
      switch (menu) {
         case OVERVIEW:
-            overviewMenu(BlackImage);
+            overviewMenu();
             break;
         case LOGS:
-            logsMenu(BlackImage);
+            logsMenu();
             break;
         case SHUTDOWN:
-            shutdownMenu(BlackImage);
+            shutdownMenu();
             break;
      };
 
-    LCD_1in44_Display(BlackImage);
+    LCD_1in44_Display();
     DEV_Delay_ms(2000);
 
-    free(BlackImage);
+    free(screen);
     //DEV_ModuleExit();
 }
