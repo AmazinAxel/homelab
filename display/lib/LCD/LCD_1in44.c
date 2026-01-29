@@ -259,9 +259,23 @@ void turnOffLCD() {
     LCD_SendCommand(0x10); // Deep sleep
     DEV_Delay_ms(120);
 
-    // Turn off backlight
-    LCD_BL_0;
-}
+    LCD_BL_0; // Backlight off
+};
+
+void turnOnLCD() {
+    LCD_BL_1; // Backlight on
+    DEV_Delay_ms(10);
+
+    LCD_SendCommand(0x11); // Wake up from sleep
+    DEV_Delay_ms(120);
+
+    LCD_SendCommand(0x29); // Display turn on refresh
+    DEV_Delay_ms(10);
+
+    LCD_SetGramScanWay(sLCD_DIS.LCD_Scan_Dir);
+    LCD_1in44_SetWindows(0, 0, LCD_WIDTH, LCD_HEIGHT);
+};
+
 
 /********************************************************************************
 function:	Sets the start position and size of the display area
