@@ -3,7 +3,13 @@
 
 #include "DEV_Config.h" // for UWORD
 
+typedef enum {
+    OVERVIEW,
+    LOGS,
+    SHUTDOWN
+} MenuType;
+
 void buttonHandler();
-void menu(const char *menuName);
+void menu(MenuType menu);
 
 #endif

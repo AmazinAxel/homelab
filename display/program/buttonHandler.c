@@ -39,16 +39,19 @@ void buttonHandler() {
         };
 
         if (GET_KEY1 == 0) {
+            menu(OVERVIEW);
             while (GET_KEY1 == 0);
             //continue;
         };
 
         if (GET_KEY2 == 0) {
+            menu(LOGS);
             while (GET_KEY2 == 0);
             //continue;
         };
 
         if (GET_KEY3 == 0) {
+            menu(SHUTDOWN);
             while (GET_KEY3 == 0);
             //continue;
         };

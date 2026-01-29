@@ -1,7 +1,7 @@
 #include "program.h"
 
 int main() {
-    menu("overview");
+    menu(OVERVIEW);
     buttonHandler();
     DEV_ModuleExit();
 	return 0;
