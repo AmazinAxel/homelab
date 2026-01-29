@@ -104,22 +104,30 @@ void DEV_Delay_ms(UDOUBLE xms)
     usleep(xms * 1000);
 }
 
-void DEV_SPI_WriteByte(uint8_t Value)
-{
+void DEV_SPI_WriteByte(uint8_t Value) {
     if (spi_fd < 0) {
         printf("DEV_SPI_WriteByte: SPI not initialized\n");
         return;
     }
-    write(spi_fd, &Value, 1);
+
+    ssize_t written = write(spi_fd, &Value, 1);
+    if (written != 1) {
+        printf("DEV_SPI_WriteByte: write failed (ret=%zd)\n", written);
+    }
 }
 
-void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len)
-{
+void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len) {
     if (spi_fd < 0) {
         printf("DEV_SPI_Write_nByte: SPI not initialized\n");
         return;
     }
-    write(spi_fd, pData, Len);
+
+    ssize_t written = write(spi_fd, pData, Len);
+    if (written < 0) {
+        printf("DEV_SPI_Write_nByte: write failed\n");
+    } else if ((uint32_t)written != Len) {
+        printf("DEV_SPI_Write_nByte: partial write (%zd/%u)\n", written, Len);
+    }
 }
 
 // Init

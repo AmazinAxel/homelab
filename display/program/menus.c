@@ -25,11 +25,11 @@ void menu(const char *menuName) {
     if (!BlackImage) {
         printf("Can't allocate black memory\r\n");
         exit(0);
-    }
+    };
 
     if (strcmp(menuName, "overview") == 0) {
         overviewMenu(BlackImage);
-    }
+    };
 
     LCD_1in44_Display(BlackImage);
     DEV_Delay_ms(2000);

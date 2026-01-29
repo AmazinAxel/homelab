@@ -34,4 +34,5 @@ ${DIR_BIN}/%.o:$(DIR_Config)/%.c
 	$(CC) $(CFLAGS) -c  $< -o $@ $(LIB)
 	
 clean:
-	rm $(DIR_BIN)/*.* $(TARGET)
+	rm $(DIR_BIN)/*.*
+	rm $(TARGET)
