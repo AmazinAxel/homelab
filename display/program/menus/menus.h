@@ -1,8 +1,5 @@
-#ifndef overviewMenu
-
-#include "overview.c"
-#include "logs.c"
-#include "shutdown.c"
+#ifndef MENUS
+#define MENUS
 
 extern UWORD *screen;
 
