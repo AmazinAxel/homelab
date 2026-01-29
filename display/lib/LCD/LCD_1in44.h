@@ -44,11 +44,13 @@ typedef struct{
 
 
 void turnOffLCD();
+void turnOnLCD();
 void LCD_1in44_Init(LCD_SCAN_DIR Scan_dir);
 void LCD_1in44_Clear(UWORD Color);
 void LCD_1in44_Display(UWORD *Image);
 void LCD_1in44_DisplayWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD *Image);
 void LCD_1in44_DisplayPoint(UWORD X, UWORD Y, UWORD Color);
 void Handler_1in44_LCD(int signo);
+void LCD_1in44_SetWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend);
 
 #endif

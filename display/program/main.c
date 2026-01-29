@@ -2,6 +2,8 @@
 
 int main() {
     menu("overview");
-    //ButtonHandler();
-    return 0;
-}
+    buttonHandler();
+    DEV_ModuleExit();
+	return 0;
+};
+

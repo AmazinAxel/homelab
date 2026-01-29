@@ -1,31 +1,31 @@
 #include "program.h"
+#include "LCD_1in44.h" // LCD power control
 
 static int IsLCDOn = 1;
 
-void ButtonHandler() {
+void buttonHandler() {
     for (;;) {
-
         if (GET_KEY_UP == 0) {
             while (GET_KEY_UP == 0);
-            return;
-        }
+            //continue;
+        };
 
-        else if (GET_KEY_DOWN == 0) {
+        if (GET_KEY_DOWN == 0) {
             while (GET_KEY_DOWN == 0);
-            return;
-        }
+            //continue;
+        };
 
-        else if (GET_KEY_LEFT == 0) {
+        if (GET_KEY_LEFT == 0) {
             while (GET_KEY_LEFT == 0);
-            return;
-        }
+            //continue;
+        };
 
-        else if (GET_KEY_RIGHT == 0) {
+        if (GET_KEY_RIGHT == 0) {
             while (GET_KEY_RIGHT == 0);
-            return;
-        }
+            //continue;
+        };
 
-        else if (GET_KEY_PRESS == 0) {
+        if (GET_KEY_PRESS == 0) {
             if (IsLCDOn) {
                 turnOffLCD();
                 IsLCDOn = 0;
@@ -35,22 +35,22 @@ void ButtonHandler() {
             };
 
             while (GET_KEY_PRESS == 0);
-            return;
-        }
+            //continue;
+        };
 
-        else if (GET_KEY1 == 0) {
+        if (GET_KEY1 == 0) {
             while (GET_KEY1 == 0);
-            return;
-        }
+            //continue;
+        };
 
-        else if (GET_KEY2 == 0) {
+        if (GET_KEY2 == 0) {
             while (GET_KEY2 == 0);
-            return;
-        }
+            //continue;
+        };
 
-        else if (GET_KEY3 == 0) {
+        if (GET_KEY3 == 0) {
             while (GET_KEY3 == 0);
-            return;
-        }
-    }
-}
+            //continue;
+        };
+    };
+};

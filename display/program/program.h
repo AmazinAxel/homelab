@@ -3,7 +3,7 @@
 
 #include "DEV_Config.h" // for UWORD
 
-void ButtonHandler();
+void buttonHandler();
 void menu(const char *menuName);
 
 #endif
