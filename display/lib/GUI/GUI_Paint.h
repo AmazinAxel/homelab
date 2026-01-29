@@ -45,7 +45,7 @@ extern PAINT Paint;
 #define GREEN 0xA6F1 // #A3BE8C
 #define PURPLE 0xB4B5 // #B48EAD
 
-#define BACKGROUND_COLOR BLACK4
+#define BACKGROUND_COLOR BLACK
 #define FONT_COLOR WHITE3
 
 /**
