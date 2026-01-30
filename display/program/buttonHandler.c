@@ -70,7 +70,8 @@ void buttonHandler() {
             };
 
             if (buttonHold(GET_KEY2)) { // Wipe logs
-                truncate("/home/alec/logs.txt", 0);
+                if (truncate("/home/alec/logs.txt", 0) == -1) { };
+                menu(LOGS);
             };
             while (GET_KEY2() == 0);
         };
