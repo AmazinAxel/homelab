@@ -1,8 +1,9 @@
 #!/usr/bin/env fish
+source /path/to/log.fish
 
 # Check whether drive is mounted
 if not mountpoint -q /media
-    echo "Improper drive amount detected"
+    log "Spotify: Improper drive amount"
     exit 1
 end
 
@@ -19,3 +20,5 @@ for playlist in $playlists
     set url (echo $playlist | awk '{print $2}')
     spotdl download "$url" --output /media/Music/$name
 end
+
+log "Spotify: pulled all playlists"

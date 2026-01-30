@@ -3,6 +3,7 @@
 #include <time.h> // Button hold conditions
 #include <unistd.h> // Sleeping
 #include <stdbool.h> // Booleans
+#include <unistd.h> // Wipe log file
 
 static int buttonHold(int (*read_fn)(void)) {
     struct timespec start, now;
@@ -53,17 +54,13 @@ void buttonHandler() {
                 isLCDOn = true;
             };
 
-            while (GET_KEY1() == 0);
+            while (GET_KEY_PRESS() == 0);
         };
 
         if (GET_KEY1() == 0) { // Overview
-            if (currentMenu != OVERVIEW) {
+            if (currentMenu != OVERVIEW || buttonHold(GET_KEY1)) {
                 menu(OVERVIEW);
-            };
-
-            if (buttonHold(GET_KEY1)) {
-                // held down
-            };
+            }
             while (GET_KEY1() == 0);
         };
 
@@ -72,8 +69,8 @@ void buttonHandler() {
                 menu(LOGS);
             };
 
-            if (buttonHold(GET_KEY2)) {
-                // held down
+            if (buttonHold(GET_KEY2)) { // Wipe logs
+                truncate("/home/alec/logs.txt", 0);
             };
             while (GET_KEY2() == 0);
         };
@@ -83,7 +80,7 @@ void buttonHandler() {
                 menu(SHUTDOWN);
             };
             
-            if (buttonHold(GET_KEY3)) {
+            if (buttonHold(GET_KEY3)) { // Power off without warnings
                 if (system("systemctl poweroff") == -1) { };
             };
             while (GET_KEY3() == 0);

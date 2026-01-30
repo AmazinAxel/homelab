@@ -1,8 +1,9 @@
 #!/usr/bin/env fish
+source /path/to/log.fish # Logging
 
 # Check whether drive is mounted
 if not mountpoint -q /media
-    echo "Improper drive amount detected"
+    log "Github: No drive attached"
     exit 1
 end
 
@@ -24,3 +25,5 @@ for repo in (curl -s -H "Authorization: token $token" https://api.github.com/use
         end
     end
 end
+
+log "Github: pulled all repos"
