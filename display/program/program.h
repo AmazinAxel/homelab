@@ -2,6 +2,9 @@
 #define BUTTON_HANDLER_H
 
 #include "DEV_Config.h" // for UWORD
+#include <stdbool.h> // Boolean
+
+extern bool isLCDOn;
 
 typedef enum {
     OVERVIEW,

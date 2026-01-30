@@ -1,6 +1,5 @@
 
-#ifndef _DEV_CONFIG_H_
-#define _DEV_CONFIG_H_
+#ifndef LFLAGS
 
 #define LFLAGS 0
 #define NUM_MAXBUF  4
@@ -52,7 +51,6 @@
 #define GET_KEY2         		DEV_Digital_Read(KEY2_PIN)
 #define GET_KEY3         		DEV_Digital_Read(KEY3_PIN)
 
-/*------------------------------------------------------------------------------------------------------*/
 UBYTE DEV_ModuleInit(void);
 void DEV_ModuleExit(void);
 

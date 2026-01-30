@@ -44,14 +44,6 @@
 
 PAINT Paint;
 
-/******************************************************************************
-function: Create Image
-parameter:
-    image   :   Pointer to the image cache
-    width   :   The width of the picture
-    Height  :   The height of the picture
-    Color   :   Whether the picture is inverted
-******************************************************************************/
 void Paint_NewImage(UWORD Width, UWORD Height, UWORD Color, UWORD Depth) {
     Paint.Image = screen;
 
@@ -65,16 +57,6 @@ void Paint_NewImage(UWORD Width, UWORD Height, UWORD Color, UWORD Depth) {
     Paint.Width = Width;
     Paint.Height = Height;
 };
-
-/******************************************************************************
-function: Select Image
-parameter:
-    image : Pointer to the image cache
-******************************************************************************/
-void Paint_SelectImage(UWORD *image)
-{
-    Paint.Image = image;
-}
 
 void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color) {
     if (Xpoint > Paint.Width || Ypoint > Paint.Height){
@@ -116,43 +98,22 @@ void Paint_Clear(UWORD Color) {
     };
 };
 
-/******************************************************************************
-function: Clear the color of a window
-parameter:
-    Xstart : x starting point
-    Ystart : Y starting point
-    Xend   : x end point
-    Yend   : y end point
-    Color  : Painted colors
-******************************************************************************/
-void Paint_ClearWindow(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color)
-{
+void Paint_ClearWindow(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color) {
     UWORD X, Y;
     for (Y = Ystart; Y < Yend; Y++) {
         for (X = Xstart; X < Xend; X++) {//8 pixel =  1 byte
             Paint_SetPixel(X, Y, Color);
-        }
-    }
-}
+        };
+    };
+};
 
-/******************************************************************************
-function: Draw Point(Xpoint, Ypoint) Fill the color
-parameter:
-    Xpoint		: The Xpoint coordinate of the point
-    Ypoint		: The Ypoint coordinate of the point
-    Color		: Painted color
-    Dot_Pixel	: point size
-    Dot_Style	: point Style
-******************************************************************************/
-void Paint_DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,
-                     DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_Style)
-{
+void Paint_DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color, DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_Style) {
     if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
         printf("Paint_DrawPoint Input exceeds the normal display range\r\n");
         printf("Xpoint = %d , Paint.Width = %d  \r\n ",Xpoint,Paint.Width);
         printf("Ypoint = %d , Paint.Height = %d  \r\n ",Ypoint,Paint.Height);
         return;
-    }
+    };
 
     int16_t XDir_Num , YDir_Num;
     if (Dot_Style == DOT_FILL_AROUND) {
@@ -160,39 +121,19 @@ void Paint_DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color,
             for (YDir_Num = 0; YDir_Num < 2 * Dot_Pixel - 1; YDir_Num++) {
                 if(Xpoint + XDir_Num - Dot_Pixel < 0 || Ypoint + YDir_Num - Dot_Pixel < 0)
                     break;
-                // printf("x = %d, y = %d\r\n",Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel);
                 Paint_SetPixel(Xpoint + XDir_Num - Dot_Pixel, Ypoint + YDir_Num - Dot_Pixel, Color);
-            }
-        }
+            };
+        };
     } else {
         for (XDir_Num = 0; XDir_Num <  Dot_Pixel; XDir_Num++) {
             for (YDir_Num = 0; YDir_Num <  Dot_Pixel; YDir_Num++) {
-                
                 Paint_SetPixel(Xpoint + XDir_Num - 1, Ypoint + YDir_Num - 1, Color);
-            }
-        }
-    }
-}
+            };
+        };
+    };
+};
 
-/******************************************************************************
-function: Draw a line of arbitrary slope
-parameter:
-    Xstart ：Starting Xpoint point coordinates
-    Ystart ：Starting Xpoint point coordinates
-    Xend   ：End point Xpoint coordinate
-    Yend   ：End point Ypoint coordinate
-    Color  ：The color of the line segment
-    Line_width : Line width
-    Line_Style: Solid and dotted lines
-******************************************************************************/
-void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
-                    UWORD Color, DOT_PIXEL Line_width, LINE_STYLE Line_Style)
-{
-    if (Xstart > Paint.Width || Ystart > Paint.Height ||
-        Xend > Paint.Width || Yend > Paint.Height) {
-        printf("Paint_DrawLine Input exceeds the normal display range\r\n");
-        return;
-    }
+void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color, DOT_PIXEL Line_width) {
 
     UWORD Xpoint = Xstart;
     UWORD Ypoint = Ystart;
@@ -209,82 +150,42 @@ void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
 
     for (;;) {
         Dotted_Len++;
-        //Painted dotted line, 2 point is really virtual
-        if (Line_Style == LINE_STYLE_DOTTED && Dotted_Len % 3 == 0) {
-            if(Color)
-				Paint_DrawPoint(Xpoint, Ypoint, BLACK, Line_width, DOT_STYLE_DFT);
-            else
-				Paint_DrawPoint(Xpoint, Ypoint, WHITE, Line_width, DOT_STYLE_DFT);
-            Dotted_Len = 0;
-        } else {
-            Paint_DrawPoint(Xpoint, Ypoint, Color, Line_width, DOT_STYLE_DFT);
-        }
+        Paint_DrawPoint(Xpoint, Ypoint, Color, Line_width, DOT_STYLE_DFT);
         if (2 * Esp >= dy) {
             if (Xpoint == Xend)
                 break;
             Esp += dy;
             Xpoint += XAddway;
-        }
+        };
         if (2 * Esp <= dx) {
             if (Ypoint == Yend)
                 break;
             Esp += dx;
             Ypoint += YAddway;
-        }
-    }
-}
+        };
+    };
+};
 
-/******************************************************************************
-function: Draw a rectangle
-parameter:
-    Xstart ：Rectangular  Starting Xpoint point coordinates
-    Ystart ：Rectangular  Starting Xpoint point coordinates
-    Xend   ：Rectangular  End point Xpoint coordinate
-    Yend   ：Rectangular  End point Ypoint coordinate
-    Color  ：The color of the Rectangular segment
-    Line_width: Line width
-    Draw_Fill : Whether to fill the inside of the rectangle
-******************************************************************************/
-void Paint_DrawRectangle(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend,
-                         UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill)
-{
-    if (Xstart > Paint.Width || Ystart > Paint.Height ||
-        Xend > Paint.Width || Yend > Paint.Height) {
-        printf("Input exceeds the normal display range\r\n");
-        return;
-    }
-
+// todo remove
+void Paint_DrawRectangle(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill) {
     if (Draw_Fill) {
         UWORD Ypoint;
         for(Ypoint = Ystart; Ypoint < Yend; Ypoint++) {
-            Paint_DrawLine(Xstart, Ypoint, Xend, Ypoint, Color , Line_width, LINE_STYLE_SOLID);
-        }
+            Paint_DrawLine(Xstart, Ypoint, Xend, Ypoint, Color , Line_width);
+        };
     } else {
-        Paint_DrawLine(Xstart, Ystart, Xend, Ystart, Color, Line_width, LINE_STYLE_SOLID);
-        Paint_DrawLine(Xstart, Ystart, Xstart, Yend, Color, Line_width, LINE_STYLE_SOLID);
-        Paint_DrawLine(Xend, Yend, Xend, Ystart, Color, Line_width, LINE_STYLE_SOLID);
-        Paint_DrawLine(Xend, Yend, Xstart, Yend, Color, Line_width, LINE_STYLE_SOLID);
-    }
-}
+        Paint_DrawLine(Xstart, Ystart, Xend, Ystart, Color, Line_width);
+        Paint_DrawLine(Xstart, Ystart, Xstart, Yend, Color, Line_width);
+        Paint_DrawLine(Xend, Yend, Xend, Ystart, Color, Line_width);
+        Paint_DrawLine(Xend, Yend, Xstart, Yend, Color, Line_width);
+    };
+};
 
-/******************************************************************************
-function: Use the 8-point method to draw a circle of the
-            specified size at the specified position->
-parameter:
-    X_Center  ：Center X coordinate
-    Y_Center  ：Center Y coordinate
-    Radius    ：circle Radius
-    Color     ：The color of the ：circle segment
-    Line_width: Line width
-    Draw_Fill : Whether to fill the inside of the Circle
-******************************************************************************/
-void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius,
-                      UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill)
-{
+void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius, UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill) {
     if (X_Center > Paint.Width || Y_Center >= Paint.Height) {
         printf("Paint_DrawCircle Input exceeds the normal display range\r\n");
         return;
-    }
+    };
 
     //Draw a circle from(0, R) as a starting point
     int16_t XCurrent, YCurrent;
@@ -306,15 +207,15 @@ void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius,
                 Paint_DrawPoint(X_Center + XCurrent, Y_Center - sCountY, Color, DOT_PIXEL_DFT, DOT_STYLE_DFT);//6
                 Paint_DrawPoint(X_Center + sCountY, Y_Center - XCurrent, Color, DOT_PIXEL_DFT, DOT_STYLE_DFT);//7
                 Paint_DrawPoint(X_Center + sCountY, Y_Center + XCurrent, Color, DOT_PIXEL_DFT, DOT_STYLE_DFT);
-            }
+            };
             if (Esp < 0 )
                 Esp += 4 * XCurrent + 6;
             else {
                 Esp += 10 + 4 * (XCurrent - YCurrent );
                 YCurrent --;
-            }
+            };
             XCurrent ++;
-        }
+        };
     } else { //Draw a hollow circle
         while (XCurrent <= YCurrent ) {
             Paint_DrawPoint(X_Center + XCurrent, Y_Center + YCurrent, Color, Line_width, DOT_STYLE_DFT);//1
@@ -331,31 +232,14 @@ void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius,
             else {
                 Esp += 10 + 4 * (XCurrent - YCurrent );
                 YCurrent --;
-            }
+            };
             XCurrent ++;
-        }
-    }
-}
+        };
+    };
+};
 
-/******************************************************************************
-function: Show English characters
-parameter:
-    Xpoint           ：X coordinate
-    Ypoint           ：Y coordinate
-    Acsii_Char       ：To display the English characters
-    Font             ：A structure pointer that displays a character size
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
-void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
-                    sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
-{
+void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background) {
     UWORD Page, Column;
-
-    if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
-        printf("Paint_DrawChar Input exceeds the normal display range\r\n");
-        return;
-    }
 
     uint32_t Char_Offset = (Acsii_Char - ' ') * Font->Height * (Font->Width / 8 + (Font->Width % 8 ? 1 : 0));
     const unsigned char *ptr = &Font->table[Char_Offset];
@@ -363,19 +247,10 @@ void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     for (Page = 0; Page < Font->Height; Page ++ ) {
         for (Column = 0; Column < Font->Width; Column ++ ) {
 
-            //To determine whether the font background color and screen background color is consistent
-            if (FONT_COLOR == Color_Background) { //this process is to speed up the scan
-                if (*ptr & (0x80 >> (Column % 8)))
-                    Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
-                    // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
+            if (*ptr & (0x80 >> (Column % 8))) {
+                Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
             } else {
-                if (*ptr & (0x80 >> (Column % 8))) {
-                    Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Foreground);
-                    // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Foreground, DOT_PIXEL_DFT, DOT_STYLE_DFT);
-                } else {
-                    Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
-                    // Paint_DrawPoint(Xpoint + Column, Ypoint + Page, Color_Background, DOT_PIXEL_DFT, DOT_STYLE_DFT);
-                }
+                Paint_SetPixel(Xpoint + Column, Ypoint + Page, Color_Background);
             }
             //One pixel is 8 bits
             if (Column % 8 == 7)
@@ -386,26 +261,9 @@ void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char,
     }// Write all
 }
 
-/******************************************************************************
-function:	Display the string
-parameter:
-    Xstart           ：X coordinate
-    Ystart           ：Y coordinate
-    pString          ：The first address of the English string to be displayed
-    Font             ：A structure pointer that displays a character size
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
-void Paint_DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString,
-                         sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
-{
+void Paint_DrawString(UWORD Xstart, UWORD Ystart, const char * pString, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background) {
     UWORD Xpoint = Xstart;
     UWORD Ypoint = Ystart;
-
-    if (Xstart > Paint.Width || Ystart > Paint.Height) {
-        printf("Paint_DrawString_EN Input exceeds the normal display range\r\n");
-        return;
-    }
 
     while (* pString != '\0') {
         //if X direction filled , reposition to(Xstart,Ypoint),Ypoint is Y direction plus the Height of the character
@@ -428,106 +286,3 @@ void Paint_DrawString_EN(UWORD Xstart, UWORD Ystart, const char * pString,
         Xpoint += Font->Width;
     }
 }
-
-
-/******************************************************************************
-function:	Display nummber
-parameter:
-    Xstart           ：X coordinate
-    Ystart           : Y coordinate
-    Nummber          : The number displayed
-    Font             ：A structure pointer that displays a character size
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
-#define  ARRAY_LEN 255
-void Paint_DrawNum(UWORD Xpoint, UWORD Ypoint, int32_t Nummber,
-                   sFONT* Font, UWORD Color_Foreground, UWORD Color_Background)
-{
-
-    int16_t Num_Bit = 0, Str_Bit = 0;
-    uint8_t Str_Array[ARRAY_LEN] = {0}, Num_Array[ARRAY_LEN] = {0};
-    uint8_t *pStr = Str_Array;
-
-    if (Xpoint > Paint.Width || Ypoint > Paint.Height) {
-        printf("Paint_DisNum Input exceeds the normal display range\r\n");
-        return;
-    }
-
-    //Converts a number to a string
-    while (Nummber) {
-        Num_Array[Num_Bit] = Nummber % 10 + '0';
-        Num_Bit++;
-        Nummber /= 10;
-    }
-
-    //The string is inverted
-    while (Num_Bit > 0) {
-        Str_Array[Str_Bit] = Num_Array[Num_Bit - 1];
-        Str_Bit ++;
-        Num_Bit --;
-    }
-
-    //show
-    Paint_DrawString_EN(Xpoint, Ypoint, (const char*)pStr, Font, Color_Background, Color_Foreground);
-}
-
-/******************************************************************************
-function:	Display time
-parameter:
-    Xstart           ：X coordinate
-    Ystart           : Y coordinate
-    pTime            : Time-related structures
-    Font             ：A structure pointer that displays a character size
-    Color_Foreground : Select the foreground color
-    Color_Background : Select the background color
-******************************************************************************/
-void Paint_DrawTime(UWORD Xstart, UWORD Ystart, PAINT_TIME *pTime, sFONT* Font,
-                    UWORD Color_Foreground, UWORD Color_Background)
-{
-    uint8_t value[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
-
-    UWORD Dx = Font->Width;
-
-    //Write data into the cache
-    Paint_DrawChar(Xstart                           , Ystart, value[pTime->Hour / 10], Font, Color_Background, Color_Foreground);
-    Paint_DrawChar(Xstart + Dx                      , Ystart, value[pTime->Hour % 10], Font, Color_Background, Color_Foreground);
-    Paint_DrawChar(Xstart + Dx  + Dx / 4 + Dx / 2   , Ystart, ':'                    , Font, Color_Background, Color_Foreground);
-    Paint_DrawChar(Xstart + Dx * 2 + Dx / 2         , Ystart, value[pTime->Min / 10] , Font, Color_Background, Color_Foreground);
-    Paint_DrawChar(Xstart + Dx * 3 + Dx / 2         , Ystart, value[pTime->Min % 10] , Font, Color_Background, Color_Foreground);
-    Paint_DrawChar(Xstart + Dx * 4 + Dx / 2 - Dx / 4, Ystart, ':'                    , Font, Color_Background, Color_Foreground);
-    Paint_DrawChar(Xstart + Dx * 5                  , Ystart, value[pTime->Sec / 10] , Font, Color_Background, Color_Foreground);
-    Paint_DrawChar(Xstart + Dx * 6                  , Ystart, value[pTime->Sec % 10] , Font, Color_Background, Color_Foreground);
-}
-
-/******************************************************************************
-function:	Display monochrome bitmap
-parameter:
-    image_buffer ：A picture data converted to a bitmap
-info:
-    Use a computer to convert the image into a corresponding array,
-    and then embed the array directly into Imagedata.cpp as a .c file.
-******************************************************************************/
-void Paint_DrawBitMap(const unsigned char* image_buffer)
-{
-    UWORD x, y;
-    UDOUBLE Addr = 0;
-
-    for (y = 0; y < Paint.HeightByte; y++) {
-        for (x = 0; x < Paint.WidthByte; x++) {//8 pixel =  1 byte
-            Addr = x + y * Paint.WidthByte;
-            Paint.Image[Addr] = (unsigned char)image_buffer[Addr];
-        }
-    }
-}
-
-
-
-void GUI_Partial_Refresh(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend) {
-    UWORD X0 = Xstart;
-    UWORD Y0 = Ystart;
-    UWORD X1 = Xend;
-    UWORD Y1 = Yend;
-    LCD_1in44_DisplayWindows(X0, Y0, X1, Y1, Paint.Image);
-}
-

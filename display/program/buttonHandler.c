@@ -1,8 +1,6 @@
 #include "program.h"
 #include "LCD_1in44.h" // LCD power control
 
-static int IsLCDOn = 1;
-
 void buttonHandler() {
     for (;;) {
         if (GET_KEY_UP == 0) {
@@ -26,12 +24,12 @@ void buttonHandler() {
         };
 
         if (GET_KEY_PRESS == 0) {
-            if (IsLCDOn) {
+            if (isLCDOn) {
                 turnOffLCD();
-                IsLCDOn = 0;
+                isLCDOn = false;
             } else {
                 turnOnLCD();
-                IsLCDOn = 1;
+                isLCDOn = true;
             };
 
             while (GET_KEY_PRESS == 0);

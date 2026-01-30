@@ -6,6 +6,7 @@
 #include <signal.h>
 
 UWORD *screen = NULL;
+bool isLCDOn = true;
 
 void initLCD() {
     signal(SIGINT, Handler_1in44_LCD);
@@ -33,6 +34,10 @@ void initLCD() {
 void menu(MenuType menu) {
     Paint_ClearWindow(0, 0, 128, 128, BACKGROUND_COLOR);
 
+    if (!isLCDOn) {
+        turnOnLCD();
+    };
+
      switch (menu) {
         case OVERVIEW:
             overviewMenu();
@@ -43,7 +48,6 @@ void menu(MenuType menu) {
         case SHUTDOWN:
             shutdownMenu();
             break;
-     };
-
+    };
     LCD_1in44_Display();
 };
