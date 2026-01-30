@@ -46,10 +46,6 @@
 #define GET_KEY_DOWN     		DEV_Digital_Read(KEY_DOWN_PIN)
 #define GET_KEY_LEFT     		DEV_Digital_Read(KEY_LEFT_PIN)
 #define GET_KEY_RIGHT    		DEV_Digital_Read(KEY_RIGHT_PIN)
-#define GET_KEY_PRESS    		DEV_Digital_Read(KEY_PRESS_PIN)
-#define GET_KEY1         		DEV_Digital_Read(KEY1_PIN)
-#define GET_KEY2         		DEV_Digital_Read(KEY2_PIN)
-#define GET_KEY3         		DEV_Digital_Read(KEY3_PIN)
 
 UBYTE DEV_ModuleInit(void);
 void DEV_ModuleExit(void);

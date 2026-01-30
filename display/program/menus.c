@@ -7,6 +7,7 @@
 
 UWORD *screen = NULL;
 bool isLCDOn = true;
+MenuType currentMenu = OVERVIEW;
 
 void initLCD() {
     signal(SIGINT, Handler_1in44_LCD);
@@ -33,6 +34,8 @@ void initLCD() {
 
 void menu(MenuType menu) {
     Paint_ClearWindow(0, 0, 128, 128, BACKGROUND_COLOR);
+
+    currentMenu = menu;
 
     if (!isLCDOn) {
         turnOnLCD();

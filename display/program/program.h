@@ -12,6 +12,8 @@ typedef enum {
     SHUTDOWN
 } MenuType;
 
+extern MenuType currentMenu;
+
 void initLCD();
 void buttonHandler();
 void menu(MenuType menu);
