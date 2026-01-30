@@ -3,7 +3,7 @@ source /path/to/log.fish # Logging
 
 # Check whether drive is mounted
 if not mountpoint -q /media
-    log "Github: No drive attached"
+    log "GH: no drive"
     exit 1
 end
 
@@ -26,4 +26,4 @@ for repo in (curl -s -H "Authorization: token $token" https://api.github.com/use
     end
 end
 
-log "Github: pulled all repos"
+log "GH: pulled repos"

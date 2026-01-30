@@ -8,7 +8,7 @@ void logsMenu() {
     FILE *logFile;
     logFile = fopen("/home/alec/logs.txt", "r");
     char line[100]; // Max line size
-    int lineY = 28;
+    int lineY = 32;
 
     while (fgets(line, sizeof line, logFile)) {
 

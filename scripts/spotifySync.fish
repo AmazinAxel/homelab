@@ -3,7 +3,7 @@ source /path/to/log.fish
 
 # Check whether drive is mounted
 if not mountpoint -q /media
-    log "Spotify: Improper drive amount"
+    log "S: no drive"
     exit 1
 end
 
@@ -21,4 +21,4 @@ for playlist in $playlists
     spotdl download "$url" --output /media/Music/$name
 end
 
-log "Spotify: pulled all playlists"
+log "S: pulled music"
