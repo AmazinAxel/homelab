@@ -11,7 +11,7 @@
     initialPassword = "nixos";
   };
 
-  environment.systemPackages = with pkgs; [ git bun spotdl jq fish gcc gnumake ];
+  environment.systemPackages = with pkgs; [ git bun spotdl jq fish ];
 
   # Raspi boot
   boot = {

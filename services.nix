@@ -19,20 +19,14 @@
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           ExecStart = [ "/home/alec/homelab/display/homelabDisplay" ];
-          User = "alec";
           Restart = "always";
           RestartSec = 5;
           KillMode = "process";
-          AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
-          CapabilityBoundingSet = [ "CAP_NET_BIND_SERVICE" ];
           NoNewPrivileges = false;
           PrivateUsers = false;
         };
       };
-      "daily".script = ''
-        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/githubBackup.fish
-        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotifySync.fish
-      '';
+      "daily".script = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/daily.fish";
     };
 
     timers."daily" = { # Every morning at 3AM PT

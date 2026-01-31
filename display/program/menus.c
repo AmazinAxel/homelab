@@ -29,7 +29,7 @@ void initLCD() {
     };
 
     Paint_NewImage(LCD_WIDTH, LCD_HEIGHT, WHITE, 16);
-}
+};
 
 void menu(MenuType menu) {
     Paint_ClearWindow(0, 0, 128, 128, BACKGROUND_COLOR);
