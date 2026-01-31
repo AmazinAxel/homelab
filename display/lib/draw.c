@@ -143,25 +143,23 @@ void Paint_DrawCheck(UWORD X, UWORD Y) {
     // Down 6 pixels right 4
     UWORD x1 = X + 4;
     UWORD y1 = Y + 6;
-    Paint_DrawLine(X, Y, x1, y1, GREEN, 2);
+    Paint_DrawLine(X - 4, Y - 1, x1 - 4, y1 - 1, GREEN, 2);
 
-    // Up 9 pixels right 5
+    // Up 10 pixels right 5
     UWORD x2 = x1 + 5;
-    UWORD y2 = y1 - 9;
-    Paint_DrawLine(x1, y1, x2, y2, GREEN, 2);
+    UWORD y2 = y1 - 10;
+    Paint_DrawLine(x1 - 4, y1 - 1, x2 - 4, y2 - 1, GREEN, 2);
 };
 
 // Build an X using lines
 void Paint_DrawX(UWORD X, UWORD Y) {
-    // Up 5 pixels right 5 pixels
-    UWORD x1 = X + 5;
-    UWORD y1 = Y + 5;
-    Paint_DrawLine(X, Y, x1, y1, RED, 2);
+    UWORD Xsize = 5;
 
-    // Down 5 pixels left 5 pixels
-    UWORD x2 = X - 5;
-    UWORD y2 = Y - 5;
-    Paint_DrawLine(X, Y, x2, y2, RED, 2);
+    // Top left to bottom right
+    Paint_DrawLine((X - Xsize), (Y - Xsize), (X + Xsize), (Y + Xsize), RED, 2);
+
+    // Bottom left to Top right
+    Paint_DrawLine((X - Xsize), (Y + Xsize), (X + Xsize), (Y - Xsize), RED, 2);
 };
 
 void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background) {

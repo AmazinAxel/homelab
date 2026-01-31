@@ -8,24 +8,23 @@ void overviewMenu() {
     Paint_DrawString(5, 3, "homelab", &Font24, BLACK4, BLUE3);
 
     // Is backed up
-    Paint_DrawString(8, 45, "Backed up:", &Font12, BACKGROUND_COLOR, FONT_COLOR);
+    Paint_DrawString(8, 45, "Synced:", &Font12, BACKGROUND_COLOR, FONT_COLOR);
     if (isSynced()) {
-        Paint_DrawCheck(50, 45);
+        Paint_DrawCheck(80, 51);
     } else {
-        Paint_DrawX(50, 45);
+        Paint_DrawX(80, 51);
     };
 
     // Is connected to network
     Paint_DrawString(8, 70, "Network:", &Font12, BACKGROUND_COLOR, FONT_COLOR);
 
-    //if (isNetworkConnected) {
-        Paint_DrawCheck(50, 70);
-    //} else {
-        Paint_DrawX(50, 85);
-    //};
+    if (isNetworkConnected()) {
+        Paint_DrawCheck(80, 76);
+    } else {
+        Paint_DrawX(80, 76);
+    };
 
     // Drive storage usage
     Paint_DrawString(8, 95, "Storage:", &Font12, BACKGROUND_COLOR, FONT_COLOR);
-    Paint_DrawString(8, 95, storageUsage(), &Font12, BACKGROUND_COLOR, BLUE);
-
+    Paint_DrawString(65, 95, storageUsage(), &Font12, BACKGROUND_COLOR, BLUE2);
 };
