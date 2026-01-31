@@ -1,5 +1,5 @@
 #include "program.h"
-#include "LCD_1in44.h" // LCD power control
+#include "lcd.h" // LCD power control
 #include <time.h> // Button hold conditions
 #include <unistd.h> // Sleeping
 #include <stdbool.h> // Booleans
@@ -21,11 +21,15 @@ static int buttonHold(int (*read_fn)(void)) {
     return false;
 };
 
-inline int GET_KEY_PRESS(void) { return DEV_Digital_Read(KEY_PRESS_PIN); }
-inline int GET_KEY1(void) { return DEV_Digital_Read(KEY1_PIN); }
-inline int GET_KEY2(void) { return DEV_Digital_Read(KEY2_PIN); }
-inline int GET_KEY3(void) { return DEV_Digital_Read(KEY3_PIN); }
+int GET_KEY_UP() { return DEV_Digital_Read(KEY_UP_PIN); }
+int GET_KEY_DOWN() { return DEV_Digital_Read(KEY_DOWN_PIN); }
+int GET_KEY_LEFT() { return DEV_Digital_Read(KEY_LEFT_PIN); }
+int GET_KEY_RIGHT() { return DEV_Digital_Read(KEY_RIGHT_PIN); }
 
+int GET_KEY_PRESS() { return DEV_Digital_Read(KEY_PRESS_PIN); }
+int GET_KEY1() { return DEV_Digital_Read(KEY1_PIN); }
+int GET_KEY2() { return DEV_Digital_Read(KEY2_PIN); }
+int GET_KEY3() { return DEV_Digital_Read(KEY3_PIN); }
 
 void buttonHandler() {
     for (;;) {

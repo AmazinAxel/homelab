@@ -1,5 +1,5 @@
-#include "../LCD/LCD_1in44.h"
-#include "../GUI/GUI_Paint.h"
+#include "lcd.h"
+#include "draw.h"
 #include <string.h>
 
 void logsMenu() {
@@ -21,6 +21,5 @@ void logsMenu() {
 
         lineY += 15;
     };
-
     fclose(logFile);
 };

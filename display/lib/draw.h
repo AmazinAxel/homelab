@@ -1,9 +1,9 @@
 
 #ifndef BACKGROUND_COLOR
 
-#include "../../program/program.h"
-#include "../LCD/LCD_1in44.h"
-#include "../Fonts/fonts.h"
+#include "../program/program.h"
+#include "lcd.h"
+#include "fonts/fonts.h"
 
 typedef struct {
     UWORD *Image;
@@ -18,7 +18,6 @@ typedef struct {
     UBYTE Mode;
 } PAINT;
 extern PAINT Paint;
-
 
 #define BLACK 0x31A6 // #2E3440
 #define BLACK2 0x424A // #3B4252
@@ -43,9 +42,6 @@ extern PAINT Paint;
 #define BACKGROUND_COLOR BLACK
 #define FONT_COLOR WHITE3
 
-/**
- * The size of the point
-**/
 typedef enum {
     DOT_PIXEL_1X1  = 1,		// 1 x 1
     DOT_PIXEL_2X2  , 		// 2 X 2
@@ -58,18 +54,12 @@ typedef enum {
 } DOT_PIXEL;
 #define DOT_PIXEL_DFT  DOT_PIXEL_1X1  //Default dot pilex
 
-/**
- * Point size fill style
-**/
 typedef enum {
     DOT_FILL_AROUND  = 1,		// dot pixel 1 x 1
     DOT_FILL_RIGHTUP  , 		// dot pixel 2 X 2
 } DOT_STYLE;
 #define DOT_STYLE_DFT  DOT_FILL_AROUND  //Default dot pilex
 
-/**
- * Whether the graphic is filled
-**/
 typedef enum {
     DRAW_FILL_EMPTY = 0,
     DRAW_FILL_FULL,
@@ -83,8 +73,6 @@ void Paint_ClearWindow(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD
 
 void Paint_DrawPoint(UWORD Xpoint, UWORD Ypoint, UWORD Color, DOT_PIXEL Dot_Pixel, DOT_STYLE Dot_FillWay);
 void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color, DOT_PIXEL Line_width);
-void Paint_DrawRectangle(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill);
-void Paint_DrawCircle(UWORD X_Center, UWORD Y_Center, UWORD Radius, UWORD Color, DOT_PIXEL Line_width, DRAW_FILL Draw_Fill);
 
 void Paint_DrawChar(UWORD Xstart, UWORD Ystart, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);
 void Paint_DrawString(UWORD Xstart, UWORD Ystart, const char * pString, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background);

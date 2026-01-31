@@ -1,5 +1,4 @@
-#ifndef MENUS
-#define MENUS
+#ifndef screen
 
 extern UWORD *screen;
 

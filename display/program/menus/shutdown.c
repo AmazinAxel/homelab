@@ -1,5 +1,5 @@
-#include "../LCD/LCD_1in44.h"
-#include "../GUI/GUI_Paint.h"
+#include "lcd.h"
+#include "draw.h"
 
 void shutdownMenu() {
     Paint_DrawString(13, 42, "Hold to", &Font20, BACKGROUND_COLOR, BLUE3);

@@ -1,5 +1,5 @@
-#include "LCD_1in44.h"
-#include "GUI_Paint.h"
+#include "lcd.h"
+#include "draw.h"
 #include "menus/menus.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +19,6 @@ void initLCD() {
 
     LCD_SCAN_DIR LCD_ScanDir = SCAN_DIR_DFT;
     LCD_1in44_Init(LCD_ScanDir);
-    LCD_1in44_Clear(WHITE);
 
     UDOUBLE imageSize = LCD_HEIGHT * LCD_WIDTH * 2;
     screen = malloc(imageSize);
@@ -37,11 +36,10 @@ void menu(MenuType menu) {
 
     currentMenu = menu;
 
-    if (!isLCDOn) {
+    if (!isLCDOn)
         turnOnLCD();
-    };
 
-     switch (menu) {
+    switch (menu) {
         case OVERVIEW:
             overviewMenu();
             break;
