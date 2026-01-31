@@ -1,5 +1,6 @@
 #!/usr/bin/env fish
-source /path/to/log.fish
+
+source /home/alec/homelab/scripts/logging.fish # Logging
 
 # Check whether drive is mounted
 if not mountpoint -q /media

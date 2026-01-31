@@ -13,4 +13,8 @@ void initLCD();
 void buttonHandler();
 void menu(MenuType menu);
 
+bool isSynced();
+bool isNetworkConnected();
+char* storageUsage();
+
 #endif

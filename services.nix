@@ -15,7 +15,7 @@
           PrivateUsers = false;
         };
       };
-      startDisplay = {
+      homelabDisplay = {
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
           ExecStart = [ "/home/alec/homelab/display/homelabDisplay" ];
@@ -26,7 +26,12 @@
           PrivateUsers = false;
         };
       };
-      "daily".script = "${pkgs.fish}/bin/fish /home/alec/homelab/scripts/daily.fish";
+      "daily".script = ''
+        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/githubBackup.fish
+        ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotifySync.fish
+
+        ${pkgs.toybox}/bin/time date +%s > /home/alec/lastSynced
+      '';
     };
 
     timers."daily" = { # Every morning at 3AM PT

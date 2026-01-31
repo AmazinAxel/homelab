@@ -18,7 +18,6 @@
 * LIABILITY WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 * THE SOFTWARE.
-*
 */
 
 #include "draw.h"
@@ -57,7 +56,7 @@ void Paint_SetPixel(UWORD Xpoint, UWORD Ypoint, UWORD Color) {
     if (Paint.Depth == 1){
         UDOUBLE Addr = X / 8 + Y * Paint.WidthByte;
         UBYTE Rdata = Paint.Image[Addr];
-        if(Color == BLACK)
+        if (Color == BLACK)
             Paint.Image[Addr] = Rdata & ~(0x80 >> (X % 8));
         else
             Paint.Image[Addr] = Rdata | (0x80 >> (X % 8));
@@ -137,6 +136,32 @@ void Paint_DrawLine(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD Co
             Ypoint += YAddway;
         };
     };
+};
+
+// Build a checkmark using lines
+void Paint_DrawCheck(UWORD X, UWORD Y) {
+    // Down 6 pixels right 4
+    UWORD x1 = X + 4;
+    UWORD y1 = Y + 6;
+    Paint_DrawLine(X, Y, x1, y1, GREEN, 2);
+
+    // Up 9 pixels right 5
+    UWORD x2 = x1 + 5;
+    UWORD y2 = y1 - 9;
+    Paint_DrawLine(x1, y1, x2, y2, GREEN, 2);
+};
+
+// Build an X using lines
+void Paint_DrawX(UWORD X, UWORD Y) {
+    // Up 5 pixels right 5 pixels
+    UWORD x1 = X + 5;
+    UWORD y1 = Y + 5;
+    Paint_DrawLine(X, Y, x1, y1, RED, 2);
+
+    // Down 5 pixels left 5 pixels
+    UWORD x2 = X - 5;
+    UWORD y2 = Y - 5;
+    Paint_DrawLine(X, Y, x2, y2, RED, 2);
 };
 
 void Paint_DrawChar(UWORD Xpoint, UWORD Ypoint, const char Acsii_Char, sFONT* Font, UWORD Color_Foreground, UWORD Color_Background) {

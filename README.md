@@ -68,8 +68,8 @@ I've made a simple model for the base of the Pi. I'm using [this acrylic kit](ht
 
 ## Building the display program
 
-Use the nix devshell to install gcc & the libraries for the program on your computer: `cd display && nix develop && make`
-Run `cd display && nix-shell -p gcc gnumake libgpiod_1 && make` to build the program on the Pi.
-You can run the `./homelabDisplay` binary in `/home/alec/homelab/display/` or reboot to start the program. 
+Use the nix devshell to install gcc & the libraries for the program on your computer: `cd display && nix develop` and `make`
+Run `cd display && nix-shell -p gcc gnumake libgpiod_1` and `make` to build the program on the Pi.
+You can run the `./homelabDisplay` binary in `/home/alec/homelab/display/` or reboot to start the program.
 
 Note that you will need GPIO header pins and this [1.44in Waveshare HAT](https://www.waveshare.com/1.44inch-lcd-hat.htm) to use the display program.
