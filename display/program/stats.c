@@ -2,7 +2,7 @@
 #include <time.h> // time()
 #include <stdbool.h> // booleans
 #include <sys/statvfs.h> // drive mounting
-#include <string.h> // strcspn()
+#include <string.h> // strdup() to prevent storage ping segfault
 
 int isSynced() {
     FILE *f = fopen("/home/alec/lastSynced", "r");
@@ -41,16 +41,13 @@ bool isNetworkConnected() {
 char* storageUsage() {
     struct statvfs s;
     if (statvfs("/media", &s) != 0)
-        return strdup("??");
+        return "??";
 
-    FILE *fp = popen("df -P /media | awk 'NR==2 {print $5}'", "r");
-    char buf[64] = "??";
+    unsigned long totalStorage = s.f_blocks * s.f_frsize;
+    unsigned long usedStorage = (s.f_blocks - s.f_bfree) * s.f_frsize;
+    int percentUsed = (int)((usedStorage * 100) / totalStorage);
 
-    if (fp) {
-        fgets(buf, sizeof(buf), fp);
-        pclose(fp);
-        buf[strcspn(buf, "\n")] = 0;
-    };
-
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%d%%", percentUsed);
     return strdup(buf);
 };

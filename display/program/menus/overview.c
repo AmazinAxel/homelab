@@ -26,5 +26,5 @@ void overviewMenu() {
 
     // Drive storage usage
     Paint_DrawString(8, 95, "Storage:", &Font12, BACKGROUND_COLOR, FONT_COLOR);
-    Paint_DrawString(65, 95, storageUsage(), &Font12, BACKGROUND_COLOR, BLUE2);
+    Paint_DrawString(70, 95, storageUsage(), &Font12, BACKGROUND_COLOR, BLUE2);
 };

@@ -2,11 +2,7 @@
 /plugin/;
 
 /{
-    compatible = "raspberrypi,model-zero-2-w",
-                 "brcm,bcm2837",
-                 "brcm,bcm2836",
-                 "brcm,bcm2835";
-
+    compatible = "raspberrypi,model-zero-2-w";
     fragment@0 {
         target = <&gpio>;
         __overlay__ {
