@@ -1,6 +1,6 @@
 #include "lcd.h"
 #include "lib.h"
-#include "../../program/menus/menus.h" // global screen var
+#include "menus.h" // global screen var
 
 LCD_DIS sLCD_DIS;
 

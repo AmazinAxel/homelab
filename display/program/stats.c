@@ -1,6 +1,8 @@
 #include <stdio.h> // fopen()
 #include <time.h> // time()
 #include <stdbool.h> // booleans
+#include <sys/statvfs.h> // drive mounting
+#include <string.h> // strcspn()
 
 int isSynced() {
     FILE *f = fopen("/home/alec/lastSynced", "r");
@@ -28,9 +30,27 @@ int isSynced() {
 };
 
 bool isNetworkConnected() {
-    return false; // todo
-};
+    FILE *file = fopen("/sys/class/net/wlan0/operstate", "r");
+    char u = fgetc(file); // should be u
+    char p = fgetc(file); // should be p
+    fclose(file);
+
+    return (u == 'u' && p == 'p');
+}
 
 char* storageUsage() {
-    return "6/32GB"; // TODO finish
+    struct statvfs s;
+    if (statvfs("/media", &s) != 0)
+        return strdup("??");
+
+    FILE *fp = popen("df -P /media | awk 'NR==2 {print $5}'", "r");
+    char buf[64] = "??";
+
+    if (fp) {
+        fgets(buf, sizeof(buf), fp);
+        pclose(fp);
+        buf[strcspn(buf, "\n")] = 0;
+    };
+
+    return strdup(buf);
 };

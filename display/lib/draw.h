@@ -1,9 +1,9 @@
 
 #ifndef BACKGROUND_COLOR
 
-#include "../program/program.h"
+#include "program.h"
 #include "lcd.h"
-#include "fonts/fonts.h"
+#include "fonts.h"
 
 typedef struct {
     UWORD *Image;

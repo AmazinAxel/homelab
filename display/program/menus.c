@@ -1,6 +1,6 @@
 #include "lcd.h"
 #include "draw.h"
-#include "menus/menus.h"
+#include "menus.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>

@@ -1,13 +1,4 @@
 /**
-  ******************************************************************************
-  * @file    fonts.h
-  * @author  MCD Application Team
-  * @version V1.0.0
-  * @date    18-February-2014
-  * @brief   Header for fonts.c file
-  ******************************************************************************
-  * @attention
-  *
   * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
@@ -31,19 +22,16 @@
   * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
   * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
   */
 
 #ifndef MAX_HEIGHT_FONT
 
-/*�������΢���ź�24 (32x41) */
+#include <stdint.h>
+
 #define MAX_HEIGHT_FONT         41
 #define MAX_WIDTH_FONT          32
 #define OFFSET_BITMAP           
-#include <stdint.h>
 
-//ASCII
 typedef struct _tFont {
   const uint8_t *table;
   uint16_t Width;
@@ -54,15 +42,12 @@ typedef struct {
   uint16_t size;
   uint16_t ASCII_Width;
   uint16_t Width;
-  uint16_t Height;  
+  uint16_t Height;
 } cFONT;
 
 extern sFONT Font24;
 extern sFONT Font20;
 extern sFONT Font16;
 extern sFONT Font12;
-  
-#endif
- 
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+#endif
