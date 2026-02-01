@@ -3,6 +3,7 @@
     services = {
       webserver = {
         wantedBy = [ "multi-user.target" ];
+        path = [ pkgs.util-linux ]; # For running mountpoint command in webserver
         serviceConfig = {
           ExecStart = "${pkgs.bun}/bin/bun /home/alec/homelab/webserver/webserver";
           Restart = "always";
