@@ -5,6 +5,7 @@
         wantedBy = [ "multi-user.target" ];
         path = [ pkgs.util-linux ]; # For running mountpoint command in webserver
         serviceConfig = {
+          EnvironmentFile = "/home/alec/homelab/webserver/.env";
           ExecStart = "${pkgs.bun}/bin/bun /home/alec/homelab/webserver/webserver";
           Restart = "always";
           RestartSec = 5;
