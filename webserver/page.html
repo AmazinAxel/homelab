@@ -107,7 +107,12 @@
             const airnowAQI = Math.max(...airnowData.map(entry => entry.AQI));
 
             const latestData = data.at(-1)
-            const date = new Date(Number(latestData.timestamp)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            const date = new Date(Number(latestData.timestamp)).toLocaleString('en-US', {
+                timeZone: 'America/Los_Angeles',
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            });
 
             const pm25AQI = calculateAQI(latestData.pm25, pm25Breakpoints);
             const pm10AQI = calculateAQI(latestData.pm10, pm10Breakpoints);
@@ -137,7 +142,12 @@
                 axes: [{
                     label: "Time",
                     values: (u, ticks) => ticks.map(t =>
-                        new Date(t * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+                        new Date(t * 1000).toLocaleTimeString('en-US', {
+                            timeZone: 'America/Los_Angeles',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: false
+                        })
                     )
                 }],
                 series: [{}, {
