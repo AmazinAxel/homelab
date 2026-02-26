@@ -29,7 +29,10 @@
   networking = {
     hostName = "alechomelab";
     firewall.allowedTCPPorts = [ 80 ];
-    networkmanager.enable = true; # For nmtui
+    networkmanager = {
+      enable = true; # For nmtui
+      wifi.powersave = false; # Stop network drops
+    };
   };
 
   services = {
