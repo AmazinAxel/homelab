@@ -3,6 +3,7 @@
 
 int main() {
     initLCD();
+    menu(OVERVIEW);
     turnOffLCD();
     isLCDOn = false;
     buttonHandler();
