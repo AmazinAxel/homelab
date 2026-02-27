@@ -1,12 +1,8 @@
 # Alec's homelab server
 
-Runs on a Raspberry Pi Zero 2W:
+Runs on a Raspberry Pi Zero 2W. Hosts a local webserver that accepts & stores AQI readings (on attached drive) and graphs it. Network storage w/ Samba share which automounts attached USB drives and integrates with my [desktop flake](https://github.com/amazinaxel/flake) for weekly reminders to sync data from this share.
 
-- Has an accessible network-wide Avahi .local resolve shorthand
-- Hosts a local webserver that accepts & stores AQI readings (on attached drive) and graphs it
-- Network storage w/ Samba share which automounts attached USB drives
-  - Integrates with my [desktop flake](https://github.com/amazinaxel/flake) for weekly reminders to sync data from this share
-- Daily systemd tasks which make backups of private Github repos & downloads Spotify playlists
+Also has daily systemd tasks which make backups of private Github repos & downloads Spotify playlists and is easily accessible with a network-wide Avahi .local resolve shorthand.
 
 ## Build on your own system
 
@@ -30,7 +26,7 @@ Default login is user `alec` password `nixos` (use `passwd alec` to change)
 Set `AIRNOW_TOKEN=` in `webserver/.env` for Airnow.gov data to work
 Paste your Github auth token to `/home/alec/GithubToken`
 Set the Samba user password: `sudo smbpasswd -a alec`
-Update the client key and secret to use your own from the [Spotify developer dashboard.](https://developer.spotify.com/dashboard) in `/home/alec/.config/spotdl/config.json`. If you get a rate limit error, enable the `no_cache` option.
+Update the client key and secret to use your own from the [Spotify developer dashboard](https://developer.spotify.com/dashboard). in `/home/alec/.config/spotdl/config.json`. If you get a rate limit error, enable the `no_cache` option.
 
 Use remote deployments to update: `nixos-rebuild switch --flake .#alechomelab --sudo --ask-sudo-password --target-host alec@alechomelab.local`
 
@@ -64,7 +60,7 @@ avoid_warnings=1
 
 ## 3D printable base case
 
-I've made a simple model for the base of the Pi. I'm using [this acrylic kit](https://www.amazon.com/dp/B075FLGWJL) which I acquired from Daydream Seattle.
+I've made a simple model for the base of the Pi. I'm using [this acrylic kit](https://www.amazon.com/dp/B075FLGWJL) which I acquired from Daydream Seattle. [The model is available here.](https://cad.onshape.com/documents/bbe2d65cf6312f9e5a3048be/w/efd804d20185bdc5da277ea3/e/04839badd0cdbbd144aa88b6?renderMode=0&uiState=69a1db3dd9de8c36f6b51ffe)
 
 ## Building the display program
 

@@ -96,12 +96,6 @@
     overlays = [{ name = "spi0"; dtsFile = ./spi0.dts; }];
   };
 
-  # todo is this necessary
-  services.udev.extraRules = ''
-    KERNEL=="spidev*", GROUP="wheel", MODE="0660"
-    KERNEL=="gpio*", GROUP="wheel", MODE="0660"
-  '';
-
   system.stateVersion = "25.11";
   nixpkgs.hostPlatform = "aarch64-linux";
 
