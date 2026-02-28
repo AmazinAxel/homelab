@@ -28,7 +28,7 @@ Paste your Github auth token to `/home/alec/GithubToken`
 Set the Samba user password: `sudo smbpasswd -a alec`
 Update the client key and secret to use your own from the [Spotify developer dashboard](https://developer.spotify.com/dashboard). in `/home/alec/.config/spotdl/config.json`. If you get a rate limit error, enable the `no_cache` option.
 
-Use remote deployments to update: `nixos-rebuild switch --flake .#alechomelab --sudo --ask-sudo-password --target-host alec@alechomelab.local`
+Use remote deployments to update since the Zero 2W doesnt have enough memory to build itself: `nixos-rebuild switch --flake .#alechomelab --sudo --ask-sudo-password --target-host alec@alechomelab.local`
 
 ## RPi config
 
