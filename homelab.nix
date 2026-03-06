@@ -33,7 +33,7 @@
   # Networking
   networking = {
     hostName = "alechomelab";
-    firewall.allowedTCPPorts = [ 80 ];
+    firewall.allowedTCPPorts = [ 80 9000 ];
     networkmanager = {
       enable = true; # For nmtui
       wifi.powersave = false; # Stop network drops
