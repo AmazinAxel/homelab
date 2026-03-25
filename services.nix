@@ -25,6 +25,17 @@
           PrivateUsers = false;
         };
       };
+      lofi = {
+        wantedBy = [ "multi-user.target" ];
+        serviceConfig = {
+          ExecStart = "${pkgs.php82}/bin/php -S 0.0.0.0:9000 -t /media/lofi/";
+          Restart = "always";
+          RestartSec = 5;
+          KillMode = "process";
+          NoNewPrivileges = false;
+          PrivateUsers = false;
+        };
+      };
       "daily".script = ''
         ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/githubBackup.fish
         ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotifySync.fish

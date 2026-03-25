@@ -11,8 +11,8 @@
     initialPassword = "nixos";
   };
 
-  environment.systemPackages = with pkgs; [ git bun spotdl jq fish 
-    
+  environment.systemPackages = with pkgs; [ git bun spotdl jq fish
+
     # For Planning
     gtkmm4 nlohmann_json gcc
     pkg-config meson ccache ninja
