@@ -1,42 +1,57 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+
+let
+  service = { # basic service config
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Restart = "always";
+      RestartSec = 5;
+    };
+  };
+  privileges = { # Fix webserver stuff
+    NoNewPrivileges = false;
+    PrivateUsers = false;
+  };
+in {
   systemd = {
     services = {
-      webserver = {
-        wantedBy = [ "multi-user.target" ];
-        path = [ pkgs.util-linux ]; # For running mountpoint command in webserver
-        serviceConfig = {
+      webserver = service // {
+        path = [ pkgs.util-linux ];
+        serviceConfig = service.serviceConfig // privileges // {
           EnvironmentFile = "/home/alec/homelab/webserver/.env";
           ExecStart = "${pkgs.bun}/bin/bun /home/alec/homelab/webserver/webserver";
-          Restart = "always";
-          RestartSec = 5;
-          KillMode = "process";
-          NoNewPrivileges = false;
-          PrivateUsers = false;
         };
       };
-      homelabDisplay = {
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
+      homelabDisplay = service // {
+        serviceConfig = service.serviceConfig // privileges // {
           ExecStart = "/home/alec/homelab/display/homelabDisplay";
-          Restart = "always";
-          RestartSec = 5;
-          KillMode = "process";
-          NoNewPrivileges = false;
-          PrivateUsers = false;
         };
       };
-      lofi = {
-        wantedBy = [ "multi-user.target" ];
-        serviceConfig = {
+      lofi = service // {
+        serviceConfig = service.serviceConfig // privileges // {
           ExecStart = "${pkgs.php82}/bin/php -S 0.0.0.0:9000 -t /media/lofi/";
-          Restart = "always";
-          RestartSec = 5;
-          KillMode = "process";
-          NoNewPrivileges = false;
-          PrivateUsers = false;
         };
       };
-      "daily".script = ''
+      planning = service // {
+        after = [ "broadwayd-planning.service" ];
+        environment = {
+          GDK_BACKEND = "broadway";
+          BROADWAY_DISPLAY = ":5";
+        };
+        serviceConfig = service.serviceConfig // {
+          User = "alec";
+          WorkingDirectory = "/home/alec/planning";
+          ExecStart = "/home/alec/planning/build/planning";
+        };
+      };
+      planning-broadway = service // {
+        serviceConfig = service.serviceConfig // {
+          User = "alec";
+          ExecStart = "${pkgs.gtk4}/bin/broadwayd --port 8000 :5";
+        };
+      };
+
+      daily.script = ''
         ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/githubBackup.fish
         ${pkgs.fish}/bin/fish /home/alec/homelab/scripts/spotifySync.fish
 
