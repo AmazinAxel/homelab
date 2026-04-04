@@ -32,22 +32,30 @@ in {
           ExecStart = "${pkgs.php82}/bin/php -S 0.0.0.0:9000 -t /media/lofi/";
         };
       };
-      planning = service // {
+      planning = let 
+        theme = pkgs.graphite-gtk-theme.override {
+          tweaks = [ "nord" ];
+          themeVariants = [ "default" ];
+          colorVariants = [ "dark" ];
+        };
+      in service // {
         after = [ "broadwayd-planning.service" ];
         environment = {
           GDK_BACKEND = "broadway";
           BROADWAY_DISPLAY = ":5";
-        };
+          GTK_THEME = "Graphite-Dark-nord";
+          XDG_DATA_DIRS = "${theme}/share";
+        }; # MUST RUN mkdir -p /home/alec/.config/planning
         serviceConfig = service.serviceConfig // {
           User = "alec";
-          WorkingDirectory = "/home/alec/planning";
-          ExecStart = "/home/alec/planning/build/planning";
+          WorkingDirectory = "/home/alec/";
+          ExecStart = "/home/alec/planning";
         };
       };
       planning-broadway = service // {
         serviceConfig = service.serviceConfig // {
           User = "alec";
-          ExecStart = "${pkgs.gtk4}/bin/broadwayd --port 8000 :5";
+          ExecStart = "${pkgs.gtk4}/bin/gtk4-broadwayd --port 8000 :5";
         };
       };
 

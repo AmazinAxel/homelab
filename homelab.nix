@@ -11,12 +11,7 @@
     initialPassword = "nixos";
   };
 
-  environment.systemPackages = with pkgs; [ git bun spotdl jq fish
-
-    # For Planning
-    gtkmm4 nlohmann_json gcc
-    pkg-config meson ccache ninja
-  ];
+  environment.systemPackages = with pkgs; [ git bun spotdl jq fish ];
 
   # Raspi boot
   boot = {
@@ -33,7 +28,7 @@
   # Networking
   networking = {
     hostName = "alechomelab";
-    firewall.allowedTCPPorts = [ 80 9000 ];
+    firewall.allowedTCPPorts = [ 80 9000 8000 ];
     networkmanager = {
       enable = true; # For nmtui
       wifi.powersave = false; # Stop network drops
