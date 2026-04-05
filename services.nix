@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, planning, ... }:
 
 let
   service = { # basic service config
@@ -39,17 +39,18 @@ in {
           colorVariants = [ "dark" ];
         };
       in service // {
-        after = [ "broadwayd-planning.service" ];
+        after = [ "planning-broadway.service" ];
+        requires = [ "planning-broadway.service" ];
         environment = {
           GDK_BACKEND = "broadway";
           BROADWAY_DISPLAY = ":5";
           GTK_THEME = "Graphite-Dark-nord";
-          XDG_DATA_DIRS = "${theme}/share";
+          XDG_DATA_DIRS = "${theme}/share:${pkgs.adwaita-icon-theme}/share:${pkgs.hicolor-icon-theme}/share";
         }; # MUST RUN mkdir -p /home/alec/.config/planning
         serviceConfig = service.serviceConfig // {
           User = "alec";
           WorkingDirectory = "/home/alec/";
-          ExecStart = "/home/alec/planning";
+          ExecStart = "${planning}/bin/planning";
         };
       };
       planning-broadway = service // {

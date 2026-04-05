@@ -16,9 +16,30 @@
         "type": "github"
       }
     },
+    "planning": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1775350428,
+        "narHash": "sha256-BYFeims70CpvqzYOrGby3HrvgV3Iye+iEI45PQuvZz4=",
+        "owner": "AmazinAxel",
+        "repo": "Planning",
+        "rev": "a86e57d0027c48837769bdc162a3423826d7f13b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AmazinAxel",
+        "repo": "Planning",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "planning": "planning"
       }
     }
   },

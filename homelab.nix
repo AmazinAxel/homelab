@@ -13,6 +13,15 @@
 
   environment.systemPackages = with pkgs; [ git bun spotdl jq fish ];
 
+  fonts.packages = [(pkgs.stdenv.mkDerivation { # Planning fonts
+    name = "fonts";
+    src = ./fonts;
+    installPhase = ''
+      mkdir -p $out/share/fonts/truetype
+      cp -r $src/* $out/share/fonts/truetype/
+    '';
+  })];
+
   # Raspi boot
   boot = {
     loader = {
