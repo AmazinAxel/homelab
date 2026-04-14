@@ -1,20 +1,25 @@
 {
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    planning = {
-      url = "github:AmazinAxel/Planning";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
+  description = "Homelab display dev shell";
 
-  outputs = { nixpkgs, planning, ... }: {
-    nixosConfigurations."alechomelab" = nixpkgs.lib.nixosSystem {
-      system = "aarch64-linux";
-      modules = [
-        ./homelab.nix
-        ./services.nix
-        { _module.args.planning = planning.packages.aarch64-linux.planning; }
-      ];
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+  outputs = { self, nixpkgs }:
+    let
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    in {
+      devShells.x86_64-linux.default = nixpkgs.legacyPackages.x86_64-linux.mkShell {
+        buildInputs = with pkgs; [
+          pkgsCross.aarch64-multiplatform.buildPackages.gcc
+          pkgsCross.aarch64-multiplatform.libgpiod_1
+          lftp
+        ];
+
+        shellHook = ''
+          deploytohomelab() {
+            make -j$(nproc)
+            lftp -u alec -e "put homelabDisplay -o /home/alec/homelab/display/homelabDisplay; bye" sftp://alechomelab.local
+          }
+        '';
+      };
     };
-  };
 }
