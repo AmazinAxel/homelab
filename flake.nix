@@ -11,8 +11,7 @@
         name = "homelabDisplay";
         src = self;
         buildInputs = [ pkgs.libgpiod_1 ];
-        preBuild = "mkdir -p bin";
-        buildPhase = "make CC=$CC";
+        buildPhase = "mkdir -p bin && make CC=$CC";
         installPhase = ''
           mkdir -p $out/bin
           cp homelabDisplay $out/bin/
