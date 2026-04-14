@@ -9,9 +9,9 @@
     in {
       packages.aarch64-linux.homelabDisplay = pkgs.stdenv.mkDerivation {
         name = "homelabDisplay";
-        src = ./display;
+        src = self;
         buildInputs = [ pkgs.libgpiod_1 ];
-        preBuild = "make clean";
+        preBuild = "mkdir -p bin";
         buildPhase = "make CC=$CC";
         installPhase = ''
           mkdir -p $out/bin
