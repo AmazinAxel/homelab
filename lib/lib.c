@@ -1,8 +1,6 @@
 #include "lib.h"
 #include <gpiod.h> // gpio
 #include <fcntl.h> // spi open
-#include <sys/ioctl.h>
-#include <linux/spi/spidev.h>
 
 #define GPIO_CHIP "/dev/gpiochip0"
 
@@ -139,20 +137,6 @@ UBYTE DEV_ModuleInit() {
     spi_fd = open("/dev/spidev0.0", O_WRONLY);
     if (spi_fd < 0) {
         printf("Failed to open /dev/spidev0.0\n");
-        gpiod_chip_close(chip);
-        chip = NULL;
-        return 1;
-    };
-
-    uint8_t spi_mode = SPI_MODE_0;
-    uint8_t spi_bits = 8;
-    uint32_t spi_speed = 8000000;
-    if (ioctl(spi_fd, SPI_IOC_WR_MODE, &spi_mode) < 0 ||
-        ioctl(spi_fd, SPI_IOC_WR_BITS_PER_WORD, &spi_bits) < 0 ||
-        ioctl(spi_fd, SPI_IOC_WR_MAX_SPEED_HZ, &spi_speed) < 0) {
-        printf("Failed to configure SPI!\n");
-        close(spi_fd);
-        spi_fd = -1;
         gpiod_chip_close(chip);
         chip = NULL;
         return 1;
