@@ -10,10 +10,11 @@ TARGET = homelabDisplay
 
 LIB = -lgpiod -lm
 CC = gcc # Replace this with aarch64-unknown-linux-gnu-gcc if cross compiling
-CFLAGS = -g -O2 -Wall -I $(DIR_LIB) -I $(DIR_FONTS) -I $(DIR_PROGRAM) -I $(DIR_MENUS)
+CFLAGS = -Os -Wall -ffunction-sections -fdata-sections -I $(DIR_LIB) -I $(DIR_FONTS) -I $(DIR_PROGRAM) -I $(DIR_MENUS)
+LDFLAGS = -Wl,--gc-sections -s
 
 ${TARGET}: ${OBJ_O}
-	$(CC) $(CFLAGS) $(OBJ_O) -o $@ $(LIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ_O) -o $@ $(LIB)
 
 ${DIR_BIN}/%.o: ${DIR_LIB}/%.c
 	$(CC) $(CFLAGS) -c $< -o $@

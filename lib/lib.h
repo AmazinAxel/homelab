@@ -27,10 +27,6 @@
 #define LCD_BL_0  DEV_Digital_Write(LCD_BL,0)
 #define LCD_BL_1  DEV_Digital_Write(LCD_BL,1)
 
-#define KEY_UP_PIN      6
-#define KEY_DOWN_PIN    19
-#define KEY_LEFT_PIN    5
-#define KEY_RIGHT_PIN   26
 #define KEY_PRESS_PIN   13
 #define KEY1_PIN        21
 #define KEY2_PIN        20
@@ -41,8 +37,12 @@ void DEV_ModuleExit();
 
 void DEV_GPIO_Mode(UWORD Pin, UWORD Mode);
 void DEV_Digital_Write(UWORD Pin, UBYTE Value);
-UBYTE DEV_Digital_Read(UWORD Pin);
 void DEV_Delay_ms(UDOUBLE xms);
+
+// Buttons
+void DEV_Button_Init();
+int DEV_Button_WaitPress(int timeout_ms);
+int DEV_Button_Read(UWORD Pin);
 
 void DEV_SPI_WriteByte(uint8_t Value);
 void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len);

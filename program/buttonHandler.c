@@ -1,94 +1,78 @@
 #include "program.h"
 #include "lcd.h" // LCD power control
-#include <time.h> // Button hold conditions
-#include <unistd.h> // Sleeping
+#include <time.h> // Button hold timing
+#include <unistd.h> // usleep(), truncate()
 #include <stdbool.h> // Booleans
-#include <unistd.h> // Wipe log file
+#include <stdlib.h> // system()
 
-static int buttonHold(int (*read_fn)(void)) {
+#define DEBOUNCE_US 15000
+#define HOLD_MS 500
+
+static bool buttonHold(UWORD pin) {
     struct timespec start, now;
     clock_gettime(CLOCK_MONOTONIC, &start);
 
-    while (read_fn() == 0) {
+    while (DEV_Button_Read(pin) == 0) {
         clock_gettime(CLOCK_MONOTONIC, &now);
 
         long ms = ((now.tv_sec - start.tv_sec) * 1000) + ((now.tv_nsec - start.tv_nsec) / 1000000);
+        if (ms >= HOLD_MS) { return true; };
 
-        if (ms >= 500) { return true; }; // 500ms
-
-        usleep(1000); // 1ms
+        usleep(5000); // 5ms
     };
     return false;
 };
 
-int GET_KEY_UP() { return DEV_Digital_Read(KEY_UP_PIN); }
-int GET_KEY_DOWN() { return DEV_Digital_Read(KEY_DOWN_PIN); }
-int GET_KEY_LEFT() { return DEV_Digital_Read(KEY_LEFT_PIN); }
-int GET_KEY_RIGHT() { return DEV_Digital_Read(KEY_RIGHT_PIN); }
+static void waitForRelease(UWORD pin) {
+    while (DEV_Button_Read(pin) == 0) {
+        usleep(10000); // 10ms
+    };
+};
 
-int GET_KEY_PRESS() { return DEV_Digital_Read(KEY_PRESS_PIN); }
-int GET_KEY1() { return DEV_Digital_Read(KEY1_PIN); }
-int GET_KEY2() { return DEV_Digital_Read(KEY2_PIN); }
-int GET_KEY3() { return DEV_Digital_Read(KEY3_PIN); }
+static void handlePress(UWORD pin) {
+    if (pin == KEY_PRESS_PIN) { // Toggle screen sleep
+        if (isLCDOn) {
+            turnOffLCD();
+            isLCDOn = false;
+        } else {
+            turnOnLCD();
+            isLCDOn = true;
+        };
+    } else if (pin == KEY1_PIN) { // Overview
+        if (currentMenu != OVERVIEW || buttonHold(KEY1_PIN)) {
+            menu(OVERVIEW);
+        };
+    } else if (pin == KEY2_PIN) { // Logs
+        if (currentMenu != LOGS) {
+            menu(LOGS);
+        };
+
+        if (buttonHold(KEY2_PIN)) { // Hold to wipe logs
+            if (truncate("/home/alec/logs.txt", 0) == -1) { };
+            menu(LOGS);
+        };
+    } else if (pin == KEY3_PIN) { // Shutdown
+        if (currentMenu != SHUTDOWN) {
+            menu(SHUTDOWN);
+        };
+
+        if (buttonHold(KEY3_PIN)) { // Hold to power off
+            if (system("systemctl poweroff") == -1) { };
+        };
+    };
+};
 
 void buttonHandler() {
+    DEV_Button_Init();
+
     for (;;) {
-        //if (GET_KEY_UP == 0) {
-        //    while (GET_KEY_UP == 0);
-        //};
+        int pin = DEV_Button_WaitPress(-1);
+        if (pin < 0) { continue; }; // timeout/signal/release edge
 
-        //if (GET_KEY_DOWN == 0) {
-        //    while (GET_KEY_DOWN == 0);
-        //};
+        usleep(DEBOUNCE_US);
+        if (DEV_Button_Read((UWORD)pin) != 0) { continue; }; // bounce
 
-        //if (GET_KEY_LEFT == 0) {
-        //    while (GET_KEY_LEFT == 0);
-        //};
-
-        //if (GET_KEY_RIGHT == 0) {
-        //    while (GET_KEY_RIGHT == 0);
-        //};
-
-        if (GET_KEY_PRESS() == 0) { // Toggle screen sleep
-            if (isLCDOn) {
-                turnOffLCD();
-                isLCDOn = false;
-            } else {
-                turnOnLCD();
-                isLCDOn = true;
-            };
-
-            while (GET_KEY_PRESS() == 0);
-        };
-
-        if (GET_KEY1() == 0) { // Overview
-            if (currentMenu != OVERVIEW || buttonHold(GET_KEY1)) {
-                menu(OVERVIEW);
-            }
-            while (GET_KEY1() == 0);
-        };
-
-        if (GET_KEY2() == 0) { // Logs
-            if (currentMenu != LOGS) {
-                menu(LOGS);
-            };
-
-            if (buttonHold(GET_KEY2)) { // Wipe logs
-                if (truncate("/home/alec/logs.txt", 0) == -1) { };
-                menu(LOGS);
-            };
-            while (GET_KEY2() == 0);
-        };
-
-        if (GET_KEY3() == 0) { // Shutdown
-            if (currentMenu != SHUTDOWN) {
-                menu(SHUTDOWN);
-            };
-            
-            if (buttonHold(GET_KEY3)) { // Power off without warnings
-                if (system("systemctl poweroff") == -1) { };
-            };
-            while (GET_KEY3() == 0);
-        };
+        handlePress((UWORD)pin);
+        waitForRelease((UWORD)pin);
     };
 };

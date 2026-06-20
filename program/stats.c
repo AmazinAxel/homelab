@@ -1,11 +1,13 @@
-#include <stdio.h> // fopen()
+#include <stdio.h> // fopen(), snprintf()
 #include <time.h> // time()
 #include <stdbool.h> // booleans
 #include <sys/statvfs.h> // drive mounting
-#include <string.h> // strdup() to prevent storage ping segfault
 
 int isSynced() {
     FILE *f = fopen("/home/alec/lastSynced", "r");
+    if (!f) {
+        return false;
+    };
 
     long long last_sync = 0;
     if (fscanf(f, "%lld", &last_sync) != 1) {
@@ -31,6 +33,10 @@ int isSynced() {
 
 bool isNetworkConnected() {
     FILE *file = fopen("/sys/class/net/wlan0/operstate", "r");
+    if (!file) {
+        return false;
+    };
+
     char u = fgetc(file); // should be u
     char p = fgetc(file); // should be p
     fclose(file);
@@ -39,15 +45,19 @@ bool isNetworkConnected() {
 }
 
 char* storageUsage() {
+    static char buf[16];
+
     struct statvfs s;
-    if (statvfs("/media", &s) != 0)
-        return "??";
+    if (statvfs("/media", &s) != 0) {
+        snprintf(buf, sizeof(buf), "??");
+        return buf;
+    };
 
-    unsigned long totalStorage = s.f_blocks * s.f_frsize;
-    unsigned long usedStorage = (s.f_blocks - s.f_bfree) * s.f_frsize;
-    int percentUsed = (int)((usedStorage * 100) / totalStorage);
+    unsigned long long totalStorage = (unsigned long long)s.f_blocks * s.f_frsize;
+    unsigned long long usedStorage = (unsigned long long)(s.f_blocks - s.f_bfree) * s.f_frsize;
 
-    char buf[16];
+    int percentUsed = totalStorage ? (int)((usedStorage * 100) / totalStorage) : 0;
+
     snprintf(buf, sizeof(buf), "%d%%", percentUsed);
-    return strdup(buf);
+    return buf;
 };

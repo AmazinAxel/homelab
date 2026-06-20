@@ -1,12 +1,19 @@
 #include "lib.h"
 #include <gpiod.h> // gpio
 #include <fcntl.h> // spi open
+#include <poll.h>  // blocking wait on button events
 
 #define GPIO_CHIP "/dev/gpiochip0"
 
 static struct gpiod_chip *chip;
 
 static int spi_fd = -1;
+
+static const UWORD button_pins[] = { KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN }; // <----
+#define BUTTON_COUNT ((int)(sizeof(button_pins) / sizeof(button_pins[0])))
+
+static struct gpiod_line *button_lines[BUTTON_COUNT];
+static struct pollfd button_fds[BUTTON_COUNT];
 
 void DEV_Digital_Write(UWORD Pin, UBYTE Value) {
     if (Pin == LCD_CS) {
@@ -29,25 +36,60 @@ void DEV_Digital_Write(UWORD Pin, UBYTE Value) {
     };
 };
 
-UBYTE DEV_Digital_Read(UWORD Pin) {
-    if (!chip) {
-        printf("DEV_Digital_Read: chip not initialized\n");
-        return 0;
+void DEV_Button_Init() {
+    for (int i = 0; i < BUTTON_COUNT; i++) {
+        button_fds[i].fd = -1; // poll() ignores negative fds
+        button_fds[i].events = POLLIN;
+
+        struct gpiod_line *line = gpiod_chip_get_line(chip, button_pins[i]);
+        if (!line) {
+            printf("DEV_Button_Init: failed to get line %u\n", button_pins[i]);
+            continue;
+        };
+
+        if (gpiod_line_request_both_edges_events(line, "homelabDisplay") < 0) {
+            printf("DEV_Button_Init: failed to request events on line %u\n", button_pins[i]);
+            continue;
+        };
+
+        button_lines[i] = line;
+        button_fds[i].fd = gpiod_line_event_get_fd(line);
+    };
+};
+
+int DEV_Button_WaitPress(int timeout_ms) {
+    int ready = poll(button_fds, BUTTON_COUNT, timeout_ms);
+    if (ready <= 0) {
+        return -1; // timeout or interrupted by a signal
     };
 
-    struct gpiod_line *line = gpiod_chip_get_line(chip, Pin);
-    if (!line) {
-        printf("DEV_Digital_Read: failed to get line %u\n", Pin);
-        return 0;
+    int pressed = -1;
+    for (int i = 0; i < BUTTON_COUNT; i++) {
+        if (!button_lines[i] || !(button_fds[i].revents & POLLIN)) {
+            continue;
+        };
+
+        struct gpiod_line_event event;
+        if (gpiod_line_event_read(button_lines[i], &event) < 0) {
+            continue;
+        };
+
+        if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE && pressed < 0) {
+            pressed = (int)button_pins[i];
+        };
     };
 
-    int v = gpiod_line_get_value(line);
-    if (v < 0) {
-        printf("DEV_Digital_Read: failed to read value from line %u\n", Pin);
-        return 0;
-    };
+    return pressed;
+};
 
-    return (UBYTE)v;
+int DEV_Button_Read(UWORD Pin) {
+    for (int i = 0; i < BUTTON_COUNT; i++) {
+        if (button_pins[i] == Pin && button_lines[i]) {
+            int v = gpiod_line_get_value(button_lines[i]);
+            return (v < 0) ? 1 : v;
+        };
+    };
+    return 1;
 };
 
 void DEV_GPIO_Mode(UWORD Pin, UWORD Mode) {
@@ -111,16 +153,6 @@ static void DEV_GPIO_Init() {
     DEV_GPIO_Mode(LCD_RST, 1);
     DEV_GPIO_Mode(LCD_DC, 1);
     DEV_GPIO_Mode(LCD_BL, 1);
-
-    // Buttons
-    DEV_GPIO_Mode(KEY_UP_PIN, 0);
-    DEV_GPIO_Mode(KEY_DOWN_PIN, 0);
-    DEV_GPIO_Mode(KEY_LEFT_PIN, 0);
-    DEV_GPIO_Mode(KEY_RIGHT_PIN, 0);
-    DEV_GPIO_Mode(KEY_PRESS_PIN, 0);
-    DEV_GPIO_Mode(KEY1_PIN, 0);
-    DEV_GPIO_Mode(KEY2_PIN, 0);
-    DEV_GPIO_Mode(KEY3_PIN, 0);
 
     DEV_Digital_Write(LCD_BL, 1); // Backlight on
 };

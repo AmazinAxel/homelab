@@ -233,18 +233,6 @@ void LCD_1in44_Display() {
     };
 };
 
-void LCD_1in44_DisplayWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD *Image) {
-    UDOUBLE Addr = 0;
-
-    UWORD j;
-    LCD_1in44_SetWindows(Xstart, Ystart, Xend-1 , Yend-1);
-    LCD_DC_1;
-    for (j = Ystart; j < Yend - 1; j++) {
-        Addr = Xstart + j * LCD_WIDTH ;
-        DEV_SPI_Write_nByte((uint8_t *)&Image[Addr], (Xend-Xstart-1)*2);
-    };
-};
-
 void Handler_1in44_LCD(int signo) {
     DEV_ModuleExit();
     exit(0);

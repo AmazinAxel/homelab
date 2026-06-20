@@ -36,8 +36,10 @@ void menu(MenuType menu) {
 
     currentMenu = menu;
 
-    if (!isLCDOn)
+    if (!isLCDOn) {
         turnOnLCD();
+        isLCDOn = true;
+    };
 
     switch (menu) {
         case OVERVIEW:

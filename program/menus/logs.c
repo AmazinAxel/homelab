@@ -7,6 +7,11 @@ void logsMenu() {
 
     FILE *logFile;
     logFile = fopen("/home/alec/logs.txt", "r");
+    if (!logFile) {
+        Paint_DrawString(4, 32, "No logs", &Font12, BACKGROUND_COLOR, FONT_COLOR);
+        return;
+    };
+
     char line[100]; // Max line size
     int lineY = 32;
 
