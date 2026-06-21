@@ -15,19 +15,33 @@ static const UWORD button_pins[] = { KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN
 static struct gpiod_line *button_lines[BUTTON_COUNT];
 static struct pollfd button_fds[BUTTON_COUNT];
 
+// Output lines (LCD_RST/DC/BL) are requested once in DEV_GPIO_Mode and cached
+// here. DEV_Digital_Write reuses the held handle instead of re-fetching with
+// gpiod_chip_get_line on every write: re-fetching an already-requested line
+// returns NULL on current libgpiod (breaking the display), and it's a needless
+// per-byte lookup on the Zero.
+#define MAX_OUTPUT_LINES 8
+static UWORD output_pins[MAX_OUTPUT_LINES];
+static struct gpiod_line *output_lines[MAX_OUTPUT_LINES];
+static int output_count = 0;
+
+static struct gpiod_line *find_output_line(UWORD Pin) {
+    for (int i = 0; i < output_count; i++) {
+        if (output_pins[i] == Pin) {
+            return output_lines[i];
+        };
+    };
+    return NULL;
+};
+
 void DEV_Digital_Write(UWORD Pin, UBYTE Value) {
     if (Pin == LCD_CS) {
         return;
     };
 
-    if (!chip) {
-        printf("DEV_Digital_Write: chip not initialized\n");
-        return;
-    };
-
-    struct gpiod_line *line = gpiod_chip_get_line(chip, Pin);
+    struct gpiod_line *line = find_output_line(Pin);
     if (!line) {
-        printf("DEV_Digital_Write: failed to get line %u\n", Pin);
+        printf("DEV_Digital_Write: line %u not initialized\n", Pin);
         return;
     };
 
@@ -115,6 +129,12 @@ void DEV_GPIO_Mode(UWORD Pin, UWORD Mode) {
     } else {
         if (gpiod_line_request_output(line, "waveshare", 0) < 0) {
             printf("DEV_GPIO_Mode: failed to request output on line %u\n", Pin);
+            return;
+        };
+        if (output_count < MAX_OUTPUT_LINES) {
+            output_pins[output_count] = Pin;
+            output_lines[output_count] = line; // reused by DEV_Digital_Write
+            output_count++;
         };
     };
 };
