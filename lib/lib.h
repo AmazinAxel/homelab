@@ -35,7 +35,6 @@
 UBYTE DEV_ModuleInit();
 void DEV_ModuleExit();
 
-void DEV_GPIO_Mode(UWORD Pin, UWORD Mode);
 void DEV_Digital_Write(UWORD Pin, UBYTE Value);
 void DEV_Delay_ms(UDOUBLE xms);
 

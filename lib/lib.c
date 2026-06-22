@@ -1,142 +1,122 @@
 #include "lib.h"
 #include <gpiod.h> // gpio
 #include <fcntl.h> // spi open
-#include <poll.h>  // blocking wait on button events
+#include <errno.h> // errno
+#include <string.h> // strerror()
 
 #define GPIO_CHIP "/dev/gpiochip0"
+#define CONSUMER  "homelabDisplay"
 
 static struct gpiod_chip *chip;
 
+static struct gpiod_line_request *output_request; // LCD_RST, LCD_DC, LCD_BL
+static struct gpiod_line_request *button_request; // KEY_PRESS, KEY1, KEY2, KEY3
+static struct gpiod_edge_event_buffer *event_buffer;
+
 static int spi_fd = -1;
 
-static const UWORD button_pins[] = { KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN }; // <----
-#define BUTTON_COUNT ((int)(sizeof(button_pins) / sizeof(button_pins[0])))
+static const unsigned int output_offsets[] = { LCD_RST, LCD_DC, LCD_BL };
+#define OUTPUT_COUNT ((size_t)(sizeof(output_offsets) / sizeof(output_offsets[0])))
 
-static struct gpiod_line *button_lines[BUTTON_COUNT];
-static struct pollfd button_fds[BUTTON_COUNT];
-
-// Output lines (LCD_RST/DC/BL) are requested once in DEV_GPIO_Mode and cached
-// here. DEV_Digital_Write reuses the held handle instead of re-fetching with
-// gpiod_chip_get_line on every write: re-fetching an already-requested line
-// returns NULL on current libgpiod (breaking the display), and it's a needless
-// per-byte lookup on the Zero.
-#define MAX_OUTPUT_LINES 8
-static UWORD output_pins[MAX_OUTPUT_LINES];
-static struct gpiod_line *output_lines[MAX_OUTPUT_LINES];
-static int output_count = 0;
-
-static struct gpiod_line *find_output_line(UWORD Pin) {
-    for (int i = 0; i < output_count; i++) {
-        if (output_pins[i] == Pin) {
-            return output_lines[i];
-        };
-    };
-    return NULL;
-};
+static const unsigned int button_offsets[] = { KEY_PRESS_PIN, KEY1_PIN, KEY2_PIN, KEY3_PIN };
+#define BUTTON_COUNT ((size_t)(sizeof(button_offsets) / sizeof(button_offsets[0])))
+#define EVENT_BUF_CAP 8
 
 void DEV_Digital_Write(UWORD Pin, UBYTE Value) {
     if (Pin == LCD_CS) {
         return;
     };
 
-    struct gpiod_line *line = find_output_line(Pin);
-    if (!line) {
-        printf("DEV_Digital_Write: line %u not initialized\n", Pin);
+    if (!output_request) {
+        printf("DEV_Digital_Write: outputs not initialized\n");
         return;
     };
 
-    if (gpiod_line_set_value(line, Value) < 0) {
-        printf("DEV_Digital_Write: failed to set value on line %u\n", Pin);
+    enum gpiod_line_value value = Value ? GPIOD_LINE_VALUE_ACTIVE : GPIOD_LINE_VALUE_INACTIVE;
+    if (gpiod_line_request_set_value(output_request, Pin, value) < 0) {
+        printf("DEV_Digital_Write: failed to set line %u: %s\n", Pin, strerror(errno));
     };
-};
-
-void DEV_Button_Init() {
-    for (int i = 0; i < BUTTON_COUNT; i++) {
-        button_fds[i].fd = -1; // poll() ignores negative fds
-        button_fds[i].events = POLLIN;
-
-        struct gpiod_line *line = gpiod_chip_get_line(chip, button_pins[i]);
-        if (!line) {
-            printf("DEV_Button_Init: failed to get line %u\n", button_pins[i]);
-            continue;
-        };
-
-        if (gpiod_line_request_both_edges_events(line, "homelabDisplay") < 0) {
-            printf("DEV_Button_Init: failed to request events on line %u\n", button_pins[i]);
-            continue;
-        };
-
-        button_lines[i] = line;
-        button_fds[i].fd = gpiod_line_event_get_fd(line);
-    };
-};
-
-int DEV_Button_WaitPress(int timeout_ms) {
-    int ready = poll(button_fds, BUTTON_COUNT, timeout_ms);
-    if (ready <= 0) {
-        return -1; // timeout or interrupted by a signal
-    };
-
-    int pressed = -1;
-    for (int i = 0; i < BUTTON_COUNT; i++) {
-        if (!button_lines[i] || !(button_fds[i].revents & POLLIN)) {
-            continue;
-        };
-
-        struct gpiod_line_event event;
-        if (gpiod_line_event_read(button_lines[i], &event) < 0) {
-            continue;
-        };
-
-        if (event.event_type == GPIOD_LINE_EVENT_FALLING_EDGE && pressed < 0) {
-            pressed = (int)button_pins[i];
-        };
-    };
-
-    return pressed;
 };
 
 int DEV_Button_Read(UWORD Pin) {
-    for (int i = 0; i < BUTTON_COUNT; i++) {
-        if (button_pins[i] == Pin && button_lines[i]) {
-            int v = gpiod_line_get_value(button_lines[i]);
-            return (v < 0) ? 1 : v;
-        };
+    if (!button_request) {
+        return 1; // treat as released
     };
-    return 1;
+
+    enum gpiod_line_value value = gpiod_line_request_get_value(button_request, Pin);
+    return (value == GPIOD_LINE_VALUE_INACTIVE) ? 0 : 1;
 };
 
-void DEV_GPIO_Mode(UWORD Pin, UWORD Mode) {
-    if (Pin == LCD_CS) {
-        return;
-    };
+void DEV_Button_Init() {
+    struct gpiod_line_settings *settings = gpiod_line_settings_new();
+    struct gpiod_line_config *line_cfg = gpiod_line_config_new();
+    struct gpiod_request_config *req_cfg = gpiod_request_config_new();
 
     if (!chip) {
-        printf("DEV_GPIO_Mode: chip not initialized\n");
-        return;
+        printf("DEV_Button_Init: chip not initialized\n");
+        goto cleanup;
+    };
+    if (!settings || !line_cfg || !req_cfg) {
+        printf("DEV_Button_Init: allocation failed\n");
+        goto cleanup;
     };
 
-    struct gpiod_line *line = gpiod_chip_get_line(chip, Pin);
-    if (!line) {
-        printf("DEV_GPIO_Mode: failed to get line %u\n", Pin);
-        return;
+    gpiod_line_settings_set_direction(settings, GPIOD_LINE_DIRECTION_INPUT);
+    gpiod_line_settings_set_edge_detection(settings, GPIOD_LINE_EDGE_BOTH);
+    gpiod_line_settings_set_bias(settings, GPIOD_LINE_BIAS_PULL_UP);
+    gpiod_line_settings_set_debounce_period_us(settings, 10000); // 10ms hardware debounce
+
+    if (gpiod_line_config_add_line_settings(line_cfg, button_offsets, BUTTON_COUNT, settings) < 0) {
+        printf("DEV_Button_Init: failed to add line settings: %s\n", strerror(errno));
+        goto cleanup;
     };
 
-    if (Mode == 0) {
-        if (gpiod_line_request_input(line, "waveshare") < 0) {
-            printf("DEV_GPIO_Mode: failed to request input on line %u\n", Pin);
+    gpiod_request_config_set_consumer(req_cfg, CONSUMER);
+
+    button_request = gpiod_chip_request_lines(chip, req_cfg, line_cfg);
+    if (!button_request) {
+        printf("DEV_Button_Init: failed to request buttons: %s\n", strerror(errno));
+        goto cleanup;
+    };
+
+    event_buffer = gpiod_edge_event_buffer_new(EVENT_BUF_CAP);
+    if (!event_buffer) {
+        printf("DEV_Button_Init: failed to allocate event buffer: %s\n", strerror(errno));
+    };
+
+cleanup:
+    if (req_cfg) gpiod_request_config_free(req_cfg);
+    if (line_cfg) gpiod_line_config_free(line_cfg);
+    if (settings) gpiod_line_settings_free(settings);
+};
+
+int DEV_Button_WaitPress(int timeout_ms) {
+    if (!button_request || !event_buffer) {
+        return -1;
+    };
+
+    int64_t timeout_ns = (timeout_ms < 0) ? -1 : (int64_t)timeout_ms * 1000000;
+    if (gpiod_line_request_wait_edge_events(button_request, timeout_ns) <= 0) {
+        return -1; // timeout or error
+    };
+
+    int read = gpiod_line_request_read_edge_events(button_request, event_buffer, EVENT_BUF_CAP);
+    if (read < 0) {
+        return -1;
+    };
+
+    for (int i = 0; i < read; i++) {
+        struct gpiod_edge_event *event = gpiod_edge_event_buffer_get_event(event_buffer, (unsigned long)i);
+        if (!event) {
+            continue;
         };
-    } else {
-        if (gpiod_line_request_output(line, "waveshare", 0) < 0) {
-            printf("DEV_GPIO_Mode: failed to request output on line %u\n", Pin);
-            return;
-        };
-        if (output_count < MAX_OUTPUT_LINES) {
-            output_pins[output_count] = Pin;
-            output_lines[output_count] = line; // reused by DEV_Digital_Write
-            output_count++;
+
+        if (gpiod_edge_event_get_event_type(event) == GPIOD_EDGE_EVENT_FALLING_EDGE) {
+            return (int)gpiod_edge_event_get_line_offset(event);
         };
     };
+
+    return -1; // only release edges this time
 };
 
 void DEV_Delay_ms(UDOUBLE xms) {
@@ -169,32 +149,62 @@ void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len) {
     };
 };
 
-static void DEV_GPIO_Init() {
-    DEV_GPIO_Mode(LCD_RST, 1);
-    DEV_GPIO_Mode(LCD_DC, 1);
-    DEV_GPIO_Mode(LCD_BL, 1);
+static struct gpiod_line_request *request_output_lines() {
+    struct gpiod_line_settings *settings = gpiod_line_settings_new();
+    struct gpiod_line_config *line_cfg = gpiod_line_config_new();
+    struct gpiod_request_config *req_cfg = gpiod_request_config_new();
+    struct gpiod_line_request *request = NULL;
 
-    DEV_Digital_Write(LCD_BL, 1); // Backlight on
+    if (!settings || !line_cfg || !req_cfg) {
+        goto cleanup;
+    };
+
+    gpiod_line_settings_set_direction(settings, GPIOD_LINE_DIRECTION_OUTPUT);
+    gpiod_line_settings_set_output_value(settings, GPIOD_LINE_VALUE_INACTIVE);
+
+    if (gpiod_line_config_add_line_settings(line_cfg, output_offsets, OUTPUT_COUNT, settings) < 0) {
+        goto cleanup;
+    };
+
+    gpiod_request_config_set_consumer(req_cfg, CONSUMER);
+
+    request = gpiod_chip_request_lines(chip, req_cfg, line_cfg);
+
+cleanup:
+    if (req_cfg) gpiod_request_config_free(req_cfg);
+    if (line_cfg) gpiod_line_config_free(line_cfg);
+    if (settings) gpiod_line_settings_free(settings);
+    return request;
 };
 
 UBYTE DEV_ModuleInit() {
     // GPIO
     chip = gpiod_chip_open(GPIO_CHIP);
     if (!chip) {
-        printf("Failed to open %s\n", GPIO_CHIP);
+        printf("Failed to open %s: %s\n", GPIO_CHIP, strerror(errno));
+        return 1;
+    };
+
+    output_request = request_output_lines();
+    if (!output_request) {
+        printf("Failed to request output lines: %s\n", strerror(errno));
+        gpiod_chip_close(chip);
+        chip = NULL;
         return 1;
     };
 
     // SPI
     spi_fd = open("/dev/spidev0.0", O_WRONLY);
     if (spi_fd < 0) {
-        printf("Failed to open /dev/spidev0.0\n");
+        printf("Failed to open /dev/spidev0.0: %s\n", strerror(errno));
+        gpiod_line_request_release(output_request);
+        output_request = NULL;
         gpiod_chip_close(chip);
         chip = NULL;
         return 1;
     };
 
-    DEV_GPIO_Init();
+    DEV_Digital_Write(LCD_BL, 1); // Backlight on
     return 0;
 };
 
@@ -202,6 +212,18 @@ void DEV_ModuleExit() {
     if (spi_fd >= 0) {
         close(spi_fd);
         spi_fd = -1;
+    };
+    if (event_buffer) {
+        gpiod_edge_event_buffer_free(event_buffer);
+        event_buffer = NULL;
+    };
+    if (button_request) {
+        gpiod_line_request_release(button_request);
+        button_request = NULL;
+    };
+    if (output_request) {
+        gpiod_line_request_release(output_request);
+        output_request = NULL;
     };
     if (chip) {
         gpiod_chip_close(chip);

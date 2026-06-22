@@ -10,7 +10,7 @@
       packages.aarch64-linux.homelabDisplay = pkgs.stdenv.mkDerivation {
         name = "homelabDisplay";
         src = self;
-        buildInputs = [ pkgs.libgpiod_1 ];
+        buildInputs = [ pkgs.libgpiod ];
         buildPhase = "mkdir -p bin && make CC=$CC";
         installPhase = ''
           mkdir -p $out/bin
@@ -22,7 +22,7 @@
         let x86pkgs = nixpkgs.legacyPackages.x86_64-linux; in x86pkgs.mkShell {
           buildInputs = with x86pkgs; [
             pkgsCross.aarch64-multiplatform.buildPackages.gcc
-            pkgsCross.aarch64-multiplatform.libgpiod_1
+            pkgsCross.aarch64-multiplatform.libgpiod
           ];
         };
     };
